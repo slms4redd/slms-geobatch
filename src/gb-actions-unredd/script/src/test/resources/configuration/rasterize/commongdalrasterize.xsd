@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.geobatch.org/gdal_translate"
+	xmlns="http://www.geobatch.org/gdal_translate">
+
+	<xsd:element name="GdalRasterize">
+		<xsd:complexType>
+			<xsd:annotation>
+				<xsd:documentation>
+					generate a raster file given a shape file and an attribute
+				</xsd:documentation>
+			</xsd:annotation>
+			<xsd:all>
+				<xsd:element name="a" type="xsd:string" minOccurs="1" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							The attribute name
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+
+                <xsd:element name="layer" type="xsd:string" minOccurs="1"
+                    maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The layer on which building the raster
+                    </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+
+				<xsd:element name="src" type="xsd:string" minOccurs="1"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							The src on which building the raster
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="outputfilename" type="xsd:string" minOccurs="1"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							The output file name 
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				
+				<xsd:element name="size">
+				  <xsd:complexType>
+				    <xsd:sequence>
+				      <xsd:element name="width" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+				      <xsd:element name="height" type="xsd:int" minOccurs="1" maxOccurs="1"/"/>
+				    </xsd:sequence>
+				  </xsd:complexType>
+				</xsd:element> 
+				
+                <xsd:element name="box">
+                  <xsd:complexType>
+                    <xsd:sequence>
+                      <xsd:element name="rx0" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                      <xsd:element name="rx1" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                      <xsd:element name="ry0" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                      <xsd:element name="ry1" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                    </xsd:sequence>
+                  </xsd:complexType>
+                </xsd:element> 
+              
+                <xsd:element name="nodata" type="xsd:string" minOccurs="1" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The no_data value
+                    </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>	
+                
+                <xsd:element name="co" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            A creation option
+                    </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                
+                <xsd:element name="ot" type="xsd:string" minOccurs="0" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The output band type
+                    </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                
+                <xsd:element name="of" type="xsd:string" minOccurs="1" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The output file format
+                    </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                
+                <xsd:element name="a_srs" type="xsd:string" minOccurs="0" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Override the projection for the output file
+                    </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                
+                <xsd:element name="where" type="xsd:string" minOccurs="0" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The where clause 
+                    </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

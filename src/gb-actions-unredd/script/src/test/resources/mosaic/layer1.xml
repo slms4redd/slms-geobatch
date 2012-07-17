@@ -1,0 +1,8 @@
+<ImageMosaic>
+  <base>/home/geosol/prj/unredd/geobatch-flow/src/gb-actions-unredd/script/src/test/resources/mosaic/layer1</base>
+  <add>/home/geosol/prj/unredd/geobatch-flow/src/gb-actions-unredd/script/src/test/resources/layer1_2012.tif</add>
+  <allowMultithreading>false</allowMultithreading>
+  <useJaiImageRead>false</useJaiImageRead>
+  <tileSizeH>0</tileSizeH>
+  <tileSizeW>0</tileSizeW>
+</ImageMosaic>

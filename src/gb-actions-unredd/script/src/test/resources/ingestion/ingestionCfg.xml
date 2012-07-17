@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IngestionConfiguration>
+
+  <id>ingestionId</id>
+  <name>IngestionName</name>
+  <description>IngestionDesc</description>
+
+  <failIgnored>false</failIgnored>
+
+  <geoStoreConfig>
+    <url>dummy_value_that_will_be_overriden_by_appcontext_values</url>
+    <username>dummy_value_that_will_be_overriden_by_appcontext_values</username>
+    <password>dummy_value_that_will_be_overriden_by_appcontext_values</password>
+  </geoStoreConfig>
+
+  <postGisConfig>
+    <host>dummy_value_that_will_be_overriden_by_appcontext_values</host>
+    <port>5432</port>
+    <database>dummy_value_that_will_be_overriden_by_appcontext_values</database>
+    <schema>dummy_value_that_will_be_overriden_by_appcontext_values</schema>
+    <username>dummy_value_that_will_be_overriden_by_appcontext_values</username>
+    <password>dummy_value_that_will_be_overriden_by_appcontext_values</password>
+  </postGisConfig>
+
+  <rasterizeConfig>
+    <executable>dummy_value_that_will_be_overriden_by_appcontext_values</executable>
+    <taskExecutorXslFileName>dummy_value_that_will_be_overriden_by_appcontext_values</taskExecutorXslFileName>
+    <freeMarkerTemplate>dummy_value_that_will_be_overriden_by_appcontext_values</freeMarkerTemplate>
+  </rasterizeConfig>
+
+  <overviewsEmbedderConfiguration>
+    <id>id</id>
+    <name>name</name>
+    <description>descr</description>
+
+    <failIgnored>false</failIgnored>
+
+    <JAICapacity>0</JAICapacity>
+    <compressionRatio>0.75</compressionRatio>
+    <compressionScheme>Nearest</compressionScheme> <!-- Nearest, Bilinear, Bicubic, Average, Filtered; -->
+    <downsampleStep>2</downsampleStep>
+    <numSteps>42</numSteps>
+    <tileH>512</tileH>
+    <tileW>512</tileW>
+    <wildcardString>*.*</wildcardString>
+    <logNotification>true</logNotification>
+    <interp>0</interp>
+  </overviewsEmbedderConfiguration>
+
+  <retilerConfiguration>
+    <id>grcId</id>
+    <name>grcN</name>
+    <description>grcD</description>
+    <failIgnored>false</failIgnored>
+
+    <JAICapacity>0</JAICapacity>
+    <compressionRatio>NaN</compressionRatio>
+    <compressionScheme>LZW</compressionScheme>
+    <tileH>256</tileH>
+    <tileW>256</tileW>
+    <forceToBigTiff>false</forceToBigTiff>
+  </retilerConfiguration>
+
+  <geoServerConfig>
+    <id>gsacId</id>
+    <name>gsacName</name>
+    <description>gsacDesc</description>
+
+    <failIgnored>false</failIgnored>
+
+    <geoserverPWD>tmpfc</geoserverPWD>
+    <geoserverUID>it&apos;s</geoserverUID>
+    <geoserverURL>http://it.is/here</geoserverURL>
+
+    <workspace>unredd</workspace>
+
+  </geoServerConfig>
+ 
+  <originalDataTargetDir>/tmp/OriginalDataTarget</originalDataTargetDir>
+
+</IngestionConfiguration>

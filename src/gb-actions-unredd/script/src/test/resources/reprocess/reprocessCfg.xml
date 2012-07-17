@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReprocessConfiguration>
+
+  <id>testId</id>
+  <name>testName</name>
+  <description>testDesc</description>
+
+<!--  <dirty>false</dirty>
+  <listenerConfigurations/>
+  <failIgnored>false</failIgnored>
+  <workingDirectory>/tmp</workingDirectory> -->
+
+  <configDir>/tmp</configDir>
+
+  <geoStoreConfig>
+    <url>http://localhost:8080/geostore</url>
+    <username>admin</username>
+    <password>admin</password>
+  </geoStoreConfig>
+
+  <postGisConfig>
+    <host>locahost</host>
+    <port>5432</port>
+    <database>unredd</database>
+    <schema>test1</schema>
+    <username>unredd</username>
+    <password>unredd</password>
+  </postGisConfig>
+
+  <rasterizeConfig>
+    <executable>gdal_rasterize</executable>
+    <taskExecutorXslFileName>taskexec.xsl</taskExecutorXslFileName>
+    <freeMarkerTemplate>freemarkertemplate.xml</freeMarkerTemplate>
+  </rasterizeConfig>
+
+  <overviewsEmbedderConfiguration>
+    <dirty>false</dirty>
+    <listenerConfigurations/>
+    <failIgnored>false</failIgnored>
+    <JAICapacity>0</JAICapacity>
+    <compressionRatio>0.75</compressionRatio>
+    <compressionScheme>LZW</compressionScheme>
+    <downsampleStep>0</downsampleStep>
+    <numSteps>42</numSteps>
+    <tileH>512</tileH>
+    <tileW>512</tileW>
+    <wildcardString>*.*</wildcardString>
+    <logNotification>true</logNotification>
+    <interp>0</interp>
+  </overviewsEmbedderConfiguration>
+
+</ReprocessConfiguration>

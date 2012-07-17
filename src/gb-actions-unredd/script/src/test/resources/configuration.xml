@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<id>script</id>
+	<description>Script configuration flow</description>
+	<name>Script flow</name>
+	
+	<workingDirectory>script/</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>script/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<interval>* * * * * ?</interval><!-- CRON: every minute at sec 0 -->
+		<!--<interval>20</interval> each 20 sec -->
+		<id>ScriptFlow</id>
+		<serviceID>fsEventGeneratorService</serviceID>
+		<description>Script event generator description</description>
+		<name>Script</name>
+	</EventGeneratorConfiguration>
+	
+	<EventConsumerConfiguration>
+		<id>script</id>
+		<description>script</description>
+		<name>script</name>
+		
+		<workingDirectory>script/</workingDirectory>
+		<performBackup>false</performBackup>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>Script</name>
+		</FileEventRule>
+		
+		<ScriptConfiguration>
+			<serviceID>ScriptGeneratorService</serviceID>
+			<id>ScriptGeneratorService</id>
+			<description>Script action</description>
+			<name>ScriptConfiguration</name>
+			
+			<listenerConfigurations/>
+			<failIgnored>false</failIgnored>
+			<workingDirectory>script/</workingDirectory>
+					<properties>
+			  <!-- Geostore configuration -->
+			  	<entry>
+					<string>GeostoreURL</string> 
+					<string>http://127.0.0.1:9191/geostore/rest/</string> 
+				 </entry>
+			  	<entry>
+					<string>GeostoreUser</string> 
+					<string>admin</string> 
+				 </entry>
+			  	<entry>
+					<string>GeostorePwd</string> 
+					<string>admin</string> 
+				 </entry>		
+		<!-- geoserver configuration -->
+				<entry>
+					<string>GeoserverURL</string> 
+					<string>http://127.0.0.1:8080/geoserver/</string> 
+				 </entry>
+			  	<entry>
+					<string>GeoserverUser</string> 
+					<string>admin</string> 
+				 </entry>
+			  	<entry>
+					<string>GeoserverPwd</string> 
+					<string>geoserver</string> 
+				 </entry> 
+		
+				 <entry>
+					<string>repositoryDir</string> 
+					<string>C:\\Users\\Luca\\Desktop\\dest</string> 
+				 </entry>
+				 <entry>
+					<string>infoDir</string> 
+					<string>C:\\Users\\Luca\\Desktop\\configuration</string> 
+				 </entry>
+				 <entry>
+					<string>workingDir</string> 
+					<string>src\\test\\resources</string> 
+				 </entry>
+
+				 <entry>
+					<string>xmlFileName</string> 
+					<string>Request.xml</string> 
+				 </entry> 
+				 <!-- retile configuration -->
+				 <entry>
+					<string>reTileH</string> 
+					<int>512</int> 
+				 </entry>
+				 	 <entry>
+					<string>reTileW</string> 
+					<int>512</int> 
+				 </entry> 
+			<!-- overview onfiguration -->
+				 <entry>
+					<string>ovTileH</string> 
+					<int>256</int> 
+				 </entry>
+				 <entry>
+					<string>ovTileW</string> 
+					<int>256</int> 
+				 </entry> 
+				 <entry>
+					<string>downsampleStep</string> 
+					<int>5</int> 
+				 </entry>
+				 <entry>
+					<string>numStep</string> 
+					<int>5</int> 
+				 </entry>
+				 <entry>
+					<string>scaleAlgorithm</string> 
+					<string>Nearest</string> 
+				 </entry> 
+			  </properties>
+		</ScriptConfiguration>
+		
+	</EventConsumerConfiguration>
+
+</FlowConfiguration>

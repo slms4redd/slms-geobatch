@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<id>ingestion</id>
+	<description>Ingestion configuration flow</description>
+	<name>Ingestion flow</name>
+	
+	<workingDirectory>ingestion/</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*.zip</wildCard>
+		<watchDirectory>ingestion/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<interval>* * * * * ?</interval><!-- CRON: every minute at sec 0 -->
+		<!--<interval>20</interval> each 20 sec -->
+		<id>IngestionFlow</id>
+		<serviceID>fsEventGeneratorService</serviceID>
+		<description>Ingestion event generator description</description>
+		<name>Ingestion</name>
+	</EventGeneratorConfiguration>
+	
+	<EventConsumerConfiguration>
+		<id>ingestion</id>
+		<description>ingestion</description>
+		<name>ingestion</name>
+		
+		<workingDirectory>ingestion/</workingDirectory>
+		<performBackup>false</performBackup>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>Ingestion</name>
+		</FileEventRule>
+		
+		<IngestionConfiguration>
+			<serviceID>IngestionGeneratorService</serviceID>
+			<id>IngestionGeneratorService</id>
+			<description>Ingestion action</description>
+			<name>IngestionConfiguration</name>
+			
+			<listenerConfigurations/>
+			<failIgnored>false</failIgnored>
+			<workingDirectory>ingestion/</workingDirectory>
+					<properties>
+			  <!-- Geostore configuration -->
+			  	<entry>
+					<string>GeostoreURL</string> 
+					<string>http://127.0.0.1:9191/geostore/rest/</string> 
+				 </entry>
+			  	<entry>
+					<string>GeostoreUser</string> 
+					<string>admin</string> 
+				 </entry>
+			  	<entry>
+					<string>GeostorePwd</string> 
+					<string>admin</string> 
+				 </entry>		
+
+				 <!-- retile configuration -->
+				 <entry>
+					<string>reTileH</string> 
+					<int>512</int> 
+				 </entry>
+				 	 <entry>
+					<string>reTileW</string> 
+					<int>512</int> 
+				 </entry> 
+			<!-- overview onfiguration -->
+				 <entry>
+					<string>ovTileH</string> 
+					<int>256</int> 
+				 </entry>
+				 <entry>
+					<string>ovTileW</string> 
+					<int>256</int> 
+				 </entry> 
+				 <entry>
+					<string>downsampleStep</string> 
+					<int>5</int> 
+				 </entry>
+				 <entry>
+					<string>numStep</string> 
+					<int>5</int> 
+				 </entry>
+				 <entry>
+					<string>scaleAlgorithm</string> 
+					<string>Nearest</string> 
+				 </entry> 
+				 
+				 <entry>
+					<string>srcpath</string> <!-- this directory is where the orig data will be copied-->
+					<string>C:\\Users\\Luca\\Desktop\\dest</string> 
+				 </entry>
+				 <entry>
+					<string>mosaicDirSource</string> <!-- this is the mosaic dir -->
+					<string>src\\test\\resources</string> 
+				 </entry>
+
+				 <entry>
+					<string>itemsforpage</string> 
+					<int>100</int> 
+				 </entry> 
+				 
+				<entry>
+					<string>PostGISURL</string> 
+					<string>localhost</string> 
+				 </entry> 
+				 
+				<entry>
+					<string>PostGISPort</string> 
+					<int>5432</int> 
+				 </entry> 
+				 
+				 <entry>
+					<string>PostGISDB</string> 
+					<string>staging_area</string> 
+				 </entry> 
+				 
+				<entry>
+					<string>PostGISUser</string> 
+					<string>features_user_sa</string> 
+				 </entry> 
+				 
+				 <entry>
+					<string>PostGISPwd</string> 
+					<string>features_pwd_sa</string> 
+				 </entry> 
+				 
+				 <entry>
+					<string>PostGISSchema</string> 
+					<string>features</string> 
+				 </entry> 
+
+
+				 <!-- geoserver configuration -->
+				<entry>
+					<string>GeoserverURL</string> 
+					<string>http://127.0.0.1:8080/geoserver/</string> 
+				 </entry>
+			  	<entry>
+					<string>GeoserverUser</string> 
+					<string>admin</string> 
+				 </entry>
+			  	<entry>
+					<string>GeoserverPwd</string> 
+					<string>geoserver</string> 
+				 </entry> 
+			  	<entry>
+					<string>GeoserverWorkspace</string> 
+					<string>topp</string> 
+				 </entry> 	
+				 <entry>
+					<string>infoDir</string> 
+					<string>C:\\Users\\Luca\\Desktop\\configuration</string> 
+				 </entry>
+
+			  </properties>
+		</IngestionConfiguration>
+		
+	</EventConsumerConfiguration>
+
+</FlowConfiguration>

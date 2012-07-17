@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ReprocessConfiguration>
+  <serviceID>ReprocessGeneratorService</serviceID>
+
+  <id>cfgId</id>
+  <name>cfgName</name>
+  <description>cfgDesc</description>
+
+  <!--
+  	<overrideConfigDir>/tmp</overrideConfigDir>
+  -->
+  
+  
+  <geoStoreConfig>
+    <url>url0</url>
+    <username>un0</username>
+    <password>pw0</password>
+  </geoStoreConfig>
+
+  <postGisConfig>
+    <host>pghost</host>
+    <port>42</port>
+    <database>pgdb</database>
+    <schema>pgschema</schema>
+    <username>pgpw</username>
+  </postGisConfig>
+
+  <rasterizeConfig>
+    <executable>gdal_rasterize</executable>
+    <taskExecutorXslFileName>taskexec.xsl</taskExecutorXslFileName>
+    <freeMarkerTemplate>freemarkertemplate.xml</freeMarkerTemplate>
+  </rasterizeConfig>
+
+ <overviewsEmbedderConfiguration>
+<!--    <dirty>false</dirty>
+    <JAICapacity>0</JAICapacity>
+    <compressionRatio>0.75</compressionRatio>
+    <compressionScheme>LZW</compressionScheme> -->
+    <downsampleStep>0</downsampleStep>
+    <numSteps>42</numSteps>
+    <tileH>512</tileH>
+    <tileW>512</tileW>
+<!--    <wildcardString>*.*</wildcardString>
+    <logNotification>true</logNotification>
+    <interp>0</interp> -->
+  </overviewsEmbedderConfiguration>
+  
+</ReprocessConfiguration>

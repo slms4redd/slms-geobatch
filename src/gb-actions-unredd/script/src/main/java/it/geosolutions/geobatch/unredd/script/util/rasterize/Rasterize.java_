@@ -1,0 +1,104 @@
+package it.geosolutions.geobatch.unredd.script.util.rasterize;
+
+import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.unredd.rasterize.RasterizeAction;
+import it.geosolutions.geobatch.unredd.rasterize.RasterizeConfiguration;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.unredd.script.util.SingleFileActionExecutor;
+import java.io.File;
+
+import java.util.EventObject;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+import org.apache.cxf.helpers.FileUtils;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Rasterize {
+	private final  Logger LOGGER = LoggerFactory.getLogger(Rasterize.class);
+	
+	public File run(File file, 
+            int height, int width,
+            double rx0,  double rx1, double ry0, double ry1,
+            String layer, String attribute,
+            int tileHeight, int tileWidth, String workingDirectory) throws ActionException{
+		
+		RasterizeConfiguration rc = new RasterizeConfiguration("id","name","description");
+		
+		rc.setLayername(layer);
+	    int dotInd = file.getName().lastIndexOf('.');
+      // if dot is in the first position,
+      // we are dealing with a hidden file rather than an extension
+	    String tiffname =  (dotInd > 0) ? file.getName().substring(0, dotInd) : file.getName();
+		rc.setFilename(tiffname); // TODO: set the filename as the incoming file name without the extension
+		rc.setRasterAttribName(attribute);
+		rc.setRasterpixelheight(height);
+		rc.setRasterpixelwidth(width);
+		rc.setRasterx0(rx0);
+		rc.setRasterx1(rx1);
+		rc.setRastery0(ry0);
+		rc.setRastery1(ry1);
+		rc.setRetileH(tileHeight);
+		rc.setRetileW(tileWidth);
+		rc.setWorkingDirectory(workingDirectory);
+		
+        
+        return run(file, rc);
+    }
+
+	public File run(File file, RasterizeConfiguration rc) throws ActionException {
+
+		RasterizeAction rasterizationAction = null;
+		try {
+			rasterizationAction = new RasterizeAction(rc);
+
+            return SingleFileActionExecutor.execute(rasterizationAction, file);
+
+		} catch(Exception e) {
+			LOGGER.error("An exception was raised executing the Rasterization");
+			LOGGER.debug("PARAMETER : [filename = "+file.getAbsolutePath()+"]");
+			LOGGER.debug("PARAMETER : ["+rc+"]");
+			throw new ActionException(rasterizationAction,"An exception was raised executing the Rasterization: " + e.getMessage());
+		}
+	}
+	
+	
+	   public File run(SimpleFeatureCollection data, String filename, int height, int width, double rx0,  double rx1, double ry0, double ry1, String layer, String attribute,int tileHeight, int tileWidth) throws ActionException{
+	        
+	        RasterizeConfiguration rc = new RasterizeConfiguration("id","name","description");
+
+	        rc.setLayername(layer);
+	        rc.setRasterAttribName(attribute);
+	        rc.setRasterpixelheight(height);
+	        rc.setRasterpixelwidth(width);
+	        rc.setRasterx0(rx0);
+	        rc.setRasterx1(rx1);
+	        rc.setRastery0(ry0);
+	        rc.setRastery1(ry1);
+	        rc.setRetileH(tileHeight);
+	        rc.setRetileW(tileWidth);
+	        rc.setRasterAttribName(attribute);
+	        if (filename!=null) rc.setFilename(filename);
+	        
+	        RasterizeAction rasterizationAction = null;
+	        try {
+	            rasterizationAction = new RasterizeAction(rc);
+	            rasterizationAction.setFeatures(data);
+	            Queue<EventObject> queue = new LinkedBlockingQueue<EventObject>();
+	            queue.add(new FileSystemEvent(FileUtils.createTempFile("tmp", ".tif"), FileSystemEventType.FILE_ADDED));
+	            queue = rasterizationAction.execute(queue);
+	            FileSystemEvent fileEvent=(FileSystemEvent)queue.remove();
+
+	            return fileEvent.getSource();
+	        } catch(Exception e) {
+	            LOGGER.error("An exception was raised executing the Rasterization",e);
+	            
+	            LOGGER.debug("PARAMETER : [rx0 = "+rx0+", rx1="+rx1+", ry0="+ry0+", ry1="+ry1+"]");
+	            LOGGER.debug("PARAMETER : [layer = "+layer+", attribute = "+attribute+"]");
+	            throw new ActionException(rasterizationAction,"An exception was raised executing the Rasterization");
+	        }
+	    }
+	
+}

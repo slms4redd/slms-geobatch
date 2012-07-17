@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- Test Environment Initialization -->
+	<bean id="geoStoreConfig" class="it.geosolutions.geobatch.unredd.script.model.GeoStoreConfig">
+        <property name="url" value="http://localhost:9191/geostore/rest"/>
+        <property name="username" value="admin"/>
+        <property name="password" value="admin"/>
+    </bean>
+
+	<bean id="geoStoreConfig2" class="it.geosolutions.geobatch.unredd.script.model.GeoStoreConfig">
+        <property name="url" value="http://localhost:9192/geostore/rest"/>
+        <property name="username" value="admin"/>
+        <property name="password" value="admin"/>
+    </bean>
+
+    <bean id="geoServerConfig" class="it.geosolutions.geobatch.unredd.script.model.GeoServerBasicConfig">
+        <property name="geoserverURL" value="http://localhost:8080/geoserver"/>
+        <property name="geoserverUID" value="admin"/>
+        <property name="geoserverPWD" value="geoserver"/>
+        <property name="workspace" value="unredd"/>
+    </bean>
+
+	<bean id="postGisConfig" class="it.geosolutions.geobatch.unredd.script.model.PostGisConfig">
+        <property name="host" value="localhost"/>
+        <property name="port" value="5432"/>
+        <property name="database" value="unredd_test"/>
+        <property name="schema" value="public"/>
+        <property name="username" value="unredd"/>
+        <property name="password" value="unredd"/>
+    </bean>
+
+	<bean id="postGisConfig2" class="it.geosolutions.geobatch.unredd.script.model.PostGisConfig">
+        <property name="host" value="localhost"/>
+        <property name="port" value="5432"/>
+        <property name="database" value="unredd_test2"/>
+        <property name="schema" value="public"/>
+        <property name="username" value="unredd"/>
+        <property name="password" value="unredd"/>
+    </bean>
+
+	<bean id="rasterizeConfig" class="it.geosolutions.geobatch.unredd.script.model.RasterizeConfig">
+        <property name="executable" value="gdal_rasterize"/>
+        <property name="freeMarkerTemplate" value="gdalrasterize.xml"/>
+        <property name="taskExecutorXslFileName" value="gdalrasterize.xsl"/>
+    </bean>
+
+</beans>

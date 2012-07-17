@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+	<!-- Environment Initialization -->
+	<bean id="IngestionGeneratorService" class="it.geosolutions.geobatch.unredd.script.ingestion.IngestionGeneratorService">
+		<constructor-arg type="String"><value>IngestionGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>IngestionGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>IngestionGeneratorService</value></constructor-arg>
+	</bean>
+	
+	<bean id="PublishingGeneratorService" class="it.geosolutions.geobatch.unredd.script.publish.PublishingGeneratorService">
+        <constructor-arg type="String"><value>PublishingGeneratorService</value></constructor-arg>
+        <constructor-arg type="String"><value>PublishingGeneratorService</value></constructor-arg>
+        <constructor-arg type="String"><value>PublishingGeneratorService</value></constructor-arg>
+    </bean>
+        <bean id="ReprocessGeneratorService" class="it.geosolutions.geobatch.unredd.script.reprocess.ReprocessGeneratorService">
+        <constructor-arg type="String"><value>ReprocessGeneratorService</value></constructor-arg>
+        <constructor-arg type="String"><value>ReprocessGeneratorService</value></constructor-arg>
+        <constructor-arg type="String"><value>ReprocessGeneratorService</value></constructor-arg>
+    </bean>
+	
+	<bean id="unreddFlowsAliasRegistrar" class="it.geosolutions.geobatch.unredd.script.ScriptAliasRegistrar" lazy-init="false">
+		<constructor-arg ref="aliasRegistry" />
+	</bean>
+</beans>

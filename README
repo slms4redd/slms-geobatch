@@ -1,1 +1,10 @@
-nfms-geobatch
+The objective of UN-REDD is to create an infrastructure that helps in the transparent dissemination of forest change, by processing and publishing forest (remote sensing) data, validated and open for public feedback of people in the monitored areas.
+This project is the core of batch data processing, based on the geobatch project https://github.com/geosolutions-it/geobatch.
+nfms-geobatch project provide a custom implementation of Ingestion, Reprocess and Publish Actions.
+
+Inside src there is a README that explain how to running the project.
+
+
+
+
+

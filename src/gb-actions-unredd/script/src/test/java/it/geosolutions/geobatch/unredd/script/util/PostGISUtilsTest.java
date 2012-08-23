@@ -22,12 +22,15 @@ package it.geosolutions.geobatch.unredd.script.util;
 import it.geosolutions.geobatch.unredd.script.exception.PostGisException;
 import it.geosolutions.geobatch.unredd.script.model.PostGisConfig;
 import it.geosolutions.geobatch.unredd.script.test.BaseTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import org.geotools.data.DataStore;
 import org.geotools.data.Transaction;
 import org.geotools.jdbc.JDBCDataStore;
 import org.junit.AfterClass;
@@ -35,8 +38,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.*;
 
 
 /**
@@ -107,8 +108,10 @@ public class PostGISUtilsTest extends BaseTest {
     }
 
     private void clearTable(PostGisConfig cfg, String table) throws PostGisException, IOException, SQLException {
-        JDBCDataStore ds = PostGISUtils.createDatastore(cfg);
-
+        DataStore ds_ = PostGISUtils.createDatastore(cfg);
+        assertTrue(ds_ instanceof JDBCDataStore);
+        
+        JDBCDataStore ds= (JDBCDataStore) ds_;
         Connection connection = ds.getConnection(Transaction.AUTO_COMMIT);
         connection.commit();
         Statement statement = connection.createStatement();
@@ -118,7 +121,10 @@ public class PostGISUtilsTest extends BaseTest {
     }
 
     private long count(PostGisConfig cfg, String table) throws PostGisException, IOException, SQLException {
-        JDBCDataStore ds = PostGISUtils.createDatastore(cfg);
+        DataStore ds_ = PostGISUtils.createDatastore(cfg);
+        assertTrue(ds_ instanceof JDBCDataStore);
+        
+        JDBCDataStore ds= (JDBCDataStore) ds_;
 
         Connection connection = ds.getConnection(Transaction.AUTO_COMMIT);
         connection.commit();

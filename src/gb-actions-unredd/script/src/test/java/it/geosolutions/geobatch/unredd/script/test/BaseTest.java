@@ -38,6 +38,9 @@ import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.URISyntaxException;
 import java.net.URL;
+
+import junit.framework.Assert;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -53,7 +56,7 @@ import static org.junit.Assert.*;
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public abstract class BaseTest {
+public abstract class BaseTest extends Assert{
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BaseTest.class);
 

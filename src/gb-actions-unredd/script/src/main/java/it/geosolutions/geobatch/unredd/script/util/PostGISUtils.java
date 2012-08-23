@@ -53,8 +53,6 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.jdbc.JDBCDataStore;
-import org.geotools.jdbc.JDBCFeatureSource;
 import org.geotools.jdbc.JDBCFeatureStore;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
@@ -66,6 +64,14 @@ import org.opengis.filter.FilterFactory2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Various utilities for interacting with postgis
+ * 
+ * 
+ * @author ETJ, GeoSolutions
+ * @author Simone GeoSolutions, GeoSolutions
+ *
+ */
 public class PostGISUtils {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(PostGISUtils.class);
@@ -83,11 +89,11 @@ public class PostGISUtils {
     public final static String DATEATTRIBUTENAME = "unredd_date";
 
 
-    protected static JDBCDataStore createDatastore(PostGisConfig cfg) throws PostGisException {
+    protected static DataStore createDatastore(PostGisConfig cfg) throws PostGisException {
 
-        JDBCDataStore ret = null;
+        DataStore ret = null;
         try {
-            ret = (JDBCDataStore)DataStoreFinder.getDataStore(cfg.buildGeoToolsMap());
+            ret = (DataStore)DataStoreFinder.getDataStore(cfg.buildGeoToolsMap());
         } catch (IOException ex) {
             throw new PostGisException("Can't create PostGIS datastore ["+cfg+"]", ex);
         }
@@ -300,7 +306,7 @@ public class PostGISUtils {
             String layer, String year, String month, boolean forceCreation)
                 throws PostGisException {
 
-        JDBCDataStore dstDs = createDatastore(dstPg);
+        DataStore dstDs = createDatastore(dstPg);
         SimpleFeatureSource fsLayer = null;
 
         //== check schema: create new or check they are aligned
@@ -314,7 +320,6 @@ public class PostGISUtils {
                 }
             } else {
 
-// JDBCFeatureStore fsLayer = (JDBCFeatureStore)dstDs.getFeatureSource(layer);
 
                 fsLayer =  dstDs.getFeatureSource(layer);
                 checkAttributesMatch(sourceFC, ((JDBCFeatureStore)dstDs.getFeatureSource(layer)).getFeatureSource());
@@ -406,7 +411,7 @@ public class PostGISUtils {
         }
     }
 
-    protected static SimpleFeatureSource createEnrichedSchema(JDBCDataStore dstDs, SimpleFeatureType sourceFC, String layer) throws PostGisException {
+    protected static SimpleFeatureSource createEnrichedSchema(DataStore dstDs, SimpleFeatureType sourceFC, String layer) throws PostGisException {
       // generate the target schema
         try {
             LOGGER.warn("Creating new table for layer " + layer);
@@ -435,7 +440,7 @@ public class PostGISUtils {
 //        statement.executeUpdate("ALTER TABLE features." + layer + " ADD " + MONTHATTRIBUTENAME + " bigint");
 //        connection.commit();
 
-            JDBCFeatureStore fsLayer = (JDBCFeatureStore)dstDs.getFeatureSource(layer);
+            SimpleFeatureStore fsLayer = (SimpleFeatureStore)dstDs.getFeatureSource(layer);
             SimpleFeatureType dstSft = dstDs.getFeatureSource(layer).getSchema();
 
             if ( LOGGER.isInfoEnabled() ) {
@@ -450,7 +455,7 @@ public class PostGISUtils {
         }
     }
 
-    private static void checkAttributesMatch(SimpleFeatureCollection sourceFC, JDBCFeatureSource dstFs) throws PostGisException {
+    private static void checkAttributesMatch(SimpleFeatureCollection sourceFC, FeatureSource dstFs) throws PostGisException {
         SimpleFeatureType srcSchema = sourceFC.getSchema();
         SimpleFeatureType dstSchema = (SimpleFeatureType)dstFs.getSchema();
 
@@ -542,8 +547,8 @@ public class PostGISUtils {
      * @return a List of attribute that describe this feature
      */
     public static List<AttributeDescriptor> getFeatureAttributes(PostGisConfig cfg, String featureName){
-    	
-    	JDBCDataStore ds = null;
+    
+    	DataStore ds = null;
     	List<AttributeDescriptor> attrDescriptorList = null;
     	try {
 			ds = createDatastore(cfg);
@@ -571,7 +576,7 @@ public class PostGISUtils {
     public static boolean existFeatureTable(PostGisConfig cfg, String layer){
     	
     	boolean  exist = false;
-    	JDBCDataStore ds = null;
+    	DataStore ds = null;
 		try {
 			ds = createDatastore(cfg);
 			exist = Arrays.asList(ds.getTypeNames()).contains(layer);
@@ -586,7 +591,7 @@ public class PostGISUtils {
     }
     
     /**
-     * Check if a table for a supplyed feature exist. If not exist create it.
+     * Check if a table for a supplied feature exist. If not exist create it.
      * 
      * @param cfg
      * @param featureName
@@ -595,7 +600,7 @@ public class PostGISUtils {
      */
 	public static boolean checkExistAndCreateFeatureTable(PostGisConfig cfg, String featureName, List<AttributeDescriptor> attrDescriptorList) {
 		
-		JDBCDataStore ds = null;
+		DataStore ds = null;
 		try {
 			ds = createDatastore(cfg);
 		
@@ -611,7 +616,6 @@ public class PostGISUtils {
 				SimpleFeatureType sft = dstSchemaBuilder.buildFeatureType();
 	
 				ds.createSchema(sft);
-				ds.dispose();
 				return true;
 			}
 		} catch (PostGisException e) {
@@ -627,7 +631,7 @@ public class PostGISUtils {
 
     public static void removeFeatures(PostGisConfig cfg, String layer, String year, String month) throws PostGisException, IOException {
 
-        JDBCDataStore ds = createDatastore(cfg);        
+        DataStore ds = createDatastore(cfg);        
         
         
         LOGGER.debug("remove features : " + layer + ", " + year + ", " + month);
@@ -661,8 +665,7 @@ public class PostGISUtils {
     public static SimpleFeatureCollection getFeatures(PostGisConfig cfg, String layer, String year, String month) throws PostGisException {        
         LOGGER.debug("Get features : " + layer + ", " + year + ", " + month);
 
-        JDBCDataStore ds = createDatastore(cfg);
-
+        DataStore ds = createDatastore(cfg);
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
         Filter filter = (Filter) ff.equals(ff.property(YEARATTRIBUTENAME), ff.literal(Integer.parseInt(year)));
         if (month != null) {

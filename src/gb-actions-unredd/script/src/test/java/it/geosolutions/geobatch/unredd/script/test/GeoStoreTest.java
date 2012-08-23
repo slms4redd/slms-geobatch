@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.unredd.script.test;
 
+import static org.junit.Assume.assumeTrue;
 import it.geosolutions.geobatch.unredd.script.exception.FlowException;
 import it.geosolutions.geobatch.unredd.script.exception.GeoStoreException;
 import it.geosolutions.geobatch.unredd.script.test.utils.UNREDDGeoStoreTestUtil;
@@ -29,11 +30,8 @@ import it.geosolutions.geostore.core.model.Resource;
 import it.geosolutions.unredd.geostore.model.UNREDDCategories;
 import it.geosolutions.unredd.geostore.model.UNREDDStatsData;
 
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
-
 import java.io.IOException;
-import org.junit.BeforeClass;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

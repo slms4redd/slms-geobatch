@@ -143,7 +143,7 @@ public class PostGISUtils {
         } catch (IOException ex) {
             throw new PostGisException("Error copying features: " + ex.getMessage(), ex);
         } finally {
-            srcStore.dispose();
+            quietDisposeStore(srcStore);
         }
     }
 
@@ -214,19 +214,6 @@ public class PostGISUtils {
 //        }
 //    }
 
-    public static void copyFeatures(PostGisConfig srCfg, PostGisConfig dstCfg, 
-            String layer, String year, String month, boolean forceCreation) throws PostGisException {
-    	
-    	DataStore srcDS=null,dstDS=null;
-    	try{
-    		srcDS=createDatastore(srCfg);
-    		dstDS=createDatastore(dstCfg);
-    		copyFeatures(srcDS, dstDS, layer, year, month, forceCreation);
-    	} finally {
-    		quietDisposeStore(dstDS);
-    		quietDisposeStore(srcDS);
-    	}
-    }
     /**
      * ************
      * this method read features (filtered by layer, year, month) from the postgis db specified in param and save them into the
@@ -547,33 +534,7 @@ public class PostGISUtils {
         return sfc.getSchema().getAttributeDescriptors();
     }
     
-    /**
-     * Check if the provided table exists inside the specified datastore.
-     * 
-     * <p>
-     * Use this method with care since it creates and then throws away a store!
-     * 
-     * @param cfg the configuration for the {@link DataStore}
-     * @param layer the feature type to look for
-     * @return True if the Table for supplyed features exist, else otherwise
-     */
-    public static boolean existFeatureTable(PostGisConfig cfg, String layer){
-    	
-    	boolean  exist = false;
-    	DataStore ds = null;
-		try {
-			ds = createDatastore(cfg);
-			exist = existFeatureTable(ds,layer);
-		} catch (Exception e) {
-			exist = false;
-			LOGGER.error(e.getMessage(), e);
-		} finally {
-			quietDisposeStore(ds);
-		}
-		return exist;
-		
-    	
-    }
+
     
     /**
      * Check if the provided table exists inside the specified datastore
@@ -607,11 +568,9 @@ public class PostGISUtils {
      * @param attrDescriptorList
      * @return True if a table is created, false otherwise
      */
-	public static boolean checkExistAndCreateFeatureTable(PostGisConfig cfg, String featureName, List<AttributeDescriptor> attrDescriptorList) {
-		
-		DataStore ds = null;
+	public static boolean checkExistAndCreateFeatureTable(DataStore ds, String featureName, List<AttributeDescriptor> attrDescriptorList) {
+
 		try {
-			ds = createDatastore(cfg);
 		
 			LOGGER.warn("Creating new table for layer " + featureName);
 			
@@ -627,12 +586,8 @@ public class PostGISUtils {
 				ds.createSchema(sft);
 				return true;
 			}
-		} catch (PostGisException e) {
-			LOGGER.error(e.getMessage(), e);
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
-		}finally{
-			quietDisposeStore(ds);
 		}
 		return false;
 

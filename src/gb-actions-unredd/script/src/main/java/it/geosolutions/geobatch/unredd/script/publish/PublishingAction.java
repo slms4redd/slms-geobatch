@@ -28,7 +28,6 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.unredd.script.exception.GeoStoreException;
 import it.geosolutions.geobatch.unredd.script.exception.PostGisException;
-import it.geosolutions.geobatch.unredd.script.model.PostGisConfig;
 import it.geosolutions.geobatch.unredd.script.model.Request;
 import it.geosolutions.geobatch.unredd.script.util.FlowUtil;
 import it.geosolutions.geobatch.unredd.script.util.GeoStoreUtil;
@@ -82,7 +81,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
 
     }
 
-    public void initialize() {
+    private void initialize() {
         srcGeostore = new GeoStoreUtil(conf.getSrcGeoStoreConfig(), getTempDir());
         dstGeostore = new GeoStoreUtil(conf.getDstGeoStoreConfig(), getTempDir());
     }
@@ -109,7 +108,6 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
 
 
         final Queue<FileSystemEvent> ret = new LinkedList<FileSystemEvent>();
-
         while (!events.isEmpty()) {
             final FileSystemEvent ev = events.remove();
 
@@ -120,7 +118,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
                     }
 
                     File xmlFile = ev.getSource(); // this is the input xml file
-                    execute(xmlFile);
+                    executeInternal(xmlFile);
                     ret.add(new FileSystemEvent(xmlFile, FileSystemEventType.FILE_ADDED));
 
                 } else {
@@ -143,7 +141,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
         return ret;
     }
 
-    protected void execute(File xmlFile) throws ActionException, GeoStoreException {
+    private void executeInternal(File xmlFile) throws ActionException, GeoStoreException {
 
         //=== Parse input file
 
@@ -204,24 +202,27 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
         // This controls will be made directly in the updatePostGIS method
         // ****************************************
         boolean isVector = request.getFormat().equals(UNREDDFormat.VECTOR);
-
-        if (isVector) {
-            LOGGER.info("The request is VECTOR format based. Updating PostGIS");
-            updatePostGIS(conf.getSrcPostGisConfig(), conf.getDstPostGisConfig(), layerName, year, month);
-        } else {
-            LOGGER.info("The request is RASTER format based.");
-        }
-
-        // ****************************************
-        // Copy the raster
-        // ----------
-        // copies the raster located into the mosaic
-        // staging area directory to the dissemination mosaic.
-        // This  operation is performed both in case of a first publishing
-        // and successive ones
-        //
-        // ****************************************
+        DataStore srcDS=null,destDS=null;
         try {
+        	srcDS=PostGISUtils.createDatastore(conf.getSrcPostGisConfig());
+        	destDS=PostGISUtils.createDatastore(conf.getDstPostGisConfig());
+        	
+	        if (isVector) {
+	            LOGGER.info("The request is VECTOR format based. Updating PostGIS");
+	            updatePostGIS(srcDS, destDS, layerName, year, month);
+	        } else {
+	            LOGGER.info("The request is RASTER format based.");
+	        }
+	
+	        // ****************************************
+	        // Copy the raster
+	        // ----------
+	        // copies the raster located into the mosaic
+	        // staging area directory to the dissemination mosaic.
+	        // This  operation is performed both in case of a first publishing
+	        // and successive ones
+	        //
+	        // ****************************************
             // copy the raster file from the mosaic staging area directory to the dissemination mosaic directory
             String srcPath = layerResource.getAttribute(UNREDDLayer.Attributes.MOSAICPATH);
             String dstPath = layerResource.getAttribute(UNREDDLayer.Attributes.DISSMOSAICPATH);
@@ -231,21 +232,24 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
             this.copyRaster(srcPath, dstPath, layerName, year, month);
             LOGGER.debug("Mosaic raster upload successfully completed");
 //            if (!doUpdate) {
-                LOGGER.warn("TODO: remove previous entries if needed");
+            LOGGER.warn("TODO: remove previous entries if needed");
 
-                LOGGER.info("Copying Mosaic snapshot");
-                // in case of publishing of a new snapshot in the mosaic dissemination, insert the db entry in the mosaic postgis dissemination db as well
+            LOGGER.info("Copying Mosaic snapshot");
+            // in case of publishing of a new snapshot in the mosaic dissemination, insert the db entry in the mosaic postgis dissemination db as well
 //                this.copyMosaicDBEntry(layerName, year, month);
-                PostGISUtils.copyFeatures(conf.getSrcPostGisConfig(), conf.getDstPostGisConfig(), layerName, year, month, true);
+            PostGISUtils.copyFeatures(srcDS, destDS, layerName, year, month, true);
 
-                LOGGER.debug("Mosaic snapahost copy successfully completed");
+            LOGGER.debug("Mosaic snapahost copy successfully completed");
 //            }
         } catch (PostGisException e) {
             LOGGER.debug("Property settings : [Layer = " + layerName + ", year = " + year + ", month=" + month + "]");
             throw new ActionException(this, "Error while copying features", e );
         } catch(IOException e) {
             throw new ActionException(this, "Error while copying raster", e );
-        }
+        } finally {
+			PostGISUtils.quietDisposeStore(srcDS);
+			PostGISUtils.quietDisposeStore(destDS);
+		}
 
         // ****************************************
         // Copy GeoStoreUtil data
@@ -290,22 +294,6 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
     }
 
 
-    public void disposeDataStore() {
-//        if (postGISTo != null) {
-//            postGISTo.getPgDatastore().dispose();
-//        }
-////        if (postGISMosaicTo != null) {
-////            postGISMosaicTo.getPgDatastore().dispose();
-////        }
-//        if (postGISFrom != null) {
-//            postGISFrom.getPgDatastore().dispose();
-//        }
-////        if (postGISMosaicFrom != null) {
-////            postGISMosaicFrom.getPgDatastore().dispose();
-////        }
-    }
-
-
     /**
      * Copy some data from the staging GeoStoreUtil into the dissemination GeoStoreUtil: <UL>
      * <LI> Copy    1 Layer       if needed </LI>
@@ -327,7 +315,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
      * @throws JAXBException
      * @throws GeoStoreException
      */
-    public void copyGeostoreData(GeoStoreUtil srcGeostore, GeoStoreUtil dstGeostore,
+    private void copyGeostoreData(GeoStoreUtil srcGeostore, GeoStoreUtil dstGeostore,
             String layerName, String year, String month)
                 throws ActionException, GeoStoreException {
 
@@ -475,7 +463,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
      * @param month
      * @throws IOException
      */
-    public void copyOriginalData(String srcDir, String dstDir, String relativepath, String layer, String year, String month) throws IOException {
+    private void copyOriginalData(String srcDir, String dstDir, String relativepath, String layer, String year, String month) throws IOException {
         LOGGER.error("*** TODO: copy original data to dissemination system");
 
         // refers to srcdir/<relativepath>/<snapshotlayer>
@@ -500,7 +488,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
      * dissemination path
      * @throws IOException
      */
-    public void copyRaster(String srcPath, String dstPath, String layer, String year, String month) throws IOException {
+    private void copyRaster(String srcPath, String dstPath, String layer, String year, String month) throws IOException {
 
         String filename = NameUtils.buildTifFileName(layer, year, month);
         File srcFile = new File(srcPath, filename);
@@ -522,17 +510,16 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
      * @param month
      * @throws IOException
      */
-    public void updatePostGIS(PostGisConfig srcPgCfg, PostGisConfig dstPgCfg, String layer, String year, String month) throws ActionException {
-    	DataStore srcDS=null,destDS=null;
+    private void updatePostGIS(DataStore srcDS, DataStore destDS, String layer, String year, String month) throws ActionException {
+
         try {
-        	srcDS=PostGISUtils.createDatastore(srcPgCfg);
-        	destDS=PostGISUtils.createDatastore(dstPgCfg);
+
         	
         	LOGGER.info("Get the feature attribute...");
         	List<AttributeDescriptor> attrDescriptorList = PostGISUtils.getFeatureAttributes(srcDS, layer);
         	
         	LOGGER.info("Check if the feature table exist, otherwise create it...");
-        	boolean tableCreated = PostGISUtils.checkExistAndCreateFeatureTable(dstPgCfg, layer, attrDescriptorList);
+        	boolean tableCreated = PostGISUtils.checkExistAndCreateFeatureTable(destDS, layer, attrDescriptorList);
         	
         	if(!tableCreated){
 	            LOGGER.info("Removing features from the dissemination PostGIS...");
@@ -551,10 +538,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
             throw new ActionException(this, "Error while copying features", e);
         } catch (IOException e) {
         	throw new ActionException(this, "Error while copying features", e);
-		} finally {
-			PostGISUtils.quietDisposeStore(srcDS);
-			PostGISUtils.quietDisposeStore(destDS);
-		}
+		} 
     }
 
 }

@@ -130,6 +130,7 @@ public class PostGISUtils {
      * <br/>If the table already exist, attributes in the shapefile must match the ones in the table - except for the 3 added fields.
      *
      * @return the count of features copied
+     * TODO this must become generic and NOT create a store per se for the postgis layer!!!
      */
     public static int shapeToPostGis(File srcShapeFile, PostGisConfig dstPg, String layer, String year, String month) throws PostGisException {
         FileDataStore srcStore = null;
@@ -618,28 +619,6 @@ public class PostGISUtils {
         } finally {
             quietCloseTransaction(tx);
         }
-    }
-
-    public static SimpleFeatureCollection getFeatures(PostGisConfig cfg, String layer, String year, String month) throws PostGisException {        
-        LOGGER.debug("Get features : " + layer + ", " + year + ", " + month);
-
-        DataStore ds =null;
-        try{
-	        ds = createDatastore(cfg);
-	        Filter filter = (Filter) FF.equals(FF.property(YEARATTRIBUTENAME), FF.literal(Integer.parseInt(year)));
-	        if (month != null) {
-	            Filter monthFilter = (Filter) FF.equals(FF.property(MONTHATTRIBUTENAME), FF.literal(Integer.parseInt(month)));
-	            filter = (Filter) FF.and(filter, monthFilter);
-	        }
-	
-	        final SimpleFeatureSource fsLayer =  ds.getFeatureSource(layer);
-	        return (SimpleFeatureCollection) fsLayer.getFeatures();
-        } catch (Exception e) {
-            LOGGER.error("An exception was raised when connecting to " + layer);
-            throw new PostGisException("The layer " + layer + " does not exist", e);
-        } finally {
-			quietDisposeStore(ds);
-		}
     }
 
     /**

@@ -91,7 +91,7 @@ public class PostGISUtils {
     public final static String DATEATTRIBUTENAME = "unredd_date";
 
 
-    static DataStore createDatastore(PostGisConfig cfg) throws PostGisException {
+    public static DataStore createDatastore(PostGisConfig cfg) throws PostGisException {
 
         DataStore ret = null;
         try {
@@ -106,7 +106,7 @@ public class PostGISUtils {
         return ret;
     }
 
-    static FileDataStore createDatastore(File shapeFile) throws PostGisException {
+    public static FileDataStore createDatastore(File shapeFile) throws PostGisException {
 
         FileDataStore ret = null;
         try {
@@ -214,6 +214,19 @@ public class PostGISUtils {
 //        }
 //    }
 
+    public static void copyFeatures(PostGisConfig srCfg, PostGisConfig dstCfg, 
+            String layer, String year, String month, boolean forceCreation) throws PostGisException {
+    	
+    	DataStore srcDS=null,dstDS=null;
+    	try{
+    		srcDS=createDatastore(srCfg);
+    		dstDS=createDatastore(dstCfg);
+    		copyFeatures(srcDS, dstDS, layer, year, month, forceCreation);
+    	} finally {
+    		quietDisposeStore(dstDS);
+    		quietDisposeStore(srcDS);
+    	}
+    }
     /**
      * ************
      * this method read features (filtered by layer, year, month) from the postgis db specified in param and save them into the
@@ -229,18 +242,12 @@ public class PostGISUtils {
      *
      * TODO REVIEW! filter&copy, used in publishing?
      */
-    public static void copyFeatures(PostGisConfig srcPgCfg, PostGisConfig dstPgCfg, 
+    public static void copyFeatures(DataStore srcDs, DataStore dstDs, 
             String layer, String year, String month, boolean forceCreation) throws PostGisException {
 
         LOGGER.debug("Copy snapshot : " + layer + ", " + year + ", " + month);
-        DataStore srcDs = null;
-        DataStore dstDs = null;
-        
+       
         try {
-        
-        	// creating datastore
-        	srcDs = createDatastore(srcPgCfg);
-        	dstDs = createDatastore(dstPgCfg);
         
 	        // read the shape file and put it into a SimpeFeatureCollection
 	        SimpleFeatureSource srcFs = srcDs.getFeatureSource(layer);
@@ -250,24 +257,24 @@ public class PostGISUtils {
                 LOGGER.error("******* "+layer +" EXISTS *******");
             } else
                 LOGGER.error("******* "+layer +" DOES NOT EXIST *******");
-        try {
-            SimpleFeatureSource dstFs = (SimpleFeatureSource) dstDs.getFeatureSource(layer);
-        } catch (Exception e) {
-            LOGGER.debug("Exception while getting dst featureSource from " + layer +": " +e.getMessage(), e );
-            
-            if (forceCreation) {
-                // force creation of the target table
-                LOGGER.warn("An exception was raised when connecting to " + layer + " of the dissemintation system. Forcing creation");
-                SimpleFeatureType sft = SimpleFeatureTypeBuilder.copy((SimpleFeatureType) srcFs.getSchema());
-                dstDs.createSchema(sft);
-
-
-            } else {
-                LOGGER.error("An exception was raised when connecting to " + layer);
-                throw new PostGisException("The layer " + layer + " does not exist in the dissemintation system", e);
-            }
-
-        }
+	        try {
+	            SimpleFeatureSource dstFs = (SimpleFeatureSource) dstDs.getFeatureSource(layer);
+	        } catch (Exception e) {
+	            LOGGER.debug("Exception while getting dst featureSource from " + layer +": " +e.getMessage(), e );
+	            
+	            if (forceCreation) {
+	                // force creation of the target table
+	                LOGGER.warn("An exception was raised when connecting to " + layer + " of the dissemintation system. Forcing creation");
+	                SimpleFeatureType sft = SimpleFeatureTypeBuilder.copy((SimpleFeatureType) srcFs.getSchema());
+	                dstDs.createSchema(sft);
+	
+	
+	            } else {
+	                LOGGER.error("An exception was raised when connecting to " + layer);
+	                throw new PostGisException("The layer " + layer + " does not exist in the dissemintation system", e);
+	            }
+	
+	        }
             
             Filter filter = (Filter) FF.equals(FF.property(YEARATTRIBUTENAME), FF.literal(Integer.parseInt(year)));
             if (month != null) {
@@ -279,21 +286,16 @@ public class PostGISUtils {
             
             final SimpleFeatureCollection filteredSF = srcFs.getFeatures(filter);
 
-        if (filteredSF == null || (filteredSF != null && filteredSF.isEmpty())) {
-            LOGGER.warn(" The filtered collection is empty. Skip copying");
-            return;
-        }
-        LOGGER.info("The filtered collection is not empty. Starting copy " + filteredSF.size() + " features");
-        copyFeatures(layer, filteredSF, dstDs);
+	        if (filteredSF == null || (filteredSF != null && filteredSF.isEmpty())) {
+	            LOGGER.warn(" The filtered collection is empty. Skip copying");
+	            return;
+	        }
+	        LOGGER.info("The filtered collection is not empty. Starting copy " + filteredSF.size() + " features");
+	        copyFeatures(layer, filteredSF, dstDs);
       } catch (Exception e) {
 	      LOGGER.error("The source layer " + layer + " cannot be accessed. Maybe it does not exist. Skip execution", e);
 	      throw new PostGisException("Source layer " + layer + " cannot be accessed.");
-      } finally {
-    	  
-    	  // close stores
-    	  quietDisposeStore(srcDs);
-    	  quietDisposeStore(dstDs);
-      }
+      } 
 
     }
 
@@ -536,26 +538,13 @@ public class PostGISUtils {
      * @param cfg
      * @param featureName
      * @return a List of attribute that describe this feature
+     * @throws IOException 
      */
-    public static List<AttributeDescriptor> getFeatureAttributes(PostGisConfig cfg, String featureName){
+    public static List<AttributeDescriptor> getFeatureAttributes(DataStore ds, String featureName) throws IOException{
     
-    	DataStore ds = null;
-    	List<AttributeDescriptor> attrDescriptorList = null;
-    	try {
-			ds = createDatastore(cfg);
-	    	SimpleFeatureSource featureSource = ds.getFeatureSource(featureName);
-	        SimpleFeatureCollection sfc = (SimpleFeatureCollection) featureSource.getFeatures();
-	        attrDescriptorList = sfc.getSchema().getAttributeDescriptors();
-		} catch (PostGisException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-		catch (IOException ee){
-			LOGGER.error(ee.getMessage(), ee);
-		} 
-		finally{
-			quietDisposeStore(ds);
-		}
-		return attrDescriptorList;
+    	SimpleFeatureSource featureSource = ds.getFeatureSource(featureName);
+        SimpleFeatureCollection sfc = (SimpleFeatureCollection) featureSource.getFeatures();
+        return sfc.getSchema().getAttributeDescriptors();
     }
     
     /**
@@ -649,14 +638,11 @@ public class PostGISUtils {
 
 	}    
 
-    public static void removeFeatures(PostGisConfig cfg, String layer, String year, String month) throws PostGisException, IOException {
+    public static void removeFeatures(DataStore ds, String layer, String year, String month) throws PostGisException, IOException {
 
-    	DataStore ds=null;    	
         Transaction tx = new DefaultTransaction();
         try{
-        	ds = createDatastore(cfg);  
-        
-        
+
 	        LOGGER.debug("remove features : " + layer + ", " + year + ", " + month);
 	        Filter filter = (Filter) FF.equals(FF.property(YEARATTRIBUTENAME), FF.literal(Integer.parseInt(year)));
 	        if (month != null) {
@@ -676,8 +662,6 @@ public class PostGISUtils {
             throw new PostGisException("An exception was raised when deleting features from " + layer, e);
         } finally {
             quietCloseTransaction(tx);
-            
-            
         }
     }
 
@@ -777,7 +761,7 @@ public class PostGISUtils {
         }
     }
 
-    private static void quietCloseIterator(SimpleFeatureIterator it) {
+    public static void quietCloseIterator(SimpleFeatureIterator it) {
     	if(it==null){
     		return;
     	}
@@ -788,7 +772,7 @@ public class PostGISUtils {
         }
     }
     
-    private static void quietRollbackTransaction(Transaction tx) {
+    public static void quietRollbackTransaction(Transaction tx) {
     	if(tx==null){
     		return;
     	}
@@ -799,7 +783,7 @@ public class PostGISUtils {
         }
     }
 
-    private static void quietDisposeStore(DataStore ds) {
+    public static void quietDisposeStore(DataStore ds) {
     	if(ds==null){
     		return;
     	}    	
@@ -809,7 +793,7 @@ public class PostGISUtils {
             LOGGER.warn("Error in closing store: " + ex.getMessage(), ex);
         }
     }
-    private static void quietCloseTransaction(Transaction tx) {
+    public static void quietCloseTransaction(Transaction tx) {
     	if(tx==null){
     		return;
     	}    	

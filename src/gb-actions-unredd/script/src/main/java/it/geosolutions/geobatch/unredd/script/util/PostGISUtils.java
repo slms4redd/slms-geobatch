@@ -40,7 +40,6 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.FeatureStore;
 import org.geotools.data.FileDataStore;
 import org.geotools.data.FileDataStoreFinder;
 import org.geotools.data.Transaction;
@@ -92,7 +91,7 @@ public class PostGISUtils {
     public final static String DATEATTRIBUTENAME = "unredd_date";
 
 
-    protected static DataStore createDatastore(PostGisConfig cfg) throws PostGisException {
+    static DataStore createDatastore(PostGisConfig cfg) throws PostGisException {
 
         DataStore ret = null;
         try {
@@ -107,7 +106,7 @@ public class PostGISUtils {
         return ret;
     }
 
-    protected static FileDataStore createDatastore(File shapeFile) throws PostGisException {
+    static FileDataStore createDatastore(File shapeFile) throws PostGisException {
 
         FileDataStore ret = null;
         try {
@@ -302,18 +301,29 @@ public class PostGISUtils {
      * **************
      * this method insert into the layer datastore of postgis the feature contained into layerFile moreover for each feature
      * insert the year and the month attributes
+     * 
+     * TODO review!!
      */
-    public static int enrichAndAddFeatures(SimpleFeatureCollection sourceFC, PostGisConfig dstPg,
-            String layer, String year, String month, boolean forceCreation)
+    public static int enrichAndAddFeatures(
+    		SimpleFeatureCollection sourceFC, 
+    		PostGisConfig dstPg,
+            String layer, 
+            String year, 
+            String month, 
+            boolean forceCreation)
                 throws PostGisException {
 
     	DataStore dstDs=null;
-        dstDs = createDatastore(dstPg);
         SimpleFeatureSource fsLayer = null;
+        Transaction tx = new DefaultTransaction();
 
         //== check schema: create new or check they are aligned
         try {
-            boolean layerExists = Arrays.asList(dstDs.getTypeNames()).contains(layer);
+        	// craete destination store
+            dstDs = createDatastore(dstPg);
+            
+            // check if destinationlayer exists
+            boolean layerExists = existFeatureTable(dstDs, layer);
             if( ! layerExists ) {
                 if(forceCreation) {
                     fsLayer = createEnrichedSchema(dstDs, (SimpleFeatureType) sourceFC.getSchema(), layer);
@@ -321,31 +331,21 @@ public class PostGISUtils {
                     throw new PostGisException("The layer " + layer + " does not exist");
                 }
             } else {
-
-
                 fsLayer =  dstDs.getFeatureSource(layer);
                 checkAttributesMatch(sourceFC, ((JDBCFeatureStore)dstDs.getFeatureSource(layer)).getFeatureSource());
             }
 
-        } catch (IOException e) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Exception while retrieving info for : " + layer, e);
-            }
-            throw new PostGisException("Exception while retrieving info for : " + layer, e);
-        }
+	        //== schemas are ok: transfer data
+	
+	        int iYear = Integer.parseInt(year);
+	        int iMonth = month==null? -1 : Integer.parseInt(month);
+	        Date date = new Date(iYear-1900, iMonth==-1?0:iMonth-1, 1);
+	
+	        SimpleFeatureStore featureStoreData = (SimpleFeatureStore) fsLayer;
+	
+	        // update the layer store with the new SimpleFeature coming from the shape file
+	        // data are saved itemsForPage elements at time
 
-        //== schemas are ok: transfer data
-
-        int iYear = Integer.parseInt(year);
-        int iMonth = month==null? -1 : Integer.parseInt(month);
-        Date date = new Date(iYear-1900, iMonth==-1?0:iMonth-1, 1);
-
-        SimpleFeatureStore featureStoreData = (SimpleFeatureStore) fsLayer;
-        Transaction tx = new DefaultTransaction();
-
-        // update the layer store with the new SimpleFeature coming from the shape file
-        // data are saved itemsForPage elements at time
-        try {
             SimpleFeatureType dstSchema = dstDs.getSchema(layer);
             featureStoreData.setTransaction(tx);
             SimpleFeatureType srcSchema = sourceFC.getSchema();
@@ -395,6 +395,7 @@ public class PostGISUtils {
                 }
                 featureStoreData.addFeatures(sfcData);
             }
+            
             tx.commit();
             LOGGER.info("Copied " + i + " features for "+ layer+"/"+year+"/"+month + " to " + dstPg);
             return i;
@@ -404,14 +405,13 @@ public class PostGISUtils {
             LOGGER.error("Exception while copying shp into db", e);
             throw new PostGisException("Exception while copying shp into db", e);
         } finally {
+        	// clean up
             quietCloseTransaction(tx);
-            if (featureStoreData!=null) 
-                featureStoreData.getDataStore().dispose();
             quietDisposeStore(dstDs);
         }
     }
 
-    protected static SimpleFeatureSource createEnrichedSchema(DataStore dstDs, SimpleFeatureType sourceFC, String layer) throws PostGisException {
+    private static SimpleFeatureSource createEnrichedSchema(DataStore dstDs, SimpleFeatureType sourceFC, String layer) throws PostGisException {
       // generate the target schema
         try {
             LOGGER.warn("Creating new table for layer " + layer);
@@ -430,9 +430,7 @@ public class PostGISUtils {
                     LOGGER.debug( " Attr: "+attr);
                 }
             }
-
             dstDs.createSchema(sft);
-
             SimpleFeatureStore fsLayer = (SimpleFeatureStore)dstDs.getFeatureSource(layer);
             SimpleFeatureType dstSft = dstDs.getFeatureSource(layer).getSchema();
 
@@ -555,7 +553,7 @@ public class PostGISUtils {
 			LOGGER.error(ee.getMessage(), ee);
 		} 
 		finally{
-			ds.dispose();
+			quietDisposeStore(ds);
 		}
 		return attrDescriptorList;
     }
@@ -701,11 +699,7 @@ public class PostGISUtils {
             LOGGER.error("An exception was raised when connecting to " + layer);
             throw new PostGisException("The layer " + layer + " does not exist", e);
         } finally {
-			try {
-				ds.dispose();
-			}catch (Exception e) {
-	            LOGGER.error(e.getLocalizedMessage(),e);
-	        }
+			quietDisposeStore(ds);
 		}
     }
 

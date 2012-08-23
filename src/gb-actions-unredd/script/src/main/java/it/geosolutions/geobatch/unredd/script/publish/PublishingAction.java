@@ -34,14 +34,12 @@ import it.geosolutions.geobatch.unredd.script.util.FlowUtil;
 import it.geosolutions.geobatch.unredd.script.util.GeoStoreUtil;
 import it.geosolutions.geobatch.unredd.script.util.PostGISUtils;
 import it.geosolutions.geobatch.unredd.script.util.RequestJDOMReader;
-import it.geosolutions.unredd.geostore.model.UNREDDFormat;
-import it.geosolutions.unredd.geostore.model.UNREDDLayer;
-
 import it.geosolutions.geostore.core.model.Resource;
 import it.geosolutions.geostore.services.dto.ShortResource;
 import it.geosolutions.geostore.services.rest.model.RESTResource;
+import it.geosolutions.unredd.geostore.model.UNREDDFormat;
+import it.geosolutions.unredd.geostore.model.UNREDDLayer;
 import it.geosolutions.unredd.geostore.utils.NameUtils;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -52,11 +50,8 @@ import java.util.Map;
 import java.util.Queue;
 
 import javax.xml.bind.JAXBException;
-import org.apache.commons.io.FileUtils;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.jdbc.JDBCDataStore;
 
+import org.apache.commons.io.FileUtils;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,20 +60,12 @@ import org.slf4j.LoggerFactory;
  * performs the publishing of a layer. It takes an xml file about the layer to publish and copy all the resources from the staging area to the dissemination area
  *
  * @author Luca Paolino - luca.paolino@geo-solutions.it
+ * @author Simone Giannecchin, GeoSolutions
  *
  */
 public class PublishingAction extends BaseAction<FileSystemEvent> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(PublishingAction.class);
-
-//    private String srcRepositoryPath = null;
-//    private String srcMosaicPath = null;
-//
-//    private PostGISUtils postGISTo = null;
-//    private PostGISUtils postGISMosaicTo = null;
-//    private String dissRepositoryPath = null;
-//    private String dissMosaicPath = null;
-//
     private GeoStoreUtil srcGeostore = null;
     private GeoStoreUtil dstGeostore = null;
     /**

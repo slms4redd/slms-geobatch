@@ -53,7 +53,11 @@ import java.util.Queue;
 
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.FileUtils;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.jdbc.JDBCDataStore;
 
+import org.opengis.feature.type.AttributeDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -530,25 +534,33 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
      * @param month
      * @throws IOException
      */
-//    public void copyMosaicDBEntry(String layer, String year, String month) throws IOException {
-//
-//        postGISMosaicTo.copyMosaic(postGISMosaicFrom.getParams(), layer, year, month, 1000, true);
-//    }
-
     public void updatePostGIS(PostGisConfig srcPgCfg, PostGisConfig dstPgCfg, String layer, String year, String month) throws ActionException {
         try {
-            LOGGER.info("Removing features from the dissemination PostGIS...");
-            PostGISUtils.removeFeatures(dstPgCfg, layer, year, month);
-//            postGISTo.removeFeatures(layer, year, month);
-            LOGGER.info("Features successfully removed from the dissemination PostGIS");
-
+        	
+        	LOGGER.info("Get the feature attribute...");
+        	List<AttributeDescriptor> attrDescriptorList = PostGISUtils.getFeatureAttributes(srcPgCfg, layer);
+        	
+        	LOGGER.info("Check if the feature table exist, otherwise create it...");
+        	boolean tableCreated = PostGISUtils.checkExistAndCreateFeatureTable(dstPgCfg, layer, attrDescriptorList);
+        	
+        	if(!tableCreated){
+	            LOGGER.info("Removing features from the dissemination PostGIS...");
+				PostGISUtils.removeFeatures(dstPgCfg, layer, year, month);
+				LOGGER.info("Features successfully removed from the dissemination PostGIS");
+        	}
+        	else{
+        		LOGGER.info("Table is just created in dissemination PostGIS, skipping removeFeature step...");
+        	}
+        	
             LOGGER.info("Copying features ...");
             PostGISUtils.copyFeatures(srcPgCfg, dstPgCfg, layer, year, month, true); // TODO: change to false
             LOGGER.info("Features successfully copied");
 
         } catch (PostGisException e) {
             throw new ActionException(this, "Error while copying features", e);
-        }
+        } catch (IOException e) {
+        	throw new ActionException(this, "Error while copying features", e);
+		}
     }
 
 }

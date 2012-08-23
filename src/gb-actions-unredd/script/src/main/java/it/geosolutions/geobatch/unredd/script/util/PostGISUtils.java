@@ -24,14 +24,15 @@ package it.geosolutions.geobatch.unredd.script.util;
 
 import it.geosolutions.geobatch.unredd.script.exception.PostGisException;
 import it.geosolutions.geobatch.unredd.script.model.PostGisConfig;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,7 +44,7 @@ import org.geotools.data.FeatureStore;
 import org.geotools.data.FileDataStore;
 import org.geotools.data.FileDataStoreFinder;
 import org.geotools.data.Transaction;
-import org.geotools.jdbc.JDBCDataStore;
+import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -52,7 +53,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.filter.Filter;
+import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.jdbc.JDBCFeatureSource;
 import org.geotools.jdbc.JDBCFeatureStore;
 import org.opengis.feature.Property;
@@ -60,6 +61,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.PropertyDescriptor;
+import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,7 +129,7 @@ public class PostGISUtils {
             // read the shape file and put it into a SimpeFeatureCollection
             srcStore = createDatastore(srcShapeFile);
             
-            FeatureSource featureSource = srcStore.getFeatureSource();
+            SimpleFeatureSource featureSource = srcStore.getFeatureSource();
             SimpleFeatureCollection sfc = (SimpleFeatureCollection) featureSource.getFeatures();
             return enrichAndAddFeatures(sfc, dstPg, layer, year, month, true);
         } catch (IOException ex) {
@@ -217,7 +219,7 @@ public class PostGISUtils {
      * @param forceCreation if the destination table does not exist, create it
      * @throws IOException
      *
-     * @deprecated REVIEW! filter&copy, used in publishing?
+     * TODO REVIEW! filter&copy, used in publishing?
      */
     public static void copyFeatures(PostGisConfig srcPgCfg, PostGisConfig dstPgCfg, 
             String layer, String year, String month, boolean forceCreation) throws PostGisException {
@@ -243,18 +245,14 @@ public class PostGISUtils {
             } else
                 LOGGER.error("******* "+layer +" DOES NOT EXIST *******");
 
-            
-            
-            
-            FeatureSource dstFs = (FeatureSource) dstDs.getFeatureSource(layer);
+            SimpleFeatureSource dstFs = (SimpleFeatureSource) dstDs.getFeatureSource(layer);
         } catch (Exception e) {
             LOGGER.debug("Exception while getting dst featureSource from " + layer +": " +e.getMessage(), e );
             
             if (forceCreation) {
                 // force creation of the target table
                 LOGGER.warn("An exception was raised when connecting to " + layer + " of the dissemintation system. Forcing creation");
-                SimpleFeatureTypeBuilder dstSchemaBuilder = new SimpleFeatureTypeBuilder();
-                SimpleFeatureType sft = dstSchemaBuilder.copy((SimpleFeatureType) srcFs.getSchema());
+                SimpleFeatureType sft = SimpleFeatureTypeBuilder.copy((SimpleFeatureType) srcFs.getSchema());
                 try {
                     dstDs.createSchema(sft);
                 } catch (IOException ex) {
@@ -337,7 +335,7 @@ public class PostGISUtils {
         int iMonth = month==null? -1 : Integer.parseInt(month);
         Date date = new Date(iYear-1900, iMonth==-1?0:iMonth-1, 1);
 
-        FeatureStore featureStoreData = (FeatureStore) fsLayer;
+        SimpleFeatureStore featureStoreData = (SimpleFeatureStore) fsLayer;
         Transaction tx = new DefaultTransaction();
 
         // update the layer store with the new SimpleFeature coming from the shape file
@@ -536,11 +534,102 @@ public class PostGISUtils {
         
         return true;
     }
+    
+    /**
+     * 
+     * @param cfg
+     * @param featureName
+     * @return a List of attribute that describe this feature
+     */
+    public static List<AttributeDescriptor> getFeatureAttributes(PostGisConfig cfg, String featureName){
+    	
+    	JDBCDataStore ds = null;
+    	List<AttributeDescriptor> attrDescriptorList = null;
+    	try {
+			ds = createDatastore(cfg);
+	    	SimpleFeatureSource featureSource = ds.getFeatureSource(featureName);
+	        SimpleFeatureCollection sfc = (SimpleFeatureCollection) featureSource.getFeatures();
+	        attrDescriptorList = sfc.getSchema().getAttributeDescriptors();
+		} catch (PostGisException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+		catch (IOException ee){
+			LOGGER.error(ee.getMessage(), ee);
+		} 
+		finally{
+			ds.dispose();
+		}
+		return attrDescriptorList;
+    }
+    
+    /**
+     * 
+     * @param cfg
+     * @param layer
+     * @return True if the Table for supplyed features exist, else otherwise
+     */
+    public static boolean existFeatureTable(PostGisConfig cfg, String layer){
+    	
+    	boolean  exist = false;
+    	JDBCDataStore ds = null;
+		try {
+			ds = createDatastore(cfg);
+			exist = Arrays.asList(ds.getTypeNames()).contains(layer);
+		} catch (PostGisException e) {
+			LOGGER.error(e.getMessage(), e);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+		return exist;
+		
+    	
+    }
+    
+    /**
+     * Check if a table for a supplyed feature exist. If not exist create it.
+     * 
+     * @param cfg
+     * @param featureName
+     * @param attrDescriptorList
+     * @return True if a table is created, false otherwise
+     */
+	public static boolean checkExistAndCreateFeatureTable(PostGisConfig cfg, String featureName, List<AttributeDescriptor> attrDescriptorList) {
+		
+		JDBCDataStore ds = null;
+		try {
+			ds = createDatastore(cfg);
+		
+			LOGGER.warn("Creating new table for layer " + featureName);
+			
+			if (!existFeatureTable(cfg, featureName)) {
+				SimpleFeatureTypeBuilder dstSchemaBuilder = new SimpleFeatureTypeBuilder();
+				dstSchemaBuilder.setName(featureName);
+				dstSchemaBuilder.addAll(attrDescriptorList);
+				dstSchemaBuilder.add(YEARATTRIBUTENAME, Integer.class);
+				dstSchemaBuilder.add(MONTHATTRIBUTENAME, Integer.class);
+				dstSchemaBuilder.add(DATEATTRIBUTENAME, Date.class);
+				SimpleFeatureType sft = dstSchemaBuilder.buildFeatureType();
+	
+				ds.createSchema(sft);
+				ds.dispose();
+				return true;
+			}
+		} catch (PostGisException e) {
+			LOGGER.error(e.getMessage(), e);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+		}finally{
+			ds.dispose();
+		}
+		return false;
 
-    public static void removeFeatures(PostGisConfig cfg, String layer, String year, String month) throws PostGisException {
+	}    
 
-        JDBCDataStore ds = createDatastore(cfg);
+    public static void removeFeatures(PostGisConfig cfg, String layer, String year, String month) throws PostGisException, IOException {
 
+        JDBCDataStore ds = createDatastore(cfg);        
+        
+        
         LOGGER.debug("remove features : " + layer + ", " + year + ", " + month);
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
         Filter filter = (Filter) ff.equals(ff.property(YEARATTRIBUTENAME), ff.literal(Integer.parseInt(year)));
@@ -606,7 +695,7 @@ public class PostGISUtils {
      */
     private static void copyFeatures(String layer, SimpleFeatureCollection sourceFC, DataStore dstDS) throws PostGisException {
         
-        FeatureSource fsDestLayer = null;
+        SimpleFeatureSource fsDestLayer = null;
         try {
             fsDestLayer = dstDS.getFeatureSource(layer);
         } catch (Exception e) {
@@ -614,47 +703,59 @@ public class PostGISUtils {
             throw new PostGisException("Destination layer " +layer + " does not exist:" + e.getMessage(), e);
         }
 
-        FeatureStore featureStoreData = (FeatureStore) fsDestLayer;
-        Transaction tx = new DefaultTransaction();
+        final SimpleFeatureStore featureStoreData = (SimpleFeatureStore) fsDestLayer;
+        SimpleFeatureIterator iterator = null;
+        final Transaction tx = new DefaultTransaction();
         featureStoreData.setTransaction(tx);
-        SimpleFeatureType srcSimpleFetaureType = sourceFC.getSchema();
-        List<AttributeDescriptor> srcAttributeDescriptor = srcSimpleFetaureType.getAttributeDescriptors();
         // update the layer store with the new SimpleFeature coming from the shape file
         // data are saved itemsForPage elements at time
         try {
-            boolean hasFinished = false;
-            SimpleFeatureIterator iterator = sourceFC.features();
-            while (!hasFinished) {
-                int i = 0;
+        	
+        	// open iterator
+            iterator = sourceFC.features();
+        	// prepare feature holder
+        	final ListFeatureCollection lfc= new ListFeatureCollection(sourceFC.getSchema());
+        	int count=0;
+            while (iterator.hasNext()) {
 
-                SimpleFeatureCollection sfcData = FeatureCollections.newCollection();
-                boolean exitForIntermediateSaving = false;
+            	// copy over
+               final SimpleFeature sf = iterator.next();
+               lfc.add(sf);
+               
+               // paging check
+               if(count++>=ITEM_X_PAGE){
+            	   // commit to relief load from destination DB
+                   featureStoreData.addFeatures(lfc);                       
+                   tx.commit();
+                   lfc.clear();
 
-                while (iterator.hasNext() && !exitForIntermediateSaving) {
-                    i++;
-
-                    exitForIntermediateSaving = ((i % ITEM_X_PAGE) == 0);
-
-                    SimpleFeature sf = iterator.next();
-
-                    sfcData.add(sf);
-
-                }
-                if (!exitForIntermediateSaving) {
-                    hasFinished = true;
-                }
-                featureStoreData.addFeatures(sfcData);
+               }
             }
-            tx.commit();
 
+            if(!lfc.isEmpty()){
+	     	   // commit to relief load from destination DB
+	            featureStoreData.addFeatures(lfc);
+	           
+	            // final commit
+	            tx.commit();    
+            }
         } catch (Exception e) {
             quietRollback(tx);
             LOGGER.error("An exception was raised when executing storing into the database");
 
             throw new PostGisException("An exception was raised when executing storing into the database", e);
         } finally {
+        	// close transaction
             quietClose(tx);
-            // if (featureStoreData!=null) featureStoreData.getDataStore().dispose();
+            
+            // close iterator
+            if(iterator!=null){
+            	try{
+            		iterator.close();
+            	} catch (Exception e) {
+            		LOGGER.info(e.getLocalizedMessage(),e);
+				}
+            }
 
         }
     }

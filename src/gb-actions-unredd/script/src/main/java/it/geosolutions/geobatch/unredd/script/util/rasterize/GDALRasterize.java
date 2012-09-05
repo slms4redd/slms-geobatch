@@ -121,6 +121,7 @@ public class GDALRasterize {
         TaskExecutor tea = new TaskExecutor(teConfig);
 //        tea.setRunningContext(tempDir.getAbsolutePath());
         tea.setTempDir(tempDir);
+        tea.setConfigDir(configDir);
 
         File outFile = SingleFileActionExecutor.execute(tea, inputFile);
         // taskexec just returns the input file

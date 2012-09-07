@@ -76,7 +76,7 @@ public class PostGISUtils {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(PostGISUtils.class);
 
-    public final static int ITEM_X_PAGE = 100;
+    public final static int ITEM_X_PAGE = 1000;
     
     public final static FilterFactory2 FF = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
@@ -569,7 +569,7 @@ public class PostGISUtils {
      * @param attrDescriptorList
      * @return True if a table is created, false otherwise
      */
-	public static boolean checkExistAndCreateFeatureTable(DataStore ds, String featureName, List<AttributeDescriptor> attrDescriptorList) {
+	public static boolean checkExistAndCreateFeatureTable(DataStore ds, String featureName, List<AttributeDescriptor> attrDescriptorList) throws PostGisException{
 
 		try {
 		
@@ -579,9 +579,9 @@ public class PostGISUtils {
 				SimpleFeatureTypeBuilder dstSchemaBuilder = new SimpleFeatureTypeBuilder();
 				dstSchemaBuilder.setName(featureName);
 				dstSchemaBuilder.addAll(attrDescriptorList);
-				dstSchemaBuilder.add(YEARATTRIBUTENAME, Integer.class);
-				dstSchemaBuilder.add(MONTHATTRIBUTENAME, Integer.class);
-				dstSchemaBuilder.add(DATEATTRIBUTENAME, Date.class);
+//				dstSchemaBuilder.add(YEARATTRIBUTENAME, Integer.class);
+//				dstSchemaBuilder.add(MONTHATTRIBUTENAME, Integer.class);
+//				dstSchemaBuilder.add(DATEATTRIBUTENAME, Date.class);
 				SimpleFeatureType sft = dstSchemaBuilder.buildFeatureType();
 	
 				ds.createSchema(sft);
@@ -589,6 +589,7 @@ public class PostGISUtils {
 			}
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
+			throw new PostGisException(e.getMessage());
 		}
 		return false;
 
@@ -650,6 +651,7 @@ public class PostGISUtils {
         featureStoreData.setTransaction(tx);
         // update the layer store with the new SimpleFeature coming from the shape file
         // data are saved itemsForPage elements at time
+        
         try {
         	
         	// open iterator
@@ -657,22 +659,28 @@ public class PostGISUtils {
         	// prepare feature holder
         	final ListFeatureCollection lfc= new ListFeatureCollection(sourceFC.getSchema());
         	int count=0;
-            while (iterator.hasNext()) {
+        	int numPag = sourceFC.size() / ITEM_X_PAGE;
+        	int currentPage = 0;
+        	LOGGER.info("Page size: " + ITEM_X_PAGE + ", Page amount: " + numPag);
+        	while (iterator.hasNext()) {
 
             	// copy over
                final SimpleFeature sf = iterator.next();
                lfc.add(sf);
-               
+//               LOGGER.debug("Feature " + count + " - page: " + currentPage);
                // paging check
                if(count++>=ITEM_X_PAGE){
             	   // commit to relief load from destination DB
                    featureStoreData.addFeatures(lfc);                       
                    tx.commit();
                    lfc.clear();
+                   count=0;
+//                   System.gc();
+                   LOGGER.debug("Page" + currentPage++ + "/" + numPag + " committed... ");
 
                }
             }
-
+        	LOGGER.info("Commit latest features...");
             if(!lfc.isEmpty()){
 	     	   // commit to relief load from destination DB
 	            featureStoreData.addFeatures(lfc);
@@ -691,7 +699,7 @@ public class PostGISUtils {
             
             // close iterator
             quietCloseIterator(iterator);
-
+            LOGGER.info("features copy succesfully completed!");
         }
     }
 

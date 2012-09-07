@@ -26,22 +26,29 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.unredd.script.exception.FlowException;
 import it.geosolutions.geobatch.unredd.script.exception.GeoStoreException;
 import it.geosolutions.geobatch.unredd.script.exception.PostGisException;
 import it.geosolutions.geobatch.unredd.script.model.Request;
 import it.geosolutions.geobatch.unredd.script.util.FlowUtil;
 import it.geosolutions.geobatch.unredd.script.util.GeoStoreUtil;
+import it.geosolutions.geobatch.unredd.script.util.Mosaic;
 import it.geosolutions.geobatch.unredd.script.util.PostGISUtils;
 import it.geosolutions.geobatch.unredd.script.util.RequestJDOMReader;
 import it.geosolutions.geostore.core.model.Resource;
+import it.geosolutions.geostore.core.model.enums.DataType;
+import it.geosolutions.geostore.services.dto.ShortAttribute;
 import it.geosolutions.geostore.services.dto.ShortResource;
 import it.geosolutions.geostore.services.rest.model.RESTResource;
 import it.geosolutions.unredd.geostore.model.UNREDDFormat;
 import it.geosolutions.unredd.geostore.model.UNREDDLayer;
+import it.geosolutions.unredd.geostore.model.UNREDDLayer.Attributes;
+import it.geosolutions.unredd.geostore.model.UNREDDLayerUpdate;
 import it.geosolutions.unredd.geostore.utils.NameUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -155,7 +162,9 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
         String layerName = request.getLayername();
         String year = request.getYear();
         String month = request.getMonth();
-
+        
+        String filename = NameUtils.buildTifFileName(layerName, year, month);
+        
         LOGGER.info("Input parameters : [layer=" + layerName + ", year=" + year + ", month=" + month + "]");
 
 
@@ -172,6 +181,8 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
         }
 
         UNREDDLayer layerResource = new UNREDDLayer(srcLayer);
+        String srcPath = layerResource.getAttribute(UNREDDLayer.Attributes.MOSAICPATH);
+        String dstPath = layerResource.getAttribute(UNREDDLayer.Attributes.DISSMOSAICPATH);
 
         LOGGER.info(layerName + " found in the Staging Area Geostore");
 
@@ -192,15 +203,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
 
             LOGGER.info("Source LayerUpdate found [" + layerName + ", " + year + "," + month + "]");
 
-        // ****************************************
-        // Copy the features
-        // ----------
-        // Copy feats identified by layer, year and month
-        // from the staging area postgis db to the dissemination db
-        // in case update is set on true we should
-        // firstly remove the old features from the dissemination db.
-        // This controls will be made directly in the updatePostGIS method
-        // ****************************************
+        
         boolean isVector = request.getFormat().equals(UNREDDFormat.VECTOR);
         DataStore srcDS=null,destDS=null;
         try {
@@ -208,39 +211,54 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
         	destDS=PostGISUtils.createDatastore(conf.getDstPostGisConfig());
         	
 	        if (isVector) {
-	            LOGGER.info("The request is VECTOR format based. Updating PostGIS");
+	        	// ****************************************
+	            // Copy the features and raster data
+	            // ----------
+	            // Copy feats identified by layer, year and month
+	            // from the staging area postgis db to the dissemination db
+	            // in case update is set on true we should
+	            // firstly remove the old features from the dissemination db.
+	            // This controls will be made directly in the updatePostGIS method.
+	        	//
+	        	// After features copy copy the raster data from staging mosaic path to dissemination mosaic path.
+	        	// Altought the mosaic_path destination This tiff is not a mosaic granule but is needed for dynamic stats.        	
+	            // ****************************************
+	        	LOGGER.info("The request is VECTOR format based:");
+	            LOGGER.info("Updating PostGIS...");
 	            updatePostGIS(srcDS, destDS, layerName, year, month);
-	        } else {
-	            LOGGER.info("The request is RASTER format based.");
+	            LOGGER.info("Copy raster data used for dynamic stats...");
+	            this.copyRaster(srcPath, dstPath, layerName, year, month);
+	        } 
+	        else {
+	        	// ****************************************
+		        // Copy the raster
+		        // ----------
+		        // copies the raster located into the mosaic
+		        // staging area directory to the dissemination mosaic.
+		        // This  operation is performed both in case of a first publishing
+		        // and successive ones
+		        //
+		        // ****************************************
+	        	LOGGER.info("The request is RASTER format based:");
+	        	LOGGER.info("Update the mosaic...");
+	        	
+	        	File srcRasterFile = new File(srcPath, filename);
+	        	File mosaicDir = new File(dstPath);
+	        	
+	        	//create bounding box with values setted on GeoStore
+	        	double [] bbox = new double[4];
+	            bbox[0] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERX0));
+	            bbox[1] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERX1));
+	            bbox[2] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERY0));
+	            bbox[3] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERY1));
+	        	
+//	            Mosaic mosaic = new Mosaic(cfg.getGeoServerConfig(), mosaicDir, getTempDir(), getConfigDir());
+//	            mosaic.add(cfg.getGeoServerConfig().getWorkspace(), layername, rasterFile, "EPSG:4326", bbox);
+	            
+	            Mosaic mosaic = new Mosaic(conf.getDstGeoServerConfig(), mosaicDir, getTempDir(), getConfigDir());
+	            mosaic.add(conf.getDstGeoServerConfig().getWorkspace(), layerName, srcRasterFile, "EPSG:4326", bbox);
 	        }
-	
-	        // ****************************************
-	        // Copy the raster
-	        // ----------
-	        // copies the raster located into the mosaic
-	        // staging area directory to the dissemination mosaic.
-	        // This  operation is performed both in case of a first publishing
-	        // and successive ones
-	        //
-	        // ****************************************
-            // copy the raster file from the mosaic staging area directory to the dissemination mosaic directory
-            String srcPath = layerResource.getAttribute(UNREDDLayer.Attributes.MOSAICPATH);
-            String dstPath = layerResource.getAttribute(UNREDDLayer.Attributes.DISSMOSAICPATH);
 
-            LOGGER.info("Copying mosaic raster from " + srcPath + " to " + dstPath);
-            
-            this.copyRaster(srcPath, dstPath, layerName, year, month);
-            LOGGER.debug("Mosaic raster upload successfully completed");
-//            if (!doUpdate) {
-            LOGGER.warn("TODO: remove previous entries if needed");
-
-            LOGGER.info("Copying Mosaic snapshot");
-            // in case of publishing of a new snapshot in the mosaic dissemination, insert the db entry in the mosaic postgis dissemination db as well
-//                this.copyMosaicDBEntry(layerName, year, month);
-            PostGISUtils.copyFeatures(srcDS, destDS, layerName, year, month, true);
-
-            LOGGER.debug("Mosaic snapahost copy successfully completed");
-//            }
         } catch (PostGisException e) {
             LOGGER.debug("Property settings : [Layer = " + layerName + ", year = " + year + ", month=" + month + "]");
             throw new ActionException(this, "Error while copying features", e );
@@ -269,7 +287,22 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
             throw new ActionException(this, "Error while copying GeoStore content",e );
         }
 
+        // ********************
+        // Run stats
+        // ********************
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Starting statistic processing");
+        }
+        this.listenerForwarder.progressing(80, "Starting statistic processing");
 
+        FlowUtil flowUtil= new FlowUtil(getTempDir(), getConfigDir());
+        try {
+        	File dissRasterFile = new File(dstPath, filename);
+            flowUtil.runStatsAndScripts(layerName, year, month, dissRasterFile, dstGeostore);
+        } catch (FlowException e) {
+            throw new ActionException(this, e.getMessage(), e);
+        }
+        
         // ****************************************
         // Copy original data
         // ----------
@@ -399,6 +432,30 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
                 LOGGER.info("Copying StatsData " + srcStatsData.getName());
                 RESTResource statsData = FlowUtil.copyResource(srcStatsData);
                 dstGeostore.insert(statsData);
+                
+                // Add attribute Published=true to srcGeostore, usefull for staging admin application
+	            LOGGER.info("Adding attribute published=true to resource " + srcStatsData.getName());
+	            RESTResource statsDataTmp = FlowUtil.copyResource(srcStatsData); 
+	            ShortAttribute published = new ShortAttribute(UNREDDLayerUpdate.Attributes.PUBLISHED.getName(), "true", DataType.STRING);
+	            
+	            //DamianoG workaround for search in list due to ShortAttribute don't override equals method
+	            boolean flag = true;
+	            for(ShortAttribute el : statsDataTmp.getAttribute()){
+	            	if(el.toString().equals(published.toString())){
+		            	flag = false;
+		            	break;
+	            	}
+	            }
+	            
+	          //if(!statsDataTmp.getAttribute().contains(published)){
+	            if(flag){
+	            	List<ShortAttribute> l = new ArrayList<ShortAttribute>();
+		            l.add(published);
+		            l.addAll(statsDataTmp.getAttribute());
+		            statsDataTmp.setAttribute(l);
+		            srcGeostore.delete(srcStatsData.getId());
+		            srcGeostore.insert(statsDataTmp);
+	            }
             }
 
             // Collect dependant chartscript to be copied
@@ -407,6 +464,8 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
                 LOGGER.info("Collecting ChartScript: adding " + cs.getName());
                 srcChartScripts.put(cs.getId(), cs);
             }
+           
+            
         }
 
         //==================================================
@@ -437,13 +496,14 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
             RESTResource chartScript = FlowUtil.copyResource(srcChartScript);
             dstGeostore.insert(chartScript);
 
+            //DamianoG commented due to chartData must be recalculated not copyed from staging
             //== Insert chartData
-            List<Resource> srcChartDataList = srcGeostore.searchChartDataPublished(chartScriptName);
-            for (Resource srcChartData : srcChartDataList) {
-                LOGGER.info("Copying ChartData " + srcChartData.getName());
-                RESTResource chartData = FlowUtil.copyResource(srcChartData);
-                dstGeostore.insert(chartData);
-            }
+//            List<Resource> srcChartDataList = srcGeostore.searchChartDataPublished(chartScriptName);
+//            for (Resource srcChartData : srcChartDataList) {
+//                LOGGER.info("Copying ChartData " + srcChartData.getName());
+//                RESTResource chartData = FlowUtil.copyResource(srcChartData);
+//                dstGeostore.insert(chartData);
+//            }
         }
     }
 

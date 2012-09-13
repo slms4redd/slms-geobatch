@@ -20,13 +20,22 @@
   <groupId>it.geosolutions.geobatch.unredd</groupId>
   <artifactId>gb-action-unredd-geostore</artifactId>
   <packaging>jar</packaging>
+  
   <name>GeoBatch UNREDD action: geostore</name>
   <description>GeoSolutions GeoBatch Action: geostore</description>
-  <url>http://www.geo-solutions.it/maven_reports/gb/</url>
+  <url>https://github.com/nfms4redd/nfms-geobatch</url>
+  
   <scm>
-    <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/</connection>
-    <url>http://svn.geotools.org/geotools/trunk/gt/modules/</url>
+    <connection>scm:git@github.com:nfms4redd/nfms-geobatch.git</connection>
+    <url>https://github.com/nfms4redd/nfms-geobatch.git</url>
   </scm>
+  
+  <organization>
+    <name>GeoSolutions</name>
+    <url>http://www.geo-solutions.it</url>
+  </organization>
+  <inceptionYear>2011</inceptionYear>
+  
   <licenses>
     <license>
       <name>Lesser General Public License (LGPL)</name>
@@ -34,6 +43,7 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->

@@ -16,7 +16,7 @@
     <parent>
         <groupId>it.geosolutions.geobatch.unredd</groupId>
         <artifactId>gb-actions-unredd</artifactId>
-        <version>1.2.5-SNAPSHOT</version>
+        <version>1.3-SNAPSHOT</version>
     </parent>
 
   <!-- =========================================================== -->
@@ -28,21 +28,27 @@
 
     <name>GeoBatch UNREDD action: rasterize</name>
     <description>GeoSolutions GeoBatch Action: rasterize</description>
-    <url>http://www.geo-solutions.it/maven_reports/gb/</url>
-  
+    <url>https://github.com/nfms4redd/nfms-geobatch</url>
+    
     <scm>
-        <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/</connection>
-        <url>http://svn.geotools.org/geotools/trunk/gt/modules/</url>
+      <connection>scm:git@github.com:nfms4redd/nfms-geobatch.git</connection>
+      <url>https://github.com/nfms4redd/nfms-geobatch.git</url>
     </scm>
-  
-
+    
+    <organization>
+      <name>GeoSolutions</name>
+      <url>http://www.geo-solutions.it</url>
+    </organization>
+    <inceptionYear>2011</inceptionYear>
+    
     <licenses>
-        <license>
-            <name>Lesser General Public License (LGPL)</name>
-            <url>http://www.gnu.org/copyleft/lesser.txt</url>
-            <distribution>repo</distribution>
-        </license>
+      <license>
+	<name>Lesser General Public License (LGPL)</name>
+	<url>http://www.gnu.org/copyleft/lesser.txt</url>
+	<distribution>repo</distribution>
+      </license>
     </licenses>
+  
 
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
@@ -75,7 +81,6 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-process-raster</artifactId>
-            <version>8-SNAPSHOT</version>
         </dependency>
 
         <dependency>

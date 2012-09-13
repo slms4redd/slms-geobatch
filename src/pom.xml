@@ -8,6 +8,7 @@
 ======================================================================= -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  
   <!-- =========================================================== -->
   <!--     Project Description                                     -->
   <!-- =========================================================== -->
@@ -18,20 +19,24 @@
   </parent>
   <groupId>it.geosolutions.geobatch.unredd</groupId>
   <artifactId>gb-unredd</artifactId>
-  <version>1.3-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>GeoBatch UNREDD 0 root</name>
+  
+  <name>GeoBatch UNREDD root</name>
   <description>The GeoBatch project for unredd</description>
-  <url>http://www.geo-solutions.it/maven_reports/gb/</url>
+  <url>https://github.com/nfms4redd/nfms-geobatch</url>
+  
   <scm>
-    <connection>scm:svn:https://svn.codehaus.org/geobatch/trunk/</connection>
-    <url>https://svn.codehaus.org/geobatch/trunk/</url>
+    <connection>scm:git@github.com:nfms4redd/nfms-geobatch.git</connection>
+    <url>https://github.com/nfms4redd/nfms-geobatch.git</url>
   </scm>
+  
   <organization>
     <name>GeoSolutions</name>
     <url>http://www.geo-solutions.it</url>
   </organization>
   <inceptionYear>2011</inceptionYear>
+  
   <licenses>
     <license>
       <name>Lesser General Public License (LGPL)</name>
@@ -39,6 +44,7 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  
   <properties>
     <allow.test.skip>true</allow.test.skip>
     <allow.test.failure.ignore>false</allow.test.failure.ignore>
@@ -49,8 +55,8 @@
     <test.maxHeapSize>512M</test.maxHeapSize>
     <src.output>${basedir}/target</src.output>
     <gb.version>1.3-SNAPSHOT</gb.version>
-    <gb.unredd.version>1.3-SNAPSHOT</gb.unredd.version>
-    <unredd.version>0.2-SNAPSHOT</unredd.version>
+    <gt.version>8.0</gt.version>
+    <unredd.version>1.3-SNAPSHOT</unredd.version>
     <geostore.version>1.0-SNAPSHOT</geostore.version>
   </properties>
   <!-- =========================================================== -->
@@ -68,32 +74,25 @@
         <version>${gb.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
+      </dependency>     
       <!-- =========================================================== -->
       <!-- Other UNREDD modules -->
       <!-- =========================================================== -->
       <dependency>
         <groupId>it.geosolutions.geobatch.unredd</groupId>
         <artifactId>gb-action-unredd-statistics</artifactId>
-        <version>${gb.unredd.version}</version>
+        <version>${unredd.version}</version>
       </dependency>
       <dependency>
         <groupId>it.geosolutions.geobatch.unredd</groupId>
         <artifactId>gb-action-unredd-script</artifactId>
-        <version>${gb.unredd.version}</version>
+        <version>${unredd.version}</version>
       </dependency>
       <dependency>
         <groupId>it.geosolutions.geobatch.unredd</groupId>
         <artifactId>gb-action-unredd-geostore</artifactId>
-        <version>${gb.unredd.version}</version>
+        <version>${unredd.version}</version>
       </dependency>
-      <!--
-            <dependency>
-                <groupId>it.geosolutions.geobatch.unredd</groupId>
-                <artifactId>gb-action-unredd-rasterize</artifactId>
-                <version>${gb.unredd.version}</version>
-            </dependency>
--->
       <!-- =========================================================== -->
       <!-- GeoStore -->
       <!-- =========================================================== -->
@@ -124,6 +123,15 @@
         <groupId>com.sun.jersey.contribs</groupId>
         <artifactId>jersey-multipart</artifactId>
         <version>1.9.1</version>
+      </dependency>
+      <!-- =========================================================== -->
+      <!-- GEOTOOOLS -->   
+      <!-- =========================================================== -->
+      <dependency>
+	<groupId>org.geotools</groupId>
+	<artifactId>gt-property</artifactId>
+	<version>${gt.version}</version>
+      	<scope>test</scope>      
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -202,9 +210,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.5</source>
+          <source>1.6</source>
           <!-- The -source argument for the Java compiler. -->
-          <target>1.5</target>
+          <target>1.6</target>
           <!-- The -target argument for the Java compiler. -->
           <debug>true</debug>
           <!-- Whether to include debugging information.   -->
@@ -212,45 +220,7 @@
           <!-- The -encoding argument for the Java compiler. -->
         </configuration>
       </plugin>
-      <!-- ======================================================= -->
-      <!--     Tests.                                              -->
-      <!-- ======================================================= -->
-      <!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*Test.java</include>
-                    </includes>
-                    <excludes>
-                        <exclude>${online.skip.pattern}</exclude>
-                        <exclude>${stress.skip.pattern}</exclude>
-                        <exclude>${test.exclude.pattern}</exclude>
-                    </excludes>
-                    <argLine>-Xmx${test.maxHeapSize} -Djava.awt.headless=${java.awt.headless}</argLine>
--->
-      <!-- Ignores test failure only if we are generating a       -->
-      <!-- report for publication on the web site. See the        -->
-      <!-- profiles section at the begining of this pom.xml file. -->
-      <!--	  
-                    <testFailureIgnore>
-                        ${allow.test.failure.ignore}
-                    </testFailureIgnore>
--->
-      <!-- The two following options have the opposite value of what we would
-               like. They are that way because they don't seem to work as expected
-               with Surefire 2.3. TODO: Try again when Surefire 2.4 will be available. -->
-      <!-- Option to print summary of test suites or just print the test cases that has errors. -->
-      <!--	  
-                    <printSummary>true</printSummary>
--->
-      <!-- Redirect the unit test standard output to a file. -->
-      <!--	  
-                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
-                </configuration>
-            </plugin>
--->
-      <!-- code coverage -->
+     
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
@@ -329,20 +299,10 @@
       <name>java.net Repository</name>
       <url>http://download.java.net/maven/2/</url>
     </repository>
-    <!-- camel -->
-    <!--        <repository>
-            <id>camel.internal.maven.repository</id>
-            <name>Camel internal Maven Repo</name>
-            <url>http://svn.apache.org/repos/asf/camel/m2-repo</url>
-        </repository>-->
     <repository>
       <id>JBoss</id>
       <url>http://repository.jboss.com/maven2</url>
     </repository>
-    <!--        <repository>
-            <id>Hibernate Spatial repo</id>
-            <url>http://www.hibernatespatial.org/repository</url>
-        </repository>-->
     <repository>
       <snapshots>
         <enabled>true</enabled>
@@ -351,23 +311,6 @@
       <name>OpenGeo Maven Repository</name>
       <url>http://repo.opengeo.org</url>
     </repository>
-    <!--        <repository>
-            <id>maven-restlet</id>
-            <name>Public online Restlet repository</name>
-            <url>http://maven.restlet.org</url>
-        </repository>-->
-    <!--
-        <repository>
-            <id>official maven 1</id>
-            <name>Public online maven repository</name>
-            <url>http://repo1.maven.org/maven2</url>
-        </repository>
-
-        <repository>
-            <id>official maven 2</id>
-            <name>Public online maven repository</name>
-            <url>http://repo2.maven.org/maven2</url>
-        </repository>-->
   </repositories>
   <!-- =========================================================== -->
   <!--     Plugin repositories.                                    -->

@@ -7,7 +7,7 @@
                                                                                             
         Version: $Id: pom.xml 329 2011-06-14 13:00:49Z ccancellieri $              
      ======================================================================= -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                                 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>it.geosolutions.geobatch.unredd</groupId>
@@ -20,18 +20,21 @@
   <groupId>it.geosolutions.geobatch.unredd</groupId>
   <artifactId>gb-action-unredd-statistics</artifactId>
   <packaging>jar</packaging>
+  
   <name>GeoBatch UNREDD action: statistics</name>
-  <url>http://www.geo-solutions.it/maven_reports/gb/</url>
-  <!--<url>flowmanagers/</url>-->
+  <url>https://github.com/nfms4redd/nfms-geobatch</url>
+  
   <scm>
-    <connection>
-      scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/<!--flowmanagers-->
-    </connection>
-    <url>http://svn.geotools.org/geotools/trunk/gt/modules/<!--flowmanagers--></url>
+    <connection>scm:git@github.com:nfms4redd/nfms-geobatch.git</connection>
+    <url>https://github.com/nfms4redd/nfms-geobatch.git</url>
   </scm>
-  <description>
-    GeoSolutions GeoBatch Action: statistics.
-  </description>
+  
+  <organization>
+    <name>GeoSolutions</name>
+    <url>http://www.geo-solutions.it</url>
+  </organization>
+  <inceptionYear>2011</inceptionYear>
+  
   <licenses>
     <license>
       <name>Lesser General Public License (LGPL)</name>
@@ -39,6 +42,7 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->

@@ -164,7 +164,7 @@ public class FlowUtil {
      * @throws GeoStoreException
      * @throws FlowException 
      */
-    public String processStatistics(GeoStoreUtil geostoreUtil, Resource statsDef, String year, String month, Map<Statistics.Tokens, String> tokens)
+    public String processStatistics(GeoStoreUtil geostoreUtil, Resource statsDef, String year, String month, String day, Map<Statistics.Tokens, String> tokens)
             throws FlowException {
 
         if(tokens == null)
@@ -194,7 +194,7 @@ public class FlowUtil {
             String statsContent = IOUtils.toString(new FileReader(outStats));
 //            LOGGER.info("Statistics result :" + statsContent);
 
-            geostoreUtil.setStatsData(statsDef, statsContent, year, month);
+            geostoreUtil.setStatsData(statsDef, statsContent, year, month, day);
             return statsContent;
 
         } catch (Exception ex) {
@@ -269,7 +269,7 @@ public class FlowUtil {
     }
 
 
-    public void runStatsAndScripts(String layername, String year, String month, File rasterFile, GeoStoreUtil geostore) throws FlowException {
+    public void runStatsAndScripts(String layername, String year, String month, String day, File rasterFile, GeoStoreUtil geostore) throws FlowException {
 
         // ********************
         // Retrieve stats to run
@@ -295,7 +295,7 @@ public class FlowUtil {
         try {
             for (Resource statsDef : relatedStatsDef) {
                 Map<Tokens,String> tok = fillTokens(rasterFile.getAbsolutePath(), layername, year, month, null);
-                processStatistics(geostore, statsDef, year, month, tok);
+                processStatistics(geostore, statsDef, year, month, day, tok);
 
                 List<Resource> localChartScript = geostore.searchChartScriptByStatsDef(statsDef.getName());
                 if(LOGGER.isInfoEnabled())

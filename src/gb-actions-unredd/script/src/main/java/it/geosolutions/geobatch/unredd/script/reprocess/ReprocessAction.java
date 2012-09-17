@@ -248,13 +248,14 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
                 UNREDDLayerUpdate layerUpdate = new UNREDDLayerUpdate(layerUpdateRes);
                 String year = layerUpdate.getAttribute(UNREDDLayerUpdate.Attributes.YEAR);
                 String month = layerUpdate.getAttribute(UNREDDLayerUpdate.Attributes.MONTH);
+                String day = layerUpdate.getAttribute(UNREDDLayerUpdate.Attributes.DAY);
 
                 String rasterPath = layer.getAttribute(Attributes.MOSAICPATH);
-                String rasterFile = NameUtils.buildTifFileName(layerName, year, month);
+                String rasterFile = NameUtils.buildTifFileName(layerName, year, month, day);
                 String rasterFullPath = new File(rasterPath, rasterFile).getAbsolutePath();
 
                 Map<Tokens, String> tokens = FlowUtil.fillTokens(rasterFullPath, layerName, year, month, null);
-                flowUtil.processStatistics(geoStoreUtil, statsDefRes, year, month, tokens);
+                flowUtil.processStatistics(geoStoreUtil, statsDefRes, year, month, day, tokens);
             }
         }
 
@@ -315,6 +316,7 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
         String layerName = request.getLayerName();
         String year = request.getYear();
         String month = request.getMonth();
+        String day = request.getDay();
 
         LOGGER.info("Reprocessing layer:" + layerName + " year:" + year + " month:" + month);
 
@@ -344,7 +346,7 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
 
         Resource layerUpdatesRes = null;
         try {
-            layerUpdatesRes = geoStoreUtil.searchLayerUpdate(layerName, year, month);
+            layerUpdatesRes = geoStoreUtil.searchLayerUpdate(layerName, year, month, day);
         } catch (GeoStoreException e) {
             throw new ActionException(this, "Error while searching LayerUpdate: " + layerName, e);
         }
@@ -354,14 +356,14 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
 
             // create the missing LayerUpdate entry
             try {
-                geoStoreUtil.insertLayerUpdate(layerName, year, month);
+                geoStoreUtil.insertLayerUpdate(layerName, year, month, day);
             } catch (GeoStoreException e) {
                 throw new ActionException(this, "Error while inserting a LayerUpdate", e);
             }
         }
 
         try {
-            layerUpdatesRes = geoStoreUtil.searchLayerUpdate(layerName, year, month);
+            layerUpdatesRes = geoStoreUtil.searchLayerUpdate(layerName, year, month, day);
         } catch (GeoStoreException e) {
             throw new ActionException(this, "LayerUpdate not createds: " + layerName, e);
         }
@@ -382,7 +384,7 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
         } else if (UNREDDFormat.RASTER.name().equals(layerFormat)) {
 
             File dir = new File(layer.getAttribute(UNREDDLayer.Attributes.MOSAICPATH));
-            String filename = NameUtils.buildTifFileName(layerName, year, month);
+            String filename = NameUtils.buildTifFileName(layerName, year, month, day);
             rasterfile = new File(dir, filename);
 
         } else {
@@ -394,7 +396,7 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
 
         try {
             FlowUtil flowUtil = new FlowUtil(getTempDir(), getConfigDir());
-            flowUtil.runStatsAndScripts(layerName, year, month, rasterfile, geoStoreUtil);
+            flowUtil.runStatsAndScripts(layerName, year, month, day, rasterfile, geoStoreUtil);
         } catch (FlowException e) {
             throw new ActionException(this, e.getMessage(), e);
         }
@@ -410,11 +412,12 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
         String layername = layerUpdate.getAttribute(UNREDDLayerUpdate.Attributes.LAYER);
         String year      = layerUpdate.getAttribute(UNREDDLayerUpdate.Attributes.YEAR);
         String month     = layerUpdate.getAttribute(UNREDDLayerUpdate.Attributes.MONTH);
+        String day     = layerUpdate.getAttribute(UNREDDLayerUpdate.Attributes.DAY);
 
         // ========================================
         // Rasterize
         // ========================================
-        LOGGER.info("Regenerating raster for " + NameUtils.buildLayerUpdateName(layername, year, month));
+        LOGGER.info("Regenerating raster for " + NameUtils.buildLayerUpdateName(layername, year, month, day));
 
         File rasterFile = null;
         try {
@@ -429,7 +432,7 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
         // ========================================
         // Embed overviews
         // ========================================
-        LOGGER.info("Embedding overviews for " + NameUtils.buildLayerUpdateName(layername, year, month) + " in " + rasterFile);
+        LOGGER.info("Embedding overviews for " + NameUtils.buildLayerUpdateName(layername, year, month, day) + " in " + rasterFile);
 
         GeotiffOverviewsEmbedderConfiguration ovCfg = conf.getOverviewsEmbedderConfiguration();
 
@@ -445,7 +448,7 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
 
         String mosaicPath = layer.getAttribute(Attributes.MOSAICPATH);
 
-        String finalName = NameUtils.buildTifFileName(layername, year, month);
+        String finalName = NameUtils.buildTifFileName(layername, year, month, day);
         File finalPath = new File(mosaicPath, finalName);
         if(finalPath.exists())
             LOGGER.info("Overwriting old raster:" + finalPath);

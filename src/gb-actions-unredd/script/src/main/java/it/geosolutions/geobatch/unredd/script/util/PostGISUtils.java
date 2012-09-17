@@ -581,6 +581,7 @@ public class PostGISUtils {
 				dstSchemaBuilder.addAll(attrDescriptorList);
 //				dstSchemaBuilder.add(YEARATTRIBUTENAME, Integer.class);
 //				dstSchemaBuilder.add(MONTHATTRIBUTENAME, Integer.class);
+//				dstSchemaBuilder.add(DAYATTRIBUTENAME, Integer.class);				
 //				dstSchemaBuilder.add(DATEATTRIBUTENAME, Date.class);
 				SimpleFeatureType sft = dstSchemaBuilder.buildFeatureType();
 	

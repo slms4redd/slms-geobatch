@@ -42,7 +42,9 @@ public class RequestJDOMReader {
     private final static String ELEM_layerName = "layername";
     private final static String ELEM_year = "year";
     private final static String ELEM_month = "month";
+    private final static String ELEM_day = "day";
     private final static String ELEM_format = "format";
+    
 
     public static Request parseFile(String xmlFilename) throws JDOMException, IOException {
         return parseFile(new File(xmlFilename));
@@ -73,6 +75,7 @@ public class RequestJDOMReader {
         request.setLayername(rootElement.getChildText(ELEM_layerName));
         request.setYear(rootElement.getChildText(ELEM_year));
         request.setMonth(rootElement.getChildText(ELEM_month));
+        request.setDay(rootElement.getChildText(ELEM_day));
 
         String sFormat = rootElement.getChildText(ELEM_format);
         UNREDDFormat format = UNREDDFormat.parseName(sFormat);
@@ -95,6 +98,13 @@ public class RequestJDOMReader {
                 Integer.parseInt(request.getMonth());
         } catch(Exception e) {
             throw new IllegalArgumentException("Bad <"+ELEM_month+"> : " + request.getMonth(), e);
+        }
+        
+        try {
+            if(request.getDay() != null)
+                Integer.parseInt(request.getDay());
+        } catch(Exception e) {
+            throw new IllegalArgumentException("Bad <"+ELEM_day+"> : " + request.getDay(), e);
         }
 
         if (request.getFormat() == null) {

@@ -82,15 +82,15 @@ public abstract class GeoStoreFacade {
     /**
      * Insert or update the storedData of a StatsData.
      */
-    public void setStatsData(Resource statsDef, String statsContent, String year, String month) throws GeoStoreException {
+    public void setStatsData(Resource statsDef, String statsContent, String year, String month, String day) throws GeoStoreException {
         try {
-            Resource statsData = this.searchStatsData(statsDef.getName(), year, month);
+            Resource statsData = this.searchStatsData(statsDef.getName(), year, month, day);
 
             if (statsData == null) {
                 LOGGER.info("No StatsData found for " + statsDef.getName()
                         + ", Year=" + year + ", Month=" + month
                         + ". Inserting StatsData");
-                insertStatsData(statsDef.getName(), year, month, statsContent);
+                insertStatsData(statsDef.getName(), year, month, statsContent, day);
 
             } else {
                 long id = statsData.getId();
@@ -107,9 +107,9 @@ public abstract class GeoStoreFacade {
         }
     }
 
-    public void insertStatsData(String statsDefName, String year, String month, String content) throws GeoStoreException {
+    public void insertStatsData(String statsDefName, String year, String month, String day, String content) throws GeoStoreException {
         try {
-            RESTResource statsDataResource = createStatsDataResource(statsDefName, year, month, content);
+            RESTResource statsDataResource = createStatsDataResource(statsDefName, year, month, day, content);
             insert(statsDataResource);
         } catch (Exception e) {
             throw new GeoStoreException("Error while inserting StatsData: " + statsDefName, e);
@@ -169,8 +169,8 @@ public abstract class GeoStoreFacade {
         }
     }
 
-    public Resource searchLayerUpdate(String layer, String year, String month) throws GeoStoreException {
-        String layerSnapshot = NameUtils.buildLayerUpdateName(layer, year, month);
+    public Resource searchLayerUpdate(String layer, String year, String month, String day) throws GeoStoreException {
+        String layerSnapshot = NameUtils.buildLayerUpdateName(layer, year, month, day);
         if(LOGGER.isInfoEnabled())
             LOGGER.info("Searching LayerUpdate " + layerSnapshot);
         
@@ -206,9 +206,9 @@ public abstract class GeoStoreFacade {
         return getSingleResource(list);
     }
 
-    public Resource searchStatsData(String statsDefName, String year, String month) throws GeoStoreException {
+    public Resource searchStatsData(String statsDefName, String year, String month, String day) throws GeoStoreException {
 
-        String statsDataName = NameUtils.buildStatsDataName(statsDefName, year, month);
+        String statsDataName = NameUtils.buildStatsDataName(statsDefName, year, month, day);
         if(LOGGER.isInfoEnabled())
             LOGGER.info("Searching StatsData" + statsDataName);
 
@@ -218,8 +218,8 @@ public abstract class GeoStoreFacade {
         return getSingleResource(search(filter, false, "searchStatsData_"+statsDataName));
     }
 
-    public boolean existStatsData(String statsDefName, String year, String month) throws GeoStoreException {
-        String statsDataName = NameUtils.buildStatsDataName(statsDefName, year, month);
+    public boolean existStatsData(String statsDefName, String year, String month, String day) throws GeoStoreException {
+        String statsDataName = NameUtils.buildStatsDataName(statsDefName, year, month, day);
         SearchFilter filter = new AndFilter(
                 new FieldFilter(BaseField.NAME, statsDataName, SearchOperator.EQUAL_TO),
                 createCategoryFilter(UNREDDCategories.STATSDATA));
@@ -258,8 +258,8 @@ public abstract class GeoStoreFacade {
         return search(filter, false);
     }
 
-    public void insertLayerUpdate(String layername, String year, String month) throws GeoStoreException {
-        RESTResource res = createLayerUpdate(layername, year, month);
+    public void insertLayerUpdate(String layername, String year, String month, String day) throws GeoStoreException {
+        RESTResource res = createLayerUpdate(layername, year, month, day);
         try {
             insert(res);
         } catch (Exception e) {
@@ -310,7 +310,7 @@ public abstract class GeoStoreFacade {
         return new CategoryFilter(category.getName(), SearchOperator.EQUAL_TO);
     }
 
-    protected static RESTResource createStatsDataResource(String statsDefName, String year, String month, String csv) {
+    protected static RESTResource createStatsDataResource(String statsDefName, String year, String month, String day, String csv) {
         UNREDDStatsData statsData = new UNREDDStatsData();
         statsData.setAttribute(UNREDDStatsData.Attributes.STATSDEF, statsDefName);
         statsData.setAttribute(UNREDDStatsData.Attributes.YEAR, year);
@@ -320,7 +320,7 @@ public abstract class GeoStoreFacade {
 
         RESTResource res = statsData.createRESTResource();
 
-        String resName = NameUtils.buildStatsDataName(statsDefName, year, month);
+        String resName = NameUtils.buildStatsDataName(statsDefName, year, month, day);
         res.setName(resName);
 
         RESTStoredData storedData = new RESTStoredData();
@@ -331,7 +331,7 @@ public abstract class GeoStoreFacade {
         return res;
     }
 
-    protected static  RESTResource createLayerUpdate(String layername, String year, String month) {
+    protected static  RESTResource createLayerUpdate(String layername, String year, String month, String day) {
         UNREDDLayerUpdate layerUpdate = new UNREDDLayerUpdate();
         layerUpdate.setAttribute(UNREDDLayerUpdate.Attributes.LAYER, layername);
         layerUpdate.setAttribute(UNREDDLayerUpdate.Attributes.YEAR, year);
@@ -339,7 +339,7 @@ public abstract class GeoStoreFacade {
             layerUpdate.setAttribute(UNREDDLayerUpdate.Attributes.MONTH, month);
         }
         RESTResource res = layerUpdate.createRESTResource();
-        String resName = NameUtils.buildLayerUpdateName(layername, year, month);
+        String resName = NameUtils.buildLayerUpdateName(layername, year, month, day);
         res.setName(resName);
         return res;
     }

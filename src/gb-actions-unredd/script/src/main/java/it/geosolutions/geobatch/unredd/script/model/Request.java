@@ -25,11 +25,19 @@ package it.geosolutions.geobatch.unredd.script.model;
 import it.geosolutions.unredd.geostore.model.UNREDDFormat;
 import it.geosolutions.unredd.geostore.utils.NameUtils;
 
+/**
+ * 
+ * This bean is the model of a layerUpdate request. 
+ * Is used by the Unredd flows to deserialize the info.xml file provided as a part of the flow input.
+ *
+ */
 public class Request {
 
     private String layername;
     private String year;
     private String month;
+    private String day;
+    
     private UNREDDFormat format;
 
     public Request() {
@@ -51,9 +59,13 @@ public class Request {
         this.month = month;
     }
 
+    /**
+     * 
+     * @return a String rappresenting the file name of the granule associated to the layerUpdate modelled by this bean.
+     */
     public String buildFileName() {
         StringBuilder sb = new StringBuilder();
-        sb.append(NameUtils.buildLayerUpdateName(layername, year, month));
+        sb.append(NameUtils.buildLayerUpdateName(layername, year, month, day));
 
         if (UNREDDFormat.VECTOR == format ) {
             sb.append(".shp");
@@ -80,6 +92,16 @@ public class Request {
     public void setYear(String year) {
         this.year = year;
     }
+
+	public String getDay() {
+		return day;
+	}
+
+	public void setDay(String day) {
+		this.day = day;
+	}
+    
+    
 
     
 }

@@ -229,20 +229,25 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
 
         if(month!= null && ! month.matches("\\d\\d?") )
             throw new ActionException(this, "Bad format for month parameter ("+month+")");
+        
+        final String day = request.getMonth();
+
+        if(month!= null && ! month.matches("\\d\\d?") )
+            throw new ActionException(this, "Bad format for month parameter ("+day+")");
 
         final String srcFilename = request.buildFileName();
 
         // build the name of the snapshot
-        final String layerUpdateName = NameUtils.buildLayerUpdateName(layername, year, month);
+        final String layerUpdateName = NameUtils.buildLayerUpdateName(layername, year, month, day);
 
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Info: layername:" + layername + " year:"+year + " month:"+month);
+            LOGGER.info("Info: layername:" + layername + " year:"+year + " month:"+month + " day:"+day);
         }
-        this.listenerForwarder.progressing(12, "Info from xml file: layername:" + layername + " year:"+year + " month:"+month);
+        this.listenerForwarder.progressing(12, "Info from xml file: layername:" + layername + " year:"+year + " month:"+month + " day:"+day);
 
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("XML parameter settings : [layer name = " + layername + "], [year = " + year + "], [month = " + month + "], [ file name = " + srcFilename + "]");
+            LOGGER.debug("XML parameter settings : [layer name = " + layername + "], [year = " + year + "], [month = " + month + "], [day = " + day + "], [ file name = " + srcFilename + "]");
             LOGGER.debug("XML parameter settings : [layer update name = " + layerUpdateName + "]");
         }
 
@@ -299,7 +304,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
 
         Resource existingLayerUpdate = null;
         try {
-            existingLayerUpdate = geostore.searchLayerUpdate(layername, year, month);
+            existingLayerUpdate = geostore.searchLayerUpdate(layername, year, month, day);
         } catch (Exception e) {
             LOGGER.debug("Parameter : [layerSnapshot=" + layerUpdateName + "]");
             throw new ActionException(this, "Error searching for a LayerUpdate (layer:"+layername+" year:"+year+ " month:"+month+")", e);
@@ -316,7 +321,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
          *******************************/
         final File rasterFile;
         if (request.getFormat() == UNREDDFormat.VECTOR ) {
-            rasterFile = processVector(dataFile, layername, year, month, layer, mosaicDir);
+            rasterFile = processVector(dataFile, layername, year, month, day, layer, mosaicDir);
 
         } else {
             rasterFile = processRaster(dataFile, layer, mosaicDir, layername);
@@ -335,7 +340,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
         this.listenerForwarder.progressing(70, "Adding LayerUpdate into GeoStore");
 
         try {
-            geostore.insertLayerUpdate(layername, year, month);
+            geostore.insertLayerUpdate(layername, year, month, day);
         } catch (Exception e) {
             LOGGER.debug("Parameter : [layername=" + layername + ", year=" + year + ", month=" + month + "]");
             throw new ActionException(this, "Error while inserting a LayerUpdate", e);
@@ -351,7 +356,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
 
         FlowUtil flowUtil= new FlowUtil(getTempDir(), getConfigDir());
         try {
-            flowUtil.runStatsAndScripts(layername, year, month, rasterFile, geostore);
+            flowUtil.runStatsAndScripts(layername, year, month, day, rasterFile, geostore);
         } catch (FlowException e) {
             throw new ActionException(this, e.getMessage(), e);
         }
@@ -497,7 +502,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
      * @throws ActionException
      * @throws IOException
      */
-    protected File processVector(File dataFile, final String layername, final String year, final String month, UNREDDLayer layer, File mosaicDir) throws ActionException, IOException {
+    protected File processVector(File dataFile, final String layername, final String year, final String month, final String day, UNREDDLayer layer, File mosaicDir) throws ActionException, IOException {
         LOGGER.info("Starting PostGIS ingestion for " + dataFile);
         this.listenerForwarder.progressing(25, "Starting PostGIS ingestion");
         try {
@@ -513,7 +518,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
         this.listenerForwarder.progressing(30, "Starting rasterization");
         try {
             GDALRasterize rasterize = new GDALRasterize( cfg.getRasterizeConfig(), cfg.getConfigDir(), getTempDir());
-            rasterFile = rasterize.run(layer, new UNREDDLayerUpdate(layername, year, month), dataFile);
+            rasterFile = rasterize.run(layer, new UNREDDLayerUpdate(layername, year, month, day), dataFile);
         } catch (Exception e) {
             throw new ActionException(this, "Error while rasterizing "+dataFile+": " + e.getMessage(), e);
         }
@@ -531,7 +536,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
             LOGGER.info("Moving raster file into mosaic dir");
         }
         this.listenerForwarder.progressing(50, "Copying raster into mosaic dir");
-        String finalRasterName = NameUtils.buildTifFileName(layername, year, month);
+        String finalRasterName = NameUtils.buildTifFileName(layername, year, month, day);
         File destFile = new File(mosaicDir, finalRasterName);
         if(destFile.exists())
             throw new ActionException(this, "Destination file in mosaic dir already exists " + destFile);

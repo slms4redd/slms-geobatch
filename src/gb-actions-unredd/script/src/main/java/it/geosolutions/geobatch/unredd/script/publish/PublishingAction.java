@@ -162,8 +162,9 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
         String layerName = request.getLayername();
         String year = request.getYear();
         String month = request.getMonth();
+        String day = request.getDay();
         
-        String filename = NameUtils.buildTifFileName(layerName, year, month);
+        String filename = NameUtils.buildTifFileName(layerName, year, month, day);
         
         LOGGER.info("Input parameters : [layer=" + layerName + ", year=" + year + ", month=" + month + "]");
 
@@ -196,7 +197,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
 
         LOGGER.info("Searching source LayerUpdate [" + layerName + ", " + year + "," + month + "]");
 
-        Resource srcLayerUpdatesSA = srcGeostore.searchLayerUpdate(layerName, year, month);
+        Resource srcLayerUpdatesSA = srcGeostore.searchLayerUpdate(layerName, year, month, day);
         if (srcLayerUpdatesSA == null) {
             throw new ActionException(this, "Source LayerUpdate not found [" + layerName + ", " + year + "," + month + "]");
         }
@@ -227,7 +228,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
 	            LOGGER.info("Updating PostGIS...");
 	            updatePostGIS(srcDS, destDS, layerName, year, month);
 	            LOGGER.info("Copy raster data used for dynamic stats...");
-	            this.copyRaster(srcPath, dstPath, layerName, year, month);
+	            this.copyRaster(srcPath, dstPath, layerName, year, month, day);
 	        } 
 	        else {
 	        	// ****************************************
@@ -281,7 +282,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
 
         try {
             LOGGER.info("Copying Geostore content");
-            this.copyGeostoreData(srcGeostore, dstGeostore, layerName, year, month);
+            this.copyGeostoreData(srcGeostore, dstGeostore, layerName, year, month, day);
             LOGGER.debug("Geostore copy successfully completed");
         } catch (Exception e) {
             throw new ActionException(this, "Error while copying GeoStore content",e );
@@ -298,7 +299,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
         FlowUtil flowUtil= new FlowUtil(getTempDir(), getConfigDir());
         try {
         	File dissRasterFile = new File(dstPath, filename);
-            flowUtil.runStatsAndScripts(layerName, year, month, dissRasterFile, dstGeostore);
+            flowUtil.runStatsAndScripts(layerName, year, month, day, dissRasterFile, dstGeostore);
         } catch (FlowException e) {
             throw new ActionException(this, e.getMessage(), e);
         }
@@ -349,7 +350,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
      * @throws GeoStoreException
      */
     private void copyGeostoreData(GeoStoreUtil srcGeostore, GeoStoreUtil dstGeostore,
-            String layerName, String year, String month)
+            String layerName, String year, String month, String day)
                 throws ActionException, GeoStoreException {
 
         //==================================================
@@ -376,14 +377,14 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
         //===
         //=== Insert LayerUpdate if it does not exist
 
-        Resource srcLayerUpdate = srcGeostore.searchLayerUpdate(layerName, year, month);
+        Resource srcLayerUpdate = srcGeostore.searchLayerUpdate(layerName, year, month, day);
         if (srcLayerUpdate == null) {
             throw new ActionException(this, "Source LayerUpdate not found [layer:" + layerName + " year:" + year + " month:" + month + "]");
         }
 
         //=== COPY LAYERUPDATE
 
-        Resource dstLayerUpdate = dstGeostore.searchLayerUpdate(layerName, year, month);
+        Resource dstLayerUpdate = dstGeostore.searchLayerUpdate(layerName, year, month, day);
         if ( dstLayerUpdate == null ) {
             LOGGER.info("Copying LayerUpdate " + layerName+":"+year+":"+month);
 
@@ -419,13 +420,13 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
 
             //=== OVERWRITE STATSDATA
 
-            Resource dstStatsData = dstGeostore.searchStatsData(statsDefName, year, month);
+            Resource dstStatsData = dstGeostore.searchStatsData(statsDefName, year, month, day);
             if(dstStatsData != null) {
                 LOGGER.info("Removing previous StatsData [statsdef:"+statsDefName+" year:"+year+" month:"+month+"]");
                 dstGeostore.delete(dstStatsData.getId());
             }
 
-            Resource srcStatsData = srcGeostore.searchStatsData(statsDefName, year, month);
+            Resource srcStatsData = srcGeostore.searchStatsData(statsDefName, year, month, day);
             if (srcStatsData == null) {
                 LOGGER.warn("No StatsData found for [statsdef:"+statsDefName+" year:"+year+" month:"+month+"]");
             } else {
@@ -548,9 +549,9 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
      * dissemination path
      * @throws IOException
      */
-    private void copyRaster(String srcPath, String dstPath, String layer, String year, String month) throws IOException {
+    private void copyRaster(String srcPath, String dstPath, String layer, String year, String month, String day) throws IOException {
 
-        String filename = NameUtils.buildTifFileName(layer, year, month);
+        String filename = NameUtils.buildTifFileName(layer, year, month, day);
         File srcFile = new File(srcPath, filename);
         File dstDir = new File(dstPath);
 

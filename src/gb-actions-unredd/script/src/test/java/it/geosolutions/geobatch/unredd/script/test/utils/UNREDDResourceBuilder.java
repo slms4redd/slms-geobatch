@@ -48,11 +48,11 @@ public class UNREDDResourceBuilder{
      * @deprecated also add the content please
 	 */
 	public  static RESTResource createLayerUpdateResource(String name, String year, String month){
-        return createLayerUpdateResource(name, year, month, null);
+        return createLayerUpdateResource(name, year, month, null, null);
 	}
 
     
-	public static RESTResource createLayerUpdateResource(String name, String year, String month, String content){
+	public static RESTResource createLayerUpdateResource(String name, String year, String month, String day, String content){
 
         UNREDDLayerUpdate layerUpdate = new UNREDDLayerUpdate();
 
@@ -63,7 +63,7 @@ public class UNREDDResourceBuilder{
         }
 
         RESTResource res = layerUpdate.createRESTResource();
-		res.setName(NameUtils.buildLayerUpdateName(name, year, month));
+		res.setName(NameUtils.buildLayerUpdateName(name, year, month, day));
         res.setData(content);
 
         return res;
@@ -110,7 +110,7 @@ public class UNREDDResourceBuilder{
         return res;
 	}
 
-	public  static RESTResource createStatsDataResource(String statsDefName, String year, String month, String content){
+	public  static RESTResource createStatsDataResource(String statsDefName, String year, String month, String day, String content){
 
         UNREDDStatsData statsData = new UNREDDStatsData();
 
@@ -121,7 +121,7 @@ public class UNREDDResourceBuilder{
         }
 
         RESTResource res = statsData.createRESTResource();
-		res.setName(NameUtils.buildStatsDataName(statsDefName, year, month));
+		res.setName(NameUtils.buildStatsDataName(statsDefName, year, month, day));
         res.setData(content);
         
         return res;

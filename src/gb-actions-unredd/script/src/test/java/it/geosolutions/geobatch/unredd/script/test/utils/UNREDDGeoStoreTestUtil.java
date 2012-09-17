@@ -118,16 +118,16 @@ public class UNREDDGeoStoreTestUtil {
         resourceList.add(UNREDDResourceBuilder.createLayerResource("layer2", null));
         resourceList.add(UNREDDResourceBuilder.createLayerResource("layer3", null));
 
-        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer1", "2009", "12", null));
-        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer1", "2010", null, null));
-        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer1", "2011", null, null));
+        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer1", "2009", "12", null, null));
+        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer1", "2010", null, null, null));
+        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer1", "2011", null, null, null));
 
-        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer2", "2010", null, null));
-        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer2", "2011", null, null));
+        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer2", "2010", null, null, null));
+        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer2", "2011", null, null, null));
 
-        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer3", "2009", null, null));
-        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer3", "2010", "11", null));
-        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer3", "2011", null, null));
+        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer3", "2009", null, null, null));
+        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer3", "2010", "11", null, null));
+        resourceList.add(UNREDDResourceBuilder.createLayerUpdateResource("layer3", "2011", null, null, null));
 
         resourceList.add(UNREDDResourceBuilder.createStatsDefResource("SMALLSTAT2", smallStat, "layer1", "layer2", "layer3"));
         resourceList.add(UNREDDResourceBuilder.createStatsDefResource("CLASSSTAT2", smallStat, "layer1", "layer2", "layer3"));
@@ -151,13 +151,13 @@ public class UNREDDGeoStoreTestUtil {
         return geostoreClient1.insert(statsDefRRes);
     }
 
-    public static void insertLayerUpdate(String layer, String year, String month) {       
-        RESTResource rs = UNREDDResourceBuilder.createLayerUpdateResource(layer, year, month, null);
+    public static void insertLayerUpdate(String layer, String year, String month, String day) {       
+        RESTResource rs = UNREDDResourceBuilder.createLayerUpdateResource(layer, year, month, day, null);
         geostoreClient1.insert(rs);
     }
 
-    public static Long insertStatsData(String statsdef, String year, String month, String content) {
-        RESTResource rs = UNREDDResourceBuilder.createStatsDataResource(statsdef, year, month, content);
+    public static Long insertStatsData(String statsdef, String year, String month, String day, String content) {
+        RESTResource rs = UNREDDResourceBuilder.createStatsDataResource(statsdef, year, month, day, content);
         return geostoreClient1.insert(rs);
     }
 

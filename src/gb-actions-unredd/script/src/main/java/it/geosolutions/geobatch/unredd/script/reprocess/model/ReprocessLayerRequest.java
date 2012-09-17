@@ -30,6 +30,7 @@ public class ReprocessLayerRequest extends ReprocessRequest {
     private String layerName;
     private String year;
     private String month;
+    private String day;
 
     public String getLayerName() {
         return layerName;
@@ -54,5 +55,14 @@ public class ReprocessLayerRequest extends ReprocessRequest {
     public void setYear(String year) {
         this.year = year;
     }
-        
+
+	public String getDay() {
+		return day;
+	}
+
+	public void setDay(String day) {
+		this.day = day;
+	}
+    
+    
 }

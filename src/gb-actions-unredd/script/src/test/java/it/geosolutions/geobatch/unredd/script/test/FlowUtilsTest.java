@@ -78,11 +78,11 @@ public class FlowUtilsTest extends BaseTest {
         // some test data
         UNREDDGeoStoreTestUtil.deleteResources(UNREDDCategories.STATSDATA);
 
-        UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "1", "data01");
-        UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "2", "data02");
-        UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "3", "data03");
-        UNREDDGeoStoreTestUtil.insertStatsData("sdata2", "2000", null, "data04");
-        UNREDDGeoStoreTestUtil.insertStatsData("sdata2", "2010", null, "data05");
+        UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "1", null, "data01");
+        UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "2", null, "data02");
+        UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "3", null, "data03");
+        UNREDDGeoStoreTestUtil.insertStatsData("sdata2", "2000", null, null,"data04");
+        UNREDDGeoStoreTestUtil.insertStatsData("sdata2", "2010", null, null,"data05");
 
         // clear playfield
         UNREDDGeoStoreTestUtil.deleteResources(UNREDDCategories.CHARTDATA);
@@ -164,6 +164,7 @@ public class FlowUtilsTest extends BaseTest {
         final String STATSDEFNAME = "testStatsDef";
         final String YEAR = "1999";
         final String MONTH = "12";
+        final String DAY = "07";
 
         Long sdId = UNREDDGeoStoreTestUtil.insertStatsDef(STATSDEFNAME, smallStat, "layerName");
         Resource statsDef = gstcu.getFullResource(sdId);
@@ -178,13 +179,13 @@ public class FlowUtilsTest extends BaseTest {
         // first time stats will be INSERTed
         // second time stats will be UPDATEd
         for (int i = 0; i < 2; i++) {
-            String statsOut = flowUtil.processStatistics(getGeoStoreUtil(), statsDef, YEAR, MONTH, tok);
+            String statsOut = flowUtil.processStatistics(getGeoStoreUtil(), statsDef, YEAR, MONTH, DAY, tok);
     //        LOGGER.info(statsOut);
             long outlen = statsOut.length();
 
             assertTrue("Empty output", outlen>0);
 
-            Resource loadedStatsData = getGeoStoreUtil().searchStatsData(STATSDEFNAME, YEAR, MONTH);
+            Resource loadedStatsData = getGeoStoreUtil().searchStatsData(STATSDEFNAME, YEAR, MONTH, DAY);
             assertNotNull("Could not reload StatsData", loadedStatsData);
             assertEquals("Stats len mismatch", outlen, loadedStatsData.getData().getData().length());
         }
@@ -243,6 +244,7 @@ public class FlowUtilsTest extends BaseTest {
         final String STATSDEFNAME = "testStatsDef";
         final String YEAR = "1999";
         final String MONTH = "12";
+        final String DAY = "07";
 
         UNREDDGeoStoreTestUtil.insertStatsDef(STATSDEFNAME, smallStat, LAYERNAME);
 
@@ -272,12 +274,12 @@ public class FlowUtilsTest extends BaseTest {
         LOGGER.info("===== Run the code!");
 
         FlowUtil flowUtil = new FlowUtil(getTempDir(), getConfigDir());
-        flowUtil.runStatsAndScripts(LAYERNAME, YEAR, MONTH, classFile, getGeoStoreUtil());
+        flowUtil.runStatsAndScripts(LAYERNAME, YEAR, MONTH, DAY, classFile, getGeoStoreUtil());
 
 //---------------------
         LOGGER.info("===== Testing results");
 
-        Resource loadedStatsData = gstcu.searchStatsData(STATSDEFNAME, YEAR, MONTH);
+        Resource loadedStatsData = gstcu.searchStatsData(STATSDEFNAME, YEAR, MONTH, DAY);
         assertNotNull("Could not reload StatsData", loadedStatsData);
 
         ShortResourceList res1 = gstcu.getGeoStoreClient().searchResources(chartDataFilter);

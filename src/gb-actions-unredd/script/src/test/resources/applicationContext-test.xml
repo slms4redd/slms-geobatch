@@ -5,21 +5,21 @@
 
 	<!-- Test Environment Initialization -->
 	<bean id="geoStoreConfig" class="it.geosolutions.geobatch.unredd.script.model.GeoStoreConfig">
-        <property name="url" value="http://localhost:9191/geostore/rest"/>
+        <property name="url" value="http://localhost:8200/stg_geostore/rest"/>
         <property name="username" value="admin"/>
-        <property name="password" value="admin"/>
+        <property name="password" value="Unr3dd"/>
     </bean>
 
 	<bean id="geoStoreConfig2" class="it.geosolutions.geobatch.unredd.script.model.GeoStoreConfig">
-        <property name="url" value="http://localhost:9192/geostore/rest"/>
+        <property name="url" value="http://localhost:8204/diss_geostore/rest"/>
         <property name="username" value="admin"/>
-        <property name="password" value="admin"/>
+        <property name="password" value="Unr3dd"/>
     </bean>
 
     <bean id="geoServerConfig" class="it.geosolutions.geobatch.unredd.script.model.GeoServerBasicConfig">
-        <property name="geoserverURL" value="http://localhost:8080/geoserver"/>
+        <property name="geoserverURL" value="http://localhost:8201/stg_geoserver"/>
         <property name="geoserverUID" value="admin"/>
-        <property name="geoserverPWD" value="geoserver"/>
+        <property name="geoserverPWD" value="Unr3dd"/>
         <property name="workspace" value="unredd"/>
     </bean>
 
@@ -28,8 +28,8 @@
         <property name="port" value="5432"/>
         <property name="database" value="unredd_test"/>
         <property name="schema" value="public"/>
-        <property name="username" value="unredd"/>
-        <property name="password" value="unredd"/>
+        <property name="username" value="unredd_test"/>
+        <property name="password" value="Unr3dd"/>
     </bean>
 
 	<bean id="postGisConfig2" class="it.geosolutions.geobatch.unredd.script.model.PostGisConfig">
@@ -37,14 +37,22 @@
         <property name="port" value="5432"/>
         <property name="database" value="unredd_test2"/>
         <property name="schema" value="public"/>
-        <property name="username" value="unredd"/>
-        <property name="password" value="unredd"/>
+        <property name="username" value="unredd_test2"/>
+        <property name="password" value="Unr3dd"/>
     </bean>
 
 	<bean id="rasterizeConfig" class="it.geosolutions.geobatch.unredd.script.model.RasterizeConfig">
         <property name="executable" value="gdal_rasterize"/>
         <property name="freeMarkerTemplate" value="gdalrasterize.xml"/>
         <property name="taskExecutorXslFileName" value="gdalrasterize.xsl"/>
+    </bean>
+    
+    <bean id="mosaicDirPath" class="java.lang.String">
+    	<constructor-arg value="/var/geobatch/test/mosaic" />
+    </bean>
+    
+    <bean id="rasterFilePath" class="java.lang.String">
+    	<constructor-arg value="/var/geobatch/test/paraguay_ndvi_2012-08.tif" />
     </bean>
 
 </beans>

@@ -51,7 +51,7 @@ public class GeoStoreTest extends BaseTest {
         // some test data
         UNREDDGeoStoreTestUtil.deleteResources(UNREDDCategories.STATSDATA);
 
-        long id = UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "1", "data01");
+        long id = UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "1", null, "data01");
 
         Resource res = gstcu.getFullResource(id);
         UNREDDStatsData sd = new UNREDDStatsData(res);

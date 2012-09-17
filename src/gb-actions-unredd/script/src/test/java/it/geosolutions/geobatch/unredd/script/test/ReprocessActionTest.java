@@ -107,11 +107,11 @@ public class ReprocessActionTest extends BaseTest {
         // some test data
         UNREDDGeoStoreTestUtil.deleteResources(UNREDDCategories.STATSDATA);
 
-        UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "1", "data01");
-        UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "2", "data02");
-        UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "3", "data03");
-        UNREDDGeoStoreTestUtil.insertStatsData("sdata2", "2000", null, "data04");
-        UNREDDGeoStoreTestUtil.insertStatsData("sdata2", "2010", null, "data05");
+        UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "1", null, "data01");
+        UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "2", null, "data02");
+        UNREDDGeoStoreTestUtil.insertStatsData("sdata1", "2010", "3", null, "data03");
+        UNREDDGeoStoreTestUtil.insertStatsData("sdata2", "2000", null, null, "data04");
+        UNREDDGeoStoreTestUtil.insertStatsData("sdata2", "2010", null, null, "data05");
 
         // clear playfield
         UNREDDGeoStoreTestUtil.deleteResources(UNREDDCategories.CHARTDATA);
@@ -183,7 +183,7 @@ public class ReprocessActionTest extends BaseTest {
 
         // add a layerUpdate
         {
-            gstcu.insertLayerUpdate(LAYERNAME, "2010", null);
+            gstcu.insertLayerUpdate(LAYERNAME, "2010", null, null);
         }
 
         // add a statsDef

@@ -210,7 +210,7 @@ public class IngestionActionTest extends BaseTest {
         layerUpdate.setAttribute(Attributes.YEAR, "2012");
         layerUpdate.setAttribute(Attributes.LAYER, "layer1");
         RESTResource luResource = layerUpdate.createRESTResource();
-        luResource.setName(NameUtils.buildLayerUpdateName("layer1", "2012", null));
+        luResource.setName(NameUtils.buildLayerUpdateName("layer1", "2012", null, null));
         gstcu.insert(luResource);
 
         //=== Data is set, prepare flow
@@ -242,7 +242,7 @@ public class IngestionActionTest extends BaseTest {
         LOGGER.info("===== Testing results");
 
         File mosaicDir = new File(getTempDir(), "mosaic");
-        File finalFile = new File(mosaicDir, NameUtils.buildTifFileName("layer1", "2012", null));
+        File finalFile = new File(mosaicDir, NameUtils.buildTifFileName("layer1", "2012", null, null));
         assertTrue(finalFile.exists());
     }
 
@@ -265,7 +265,7 @@ public class IngestionActionTest extends BaseTest {
         LOGGER.info("===== Testing results");
 
         File mosaicDir = new File(getTempDir(), "mosaic");
-        File finalFile = new File(mosaicDir, NameUtils.buildTifFileName("layer1", "2010", "10")); // these values are in the info.xml file
+        File finalFile = new File(mosaicDir, NameUtils.buildTifFileName("layer1", "2010", "10", "07")); // these values are in the info.xml file
         assertTrue(finalFile.exists());
     }
 

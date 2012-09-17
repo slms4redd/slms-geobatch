@@ -84,6 +84,10 @@ public abstract class BaseTest extends Assert{
     static protected PostGisConfig postGisConfig;
 
     static protected GeoServerBasicConfig geoServerConfig;
+    
+    static protected String mosaicDirPath;
+    static protected String rasterFilePath;
+    
     /**
      * Dissemination PG.
      */
@@ -148,6 +152,9 @@ public abstract class BaseTest extends Assert{
             postGisConfig2 = (PostGisConfig)ctx.getBean("postGisConfig2");
 
             rasterizeConfig = (RasterizeConfig)ctx.getBean("rasterizeConfig");
+            
+            mosaicDirPath = (String)ctx.getBean("mosaicDirPath");
+            rasterFilePath = (String)ctx.getBean("rasterFilePath");
 
             UNREDDGeoStoreTestUtil.init(geoStoreConfig);
         }

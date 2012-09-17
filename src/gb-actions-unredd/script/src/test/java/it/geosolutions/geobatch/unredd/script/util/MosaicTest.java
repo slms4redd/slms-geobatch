@@ -65,13 +65,13 @@ public class MosaicTest extends BaseTest {
     public void testMosaic() throws Exception {
     	
     	// NB These are local directory
-    	File mosaicDir = new File("C:\\Users\\geosolutions\\Desktop\\Shapefile_Tiff\\intact_forest\\intact_forest");
+    	File mosaicDir = new File(mosaicDirPath);
         //File mosaicDir = new File("/home/geosol/data/unredd/ingestion/intact_forest");
         
     	assertTrue(mosaicDir.exists());
         assertTrue(mosaicDir.isDirectory());
 
-        File rasterFile = new File("C:\\Users\\geosolutions\\Desktop\\Shapefile_Tiff\\intact_forest\\intact_forest\\intact_forest_2005.tif");
+        File rasterFile = new File(rasterFilePath);
 //        File rasterFile = new File("/home/geosol/data/unredd/ingestion/src/intact_forest_2005.tif");
 
         double [] bbox = new double[4];

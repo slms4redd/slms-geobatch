@@ -317,6 +317,9 @@ public abstract class GeoStoreFacade {
         if (month != null) {
             statsData.setAttribute(UNREDDStatsData.Attributes.MONTH, month);
         }
+        if (day != null) {
+            statsData.setAttribute(UNREDDStatsData.Attributes.DAY, day);
+        }
 
         RESTResource res = statsData.createRESTResource();
 

@@ -230,7 +230,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
         if(month!= null && ! month.matches("\\d\\d?") )
             throw new ActionException(this, "Bad format for month parameter ("+month+")");
         
-        final String day = request.getMonth();
+        final String day = request.getDay();
 
         if(month!= null && ! month.matches("\\d\\d?") )
             throw new ActionException(this, "Bad format for month parameter ("+day+")");

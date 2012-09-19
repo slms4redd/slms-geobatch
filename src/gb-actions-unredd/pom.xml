@@ -44,5 +44,116 @@
     </license>
   </licenses>
   
+  <build>
+  	
+  <plugins>
+  	
+    <plugin>
+  	
+      <groupId>org.apache.maven.plugins</groupId>
+  	
+      <artifactId>maven-jar-plugin</artifactId>
+  	
+      <inherited>true</inherited>
+  	
+      <executions>
+  	
+        <!-- Remove the flowdata files from the base jar ========-->
+  	
+        <execution>
+  	
+          <!--
+  	
+                        setting the phase as prep-pack is the only way I::etj found
+  	
+                        to have the excludes work.
+  	
+                        Once the basic jar is created with the exclusions,
+  	
+                        the jar will not be rebuilt in the jar:jar phase.
+  	
+
+  	
+                        This exclusion will work with maven 2.1.0 but not with 2.0.9 or 2.0.10.
+  	
+                      -->
+  	
+          <phase>prepare-package</phase>
+  	
+          <goals>
+  	
+            <goal>jar</goal>
+  	
+          </goals>
+  	
+          <configuration>
+  	
+            <excludes>
+  	
+              <exclude>data/</exclude>
+  	
+            </excludes>
+  	
+          </configuration>
+  	
+        </execution>
+  	
+        <!-- Creates a jar containing only the flowdata files ===-->
+  	
+        <execution>
+  	
+          <id>packFlowData</id>
+  	
+          <phase>package</phase>
+  	
+          <goals>
+  	
+            <goal>jar</goal>
+  	
+          </goals>
+  	
+          <configuration>
+  	
+            <classifier>flowdata</classifier>
+  	
+            <includes>
+  	
+              <include>data/**</include>
+  	
+            </includes>
+  	
+          </configuration>
+  	
+        </execution>
+  	
+      </executions>
+  	
+    </plugin>
+  	
+  </plugins>
+  	
+</build>
+  	
+<!-- =========================================================== -->
+  	
+<!--     Modules for the build in approximate dependency order   -->
+  	
+<!-- =========================================================== -->
+  	
+<modules>
+  	
+  <module>statistics</module>
+  	
+  <module>geostore</module>
+  	
+  <module>script</module>
+  	
+  <!--
+  	
+      <module>rasterize</module>
+  	
+      -->
+  	
+</modules>  
   
 </project>

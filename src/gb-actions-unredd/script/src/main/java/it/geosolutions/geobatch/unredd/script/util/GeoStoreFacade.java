@@ -338,6 +338,9 @@ public abstract class GeoStoreFacade {
         if (month != null) {
             layerUpdate.setAttribute(UNREDDLayerUpdate.Attributes.MONTH, month);
         }
+        if (day != null) {
+            layerUpdate.setAttribute(UNREDDLayerUpdate.Attributes.DAY, day);
+        }
         RESTResource res = layerUpdate.createRESTResource();
         String resName = NameUtils.buildLayerUpdateName(layername, year, month, day);
         res.setName(resName);

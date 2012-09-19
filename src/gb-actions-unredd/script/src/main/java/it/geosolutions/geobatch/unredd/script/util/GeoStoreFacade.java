@@ -90,7 +90,7 @@ public abstract class GeoStoreFacade {
                 LOGGER.info("No StatsData found for " + statsDef.getName()
                         + ", Year=" + year + ", Month=" + month
                         + ". Inserting StatsData");
-                insertStatsData(statsDef.getName(), year, month, statsContent, day);
+                insertStatsData(statsDef.getName(), year, month, day, statsContent);
 
             } else {
                 long id = statsData.getId();

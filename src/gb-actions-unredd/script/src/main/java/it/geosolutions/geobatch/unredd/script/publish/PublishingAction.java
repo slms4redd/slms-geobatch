@@ -226,7 +226,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
 	            // ****************************************
 	        	LOGGER.info("The request is VECTOR format based:");
 	            LOGGER.info("Updating PostGIS...");
-	            updatePostGIS(srcDS, destDS, layerName, year, month);
+	            updatePostGIS(srcDS, destDS, layerName, year, month, day);
 	            LOGGER.info("Copy raster data used for dynamic stats...");
 	            this.copyRaster(srcPath, dstPath, layerName, year, month, day);
 	        } 
@@ -569,9 +569,10 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
      * @param layer
      * @param year
      * @param month
+     * @param day
      * @throws IOException
      */
-    private void updatePostGIS(DataStore srcDS, DataStore destDS, String layer, String year, String month) throws ActionException {
+    private void updatePostGIS(DataStore srcDS, DataStore destDS, String layer, String year, String month, String day) throws ActionException {
 
         try {
 
@@ -584,7 +585,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
         	
         	if(!tableCreated){
 	            LOGGER.info("Removing features from the dissemination PostGIS...");
-				PostGISUtils.removeFeatures(destDS, layer, year, month);
+				PostGISUtils.removeFeatures(destDS, layer, year, month, day);
 				LOGGER.info("Features successfully removed from the dissemination PostGIS");
         	}
         	else{
@@ -592,7 +593,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
         	}
         	
             LOGGER.info("Copying features ...");
-            PostGISUtils.copyFeatures(srcDS, destDS, layer, year, month, true); // TODO: change to false
+            PostGISUtils.copyFeatures(srcDS, destDS, layer, year, month, day, true); // TODO: change to false
             LOGGER.info("Features successfully copied");
 
         } catch (PostGisException e) {

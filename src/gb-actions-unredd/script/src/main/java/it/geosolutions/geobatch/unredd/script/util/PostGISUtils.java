@@ -88,6 +88,10 @@ public class PostGISUtils {
      * @deprecated this string should be specified in the configuration
      */
     public final static String MONTHATTRIBUTENAME = "unredd_month";
+    /**
+     * @deprecated this string should be specified in the configuration
+     */
+    public final static String DAYATTRIBUTENAME = "unredd_day";
     public final static String DATEATTRIBUTENAME = "unredd_date";
 
 
@@ -132,7 +136,7 @@ public class PostGISUtils {
      * @return the count of features copied
      * TODO this must become generic and NOT create a store per se for the postgis layer!!!
      */
-    public static int shapeToPostGis(File srcShapeFile, PostGisConfig dstPg, String layer, String year, String month) throws PostGisException {
+    public static int shapeToPostGis(File srcShapeFile, PostGisConfig dstPg, String layer, String year, String month, String day) throws PostGisException {
         FileDataStore srcStore = null;
         try {
             // read the shape file and put it into a SimpeFeatureCollection
@@ -140,7 +144,7 @@ public class PostGISUtils {
             
             SimpleFeatureSource featureSource = srcStore.getFeatureSource();
             SimpleFeatureCollection sfc = (SimpleFeatureCollection) featureSource.getFeatures();
-            return enrichAndAddFeatures(sfc, dstPg, layer, year, month, true);
+            return enrichAndAddFeatures(sfc, dstPg, layer, year, month, day, true);
         } catch (IOException ex) {
             throw new PostGisException("Error copying features: " + ex.getMessage(), ex);
         } finally {
@@ -148,72 +152,6 @@ public class PostGISUtils {
         }
     }
 
-//    /**
-//     * **************
-//     * this method read mosaic features (filtered by layer, year, month) from the postgis db specified in param and save them into
-//     * the current postgis
-//     *
-//     * @param params
-//     * @param layer the layer filter parameter
-//     * @param year the year filter parameter
-//     * @param month the month filter parameter
-//     * @param itemsForPage it indicates how many featues should be saved time by time
-//     * @param forceCreation if the destination table does not exist, create it
-//     * @throws IOException
-//     */
-//    public void copyMosaic(PostGisConfig srcCfg, PostGisConfig dstCfg, String layer, String year, String month, boolean forceCreation) throws PostGisException {
-//
-//        LOGGER.debug("Copy mosaic : " + layer + ", " + year + ", " + month);
-//
-//        DataStore srcDs = createDatastore(srcCfg);
-//        DataStore dstDs = createDatastore(dstCfg);
-//
-//        try {
-//            String filename = NameUtils.buildTifFileName(layer, year, month);
-//
-//            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
-//            Filter filter = (Filter) ff.equals(ff.property("location"), ff.literal(filename));
-//            LOGGER.debug("Filter: " + filter);
-//
-//            // read the shape file and put it into a SimpeFeatureCollection
-//            SimpleFeatureSource fsLayerSrc = null;
-//            try {
-//                fsLayerSrc = srcDs.getFeatureSource(layer);
-//            } catch (Exception e) {
-//                LOGGER.error("The source mosaic " + layer + " cannot be accessed. May be, it does not exist. Skip execution", e);
-//                throw new PostGisException("The source mosaic " + layer + " cannot be accessed", e);
-//            }
-//            FeatureSource fsDissLayer = null;
-//            try {
-//                // try to look for the destination table
-//                fsDissLayer = (FeatureSource) dstDs.getFeatureSource(layer);
-//            } catch (Exception e) {
-//                if ( forceCreation ) {
-//                    // force creation of the target table
-//                    LOGGER.warn("An exception was raised when connecting to " + layer + " of the mosaic system. Forcing creation");
-//                    SimpleFeatureTypeBuilder trgSchemaBuilder = new SimpleFeatureTypeBuilder();
-//                    SimpleFeatureType sft = trgSchemaBuilder.copy((SimpleFeatureType) fsLayerSrc.getSchema());
-//                    dstDs.createSchema(sft);
-//
-//                } else {
-//                    LOGGER.error("An exception was raised when connecting to " + layer);
-//                    throw new PostGisException("The mosaic " + layer + " does not exist in the geoserver dissemination system");
-//                }
-//
-//            }
-//            SimpleFeatureCollection filteredSF = fsLayerSrc.getFeatures(filter);
-//            if ( filteredSF == null || (filteredSF != null && filteredSF.isEmpty()) ) {
-//                LOGGER.warn(" The filtered collection is empty. Skip copying");
-//                return;
-//            }
-//            LOGGER.info("The filtered collection is not empty. Starting copy " + filteredSF.size() + " features");
-//            shapeToPostGis(layer, filteredSF);
-////        } catch (FactoryRegistryException factoryRegistryException) {
-////        } catch (IOException iOException) {
-//        } finally {
-//            srcDs.dispose();
-//        }
-//    }
 
     /**
      * ************
@@ -224,6 +162,7 @@ public class PostGISUtils {
      * @param layer the layer filter parameter
      * @param year the year filter parameter
      * @param month the month filter parameter
+     * @param day the day of the month filter parameter
      * @param itemsForPage it indicates how many featues should be saved time by time
      * @param forceCreation if the destination table does not exist, create it
      * @throws IOException
@@ -231,9 +170,9 @@ public class PostGISUtils {
      * TODO REVIEW! filter&copy, used in publishing?
      */
     public static void copyFeatures(DataStore srcDs, DataStore dstDs, 
-            String layer, String year, String month, boolean forceCreation) throws PostGisException {
+            String layer, String year, String month, String day, boolean forceCreation) throws PostGisException {
 
-        LOGGER.debug("Copy snapshot : " + layer + ", " + year + ", " + month);
+        LOGGER.debug("Copy snapshot : " + layer + ", " + year + ", " + month + ", " + day);
        
         try {
         
@@ -269,6 +208,11 @@ public class PostGISUtils {
                 Filter monthFilter = (Filter) FF.equals(FF.property(MONTHATTRIBUTENAME), FF.literal(Integer.parseInt(month)));
                 filter = (Filter) FF.and(filter, monthFilter);
             }
+            
+            if (day != null) {
+                Filter dayFilter = (Filter) FF.equals(FF.property(DAYATTRIBUTENAME), FF.literal(Integer.parseInt(day)));
+                filter = (Filter) FF.and(filter, dayFilter);
+            }
 
             LOGGER.info("Filter: " + filter);
             
@@ -299,7 +243,8 @@ public class PostGISUtils {
     		PostGisConfig dstPg,
             String layer, 
             String year, 
-            String month, 
+            String month,
+            String day,
             boolean forceCreation)
                 throws PostGisException {
 
@@ -329,7 +274,8 @@ public class PostGISUtils {
 	
 	        int iYear = Integer.parseInt(year);
 	        int iMonth = month==null? -1 : Integer.parseInt(month);
-	        Date date = new Date(iYear-1900, iMonth==-1?0:iMonth-1, 1);
+	        int iDay = day==null? -1 : Integer.parseInt(day);
+	        Date date = new Date(iYear-1900, iMonth==-1?0:iMonth-1, iDay==-1?1:iDay);
 	
 	        SimpleFeatureStore featureStoreData = (SimpleFeatureStore) fsLayer;
 	
@@ -374,8 +320,12 @@ public class PostGISUtils {
                     }
 
                     data.setAttribute(YEARATTRIBUTENAME, iYear);
-                    if(iMonth != -1)
+                    if(iMonth != -1){
                         data.setAttribute(MONTHATTRIBUTENAME, month);
+                    }
+                    if(iDay != -1){
+                        data.setAttribute(DAYATTRIBUTENAME, day);
+                    }
                     data.setAttribute(DATEATTRIBUTENAME, date);
                     sfcData.add(data);
 
@@ -387,7 +337,7 @@ public class PostGISUtils {
             }
             
             tx.commit();
-            LOGGER.info("Copied " + i + " features for "+ layer+"/"+year+"/"+month + " to " + dstPg);
+            LOGGER.info("Copied " + i + " features for "+ layer+"/"+year+"/"+month+"/"+day+ " to " + dstPg);
             return i;
 
         } catch (Exception e) {
@@ -411,6 +361,7 @@ public class PostGISUtils {
             dstSchemaBuilder.addAll(sourceFC.getAttributeDescriptors());
             dstSchemaBuilder.add(YEARATTRIBUTENAME, Integer.class);
             dstSchemaBuilder.add(MONTHATTRIBUTENAME, Integer.class);
+            dstSchemaBuilder.add(DAYATTRIBUTENAME, Integer.class);
             dstSchemaBuilder.add(DATEATTRIBUTENAME, Date.class);
             SimpleFeatureType sft = dstSchemaBuilder.buildFeatureType();
 
@@ -579,10 +530,6 @@ public class PostGISUtils {
 				SimpleFeatureTypeBuilder dstSchemaBuilder = new SimpleFeatureTypeBuilder();
 				dstSchemaBuilder.setName(featureName);
 				dstSchemaBuilder.addAll(attrDescriptorList);
-//				dstSchemaBuilder.add(YEARATTRIBUTENAME, Integer.class);
-//				dstSchemaBuilder.add(MONTHATTRIBUTENAME, Integer.class);
-//				dstSchemaBuilder.add(DAYATTRIBUTENAME, Integer.class);				
-//				dstSchemaBuilder.add(DATEATTRIBUTENAME, Date.class);
 				SimpleFeatureType sft = dstSchemaBuilder.buildFeatureType();
 	
 				ds.createSchema(sft);
@@ -596,16 +543,20 @@ public class PostGISUtils {
 
 	}    
 
-    public static void removeFeatures(DataStore ds, String layer, String year, String month) throws PostGisException, IOException {
+    public static void removeFeatures(DataStore ds, String layer, String year, String month, String day) throws PostGisException, IOException {
 
         Transaction tx = new DefaultTransaction();
         try{
 
-	        LOGGER.debug("remove features : " + layer + ", " + year + ", " + month);
+	        LOGGER.debug("remove features : " + layer + ", " + year + ", " + month + ", " + day);
 	        Filter filter = (Filter) FF.equals(FF.property(YEARATTRIBUTENAME), FF.literal(Integer.parseInt(year)));
 	        if (month != null) {
 	            Filter monthFilter = (Filter) FF.equals(FF.property(MONTHATTRIBUTENAME), FF.literal(Integer.parseInt(month)));
 	            filter = (Filter) FF.and(filter, monthFilter);
+	        }
+	        if (day != null) {
+	            Filter dayFilter = (Filter) FF.equals(FF.property(DAYATTRIBUTENAME), FF.literal(Integer.parseInt(day)));
+	            filter = (Filter) FF.and(filter, dayFilter);
 	        }
 	
 	        LOGGER.debug("Filter: " + filter);
@@ -622,19 +573,14 @@ public class PostGISUtils {
             quietCloseTransaction(tx);
         }
     }
-
+    
     /**
-     * **************
-     * this method insert into the layer datastore of postgis the feature contained into layerFile moreover for each feature
-     * insert the year and the month attributes
-     *
-     * @param layer
-     * @param layerFile
-     * @param year
-     * @param month
-     * @param itemsForPage indicates how many simplefeature should be saved at time
-     * @param forceCreation true in case the table layer should be created does not exist, false otherwise
-     * @throws IOException
+     * this method copy a feature from a postgis DB to another
+     * 
+     * @param layer the feature to copy
+     * @param sourceFC
+     * @param dstDS
+     * @throws PostGisException
      */
     private static void copyFeatures(String layer, SimpleFeatureCollection sourceFC, DataStore dstDS) throws PostGisException {
         

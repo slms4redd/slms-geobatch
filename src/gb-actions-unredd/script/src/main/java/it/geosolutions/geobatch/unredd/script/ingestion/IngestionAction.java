@@ -502,11 +502,11 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
      * @throws ActionException
      * @throws IOException
      */
-    protected File processVector(File dataFile, final String layername, final String year, final String month, final String day, UNREDDLayer layer, File mosaicDir) throws ActionException, IOException {
+    protected File processVector(File dataFile, final String layername, final String year, final String month, final String day,  UNREDDLayer layer, File mosaicDir) throws ActionException, IOException {
         LOGGER.info("Starting PostGIS ingestion for " + dataFile);
         this.listenerForwarder.progressing(25, "Starting PostGIS ingestion");
         try {
-            int cp = PostGISUtils.shapeToPostGis(dataFile, cfg.getPostGisConfig(), layername, year, month);
+            int cp = PostGISUtils.shapeToPostGis(dataFile, cfg.getPostGisConfig(), layername, year, month, day);
             this.listenerForwarder.progressing(29, "Copied "+cp+ " features");
         } catch (PostGisException e) {
             LOGGER.error("Error ingesting shapefile: " + e.getMessage());

@@ -72,10 +72,10 @@ public class PostGISUtilsTest extends BaseTest {
 
         LOGGER.info("Connecting to " + postGisConfig);
 
-        PostGISUtils.shapeToPostGis(shape, postGisConfig, LAYER, "2012", "01");
+        PostGISUtils.shapeToPostGis(shape, postGisConfig, LAYER, "2012", "01", "01");
         assertEquals(48, count(postGisConfig, LAYER));
 
-        PostGISUtils.shapeToPostGis(shape, postGisConfig, LAYER, "2012", "02");
+        PostGISUtils.shapeToPostGis(shape, postGisConfig, LAYER, "2012", "02", "28");
         assertEquals(96, count(postGisConfig, LAYER));
 
     }
@@ -96,11 +96,11 @@ public class PostGISUtilsTest extends BaseTest {
 
         LOGGER.info("Connecting to " + postGisConfig);
 
-        PostGISUtils.shapeToPostGis(shape2, postGisConfig, LAYER, "2012", "01");
+        PostGISUtils.shapeToPostGis(shape2, postGisConfig, LAYER, "2012", "01", "01");
         assertEquals(757, count(postGisConfig, LAYER));
 
         try {
-            PostGISUtils.shapeToPostGis(shape1, postGisConfig, LAYER, "2012", "02");
+            PostGISUtils.shapeToPostGis(shape1, postGisConfig, LAYER, "2012", "02", "28");
             fail("Exception not trapped");
         } catch (PostGisException e) {
             LOGGER.info("Exception properly trapped: " + e.getMessage());

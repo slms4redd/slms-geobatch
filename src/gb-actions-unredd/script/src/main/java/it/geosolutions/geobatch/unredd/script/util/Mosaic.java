@@ -98,10 +98,10 @@ public class Mosaic {
         imageMosaicConfiguration.setDefaultStyle("raster");
         imageMosaicConfiguration.setTimeDimEnabled("true");
         imageMosaicConfiguration.setAllowMultithreading(true);
-        imageMosaicConfiguration.setNativeMinBoundingBoxX(bbox[0]);
-        imageMosaicConfiguration.setNativeMaxBoundingBoxX(bbox[2]);
-        imageMosaicConfiguration.setNativeMinBoundingBoxY(bbox[1]);
-        imageMosaicConfiguration.setNativeMaxBoundingBoxY(bbox[3]);
+        imageMosaicConfiguration.setLatLonMinBoundingBoxX(bbox[0]);
+        imageMosaicConfiguration.setLatLonMaxBoundingBoxX(bbox[2]);
+        imageMosaicConfiguration.setLatLonMinBoundingBoxY(bbox[1]);
+        imageMosaicConfiguration.setLatLonMaxBoundingBoxY(bbox[3]);
      
         
         File dsprop = new File(mosaicDir, "datastore.properties");

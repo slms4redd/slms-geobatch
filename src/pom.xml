@@ -58,6 +58,7 @@
     <gt.version>8.0</gt.version>
     <unredd.version>1.3-SNAPSHOT</unredd.version>
     <geostore.version>1.0-SNAPSHOT</geostore.version>
+    <unredd.utils.version>1.0</unredd.utils.version>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
@@ -92,6 +93,19 @@
         <groupId>it.geosolutions.geobatch.unredd</groupId>
         <artifactId>gb-action-unredd-geostore</artifactId>
         <version>${unredd.version}</version>
+      </dependency>
+      <!-- =========================================================== -->
+      <!-- UNREDD Utils modules -->
+      <!-- =========================================================== -->
+      <dependency>
+      	<groupId>it.geosolutions.unredd</groupId>
+      	<artifactId>unredd-geostore-model</artifactId>
+      	<version>${unredd.utils.version}</version>
+    	</dependency>
+      <dependency>
+      	<groupId>it.geosolutions.unredd</groupId>
+      	<artifactId>teststats</artifactId>
+      	<version>${unredd.utils.version}</version>
       </dependency>
       <!-- =========================================================== -->
       <!-- GeoStore -->

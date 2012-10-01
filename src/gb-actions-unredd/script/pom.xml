@@ -94,12 +94,10 @@
     <dependency>
       <groupId>it.geosolutions.unredd</groupId>
       <artifactId>unredd-geostore-model</artifactId>
-      <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>it.geosolutions.unredd</groupId>
       <artifactId>teststats</artifactId>
-      <version>1.0-SNAPSHOT</version>
     </dependency>
     <!-- =========================================================== -->
     <!-- GeoTools -->

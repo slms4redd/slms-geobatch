@@ -26,6 +26,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.unredd.geostore.model.ResourceList;
+import it.geosolutions.geobatch.unredd.geostore.utils.JAXBMarshallerBuilder;
 import it.geosolutions.geostore.core.model.Resource;
 import it.geosolutions.geostore.core.model.StoredData;
 import it.geosolutions.geostore.services.dto.ShortResource;
@@ -46,6 +47,7 @@ import java.util.Queue;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
@@ -193,8 +195,9 @@ public class GeostoreAction extends BaseAction<FileSystemEvent> {
         
         Resource resource = geostore.getResource(resourceId);
         File outputInsertFile = File.createTempFile("gstinsert_", xmlResourceFile.getName(), getTempDir());
-
-        JAXB.marshal(resource, outputInsertFile);
+        
+        Marshaller m = JAXBMarshallerBuilder.getJAXBMarshaller(resource.getClass());
+        m.marshal(resource, outputInsertFile);
         return outputInsertFile;
     }
         
@@ -206,7 +209,8 @@ public class GeostoreAction extends BaseAction<FileSystemEvent> {
         geostore.setData(id, data);
         Resource resource = geostore.getResource(id);
         File outputInsertFile = File.createTempFile("gstupdate_", xmlResourceFile.getName(), getTempDir());
-        JAXB.marshal(resource, outputInsertFile);
+        Marshaller m = JAXBMarshallerBuilder.getJAXBMarshaller(resource.getClass());
+        m.marshal(resource, outputInsertFile);
         return outputInsertFile;
     }
 
@@ -224,7 +228,8 @@ public class GeostoreAction extends BaseAction<FileSystemEvent> {
         }
         shortResourceList = list.getList();
         if (isShortResourceList) {
-            JAXB.marshal(list, outputFile);
+        	Marshaller m = JAXBMarshallerBuilder.getJAXBMarshaller(list.getClass());
+            m.marshal(list, outputFile);
         } else {
             
             for (ShortResource shortResource: shortResourceList) {
@@ -243,7 +248,8 @@ public class GeostoreAction extends BaseAction<FileSystemEvent> {
                 }
                 resourceList.add(resource);
             }
-            JAXB.marshal(resourceList, outputFile);
+            Marshaller m = JAXBMarshallerBuilder.getJAXBMarshaller(resourceList.getClass());
+            m.marshal(resourceList, outputFile);
         }
 
         return outputFile;

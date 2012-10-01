@@ -23,24 +23,32 @@
 package it.geosolutions.geobatch.unredd.script.util;
 
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-
 import it.geosolutions.geobatch.unredd.geostore.GeostoreAction;
 import it.geosolutions.geobatch.unredd.geostore.GeostoreActionConfiguration;
 import it.geosolutions.geobatch.unredd.geostore.GeostoreOperation;
-import it.geosolutions.geostore.services.dto.search.SearchFilter;
-import it.geosolutions.geostore.services.rest.model.RESTResource;
+import it.geosolutions.geobatch.unredd.geostore.utils.JAXBMarshallerBuilder;
 import it.geosolutions.geobatch.unredd.script.exception.GeoStoreException;
 import it.geosolutions.geobatch.unredd.script.model.GeoStoreConfig;
+import it.geosolutions.geostore.services.dto.search.SearchFilter;
+import it.geosolutions.geostore.services.rest.model.RESTResource;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
  * A gestore Facade using the GeoStoreAction
@@ -97,7 +105,9 @@ public class GeoStoreUtil extends GeoStoreFacade {
 
         try {
             tmpFile = File.createTempFile(fileNameHint, ".xml", tempDir);
-            JAXB.marshal(filter, tmpFile);
+            
+            Marshaller m = JAXBMarshallerBuilder.getJAXBMarshaller(filter.getClass());
+            m.marshal(filter, tmpFile);
 
             GeostoreActionConfiguration geoStoreCfg = createConfiguration();
             geoStoreCfg.setShortResource(getShortResource);
@@ -119,7 +129,7 @@ public class GeoStoreUtil extends GeoStoreFacade {
             FileUtils.deleteQuietly(tmpFile); // we're putting the temp file in a working dir, so this delete is probably useless
         }
     }
-
+    
     /**
      * generic insert into geostore
      *
@@ -137,7 +147,8 @@ public class GeoStoreUtil extends GeoStoreFacade {
         File tmpFile = null;
         try {
             tmpFile = File.createTempFile("Insert_"+hintName , ".xml", tempDir);
-            JAXB.marshal(resource, tmpFile);
+            Marshaller m = JAXBMarshallerBuilder.getJAXBMarshaller(resource.getClass());
+            m.marshal(resource, tmpFile);
 
             GeostoreActionConfiguration geoStoreCfg = createConfiguration();
             geoStoreCfg.setShortResource(true);
@@ -169,7 +180,8 @@ public class GeoStoreUtil extends GeoStoreFacade {
             resource.setId(id);
             resource.setData(data);            
             tmpFile = File.createTempFile("UpdateData", ".xml", tempDir);
-            JAXB.marshal(resource, tmpFile);
+            Marshaller m = JAXBMarshallerBuilder.getJAXBMarshaller(resource.getClass());
+            m.marshal(resource, tmpFile);
 
             GeostoreActionConfiguration geoStoreCfg = createConfiguration();
             geoStoreCfg.setShortResource(true);
@@ -179,9 +191,7 @@ public class GeoStoreUtil extends GeoStoreFacade {
             action.setTempDir(tempDir);
 
             SingleFileActionExecutor.execute(action, tmpFile);
-        } catch (ActionException ex) {
-            throw new GeoStoreException("Exception while updating data", ex);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             throw new GeoStoreException("Exception while updating data", ex);
         } finally {
             FileUtils.deleteQuietly(tmpFile); // we're putting the temp file in a working dir, so this delete is probably useless
@@ -204,7 +214,8 @@ public class GeoStoreUtil extends GeoStoreFacade {
 
             // this part creates the file to feed the GeoStoreAction
             File inputFile = File.createTempFile("Delete", ".xml", tempDir);
-            JAXB.marshal(resource, inputFile);
+            Marshaller m = JAXBMarshallerBuilder.getJAXBMarshaller(resource.getClass());
+            m.marshal(resource, inputFile);
 
             GeostoreActionConfiguration geoStoreCfg = createConfiguration();
             geoStoreCfg.setShortResource(true);
@@ -217,6 +228,46 @@ public class GeoStoreUtil extends GeoStoreFacade {
         } catch (Exception ex) {
             throw new GeoStoreException("Error while deleting resource " + id, ex);
         }
+    }
+    
+    private void doXStreamMarshall(SearchFilter resource, File tmpFile)  throws GeoStoreException {
+    	
+    	
+        
+        XStream xStream = new XStream(new DomDriver());
+        xStream.alias("AND", it.geosolutions.geostore.services.dto.search.AndFilter.class);
+        xStream.alias("FIELD",it.geosolutions.geostore.services.dto.search.FieldFilter.class);
+        xStream.alias("CATEGORY",it.geosolutions.geostore.services.dto.search.CategoryFilter.class);
+        BufferedWriter out = null;
+		try {
+			out = new BufferedWriter(new FileWriter(tmpFile));
+			out.write(xStream.toXML(resource));
+		} catch (IOException e) {
+            LOGGER.error("Error while inserting in GeoStore: " + resource);
+		} finally {
+			try {
+				out.close();
+			} catch (IOException e) {
+				LOGGER.error("Error while inserting in GeoStore: " + resource);
+			}
+		}
+        
+    	
+    	
+//    	try{
+//	    	JAXBContext jaxbContext = JAXBContext.newInstance(resource.getClass().getCanonicalName());
+//			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+//	 
+//			// output pretty printed
+//			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+//	 
+//			jaxbMarshaller.marshal(resource, tmpFile);
+//			jaxbMarshaller.marshal(resource, System.out);
+//    	}
+//    	catch (JAXBException e){
+//    		throw new GeoStoreException("Error while marshalling a RESTResource " + e);
+//    	}
+    	
     }
 
 }

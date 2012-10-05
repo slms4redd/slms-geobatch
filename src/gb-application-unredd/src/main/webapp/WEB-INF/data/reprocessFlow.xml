@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<!-- REPLACE ALL BRACKET ENCLOSING VALUE with your custom value -->
+	<!-- Example <watchDirectory>{WATCH_DIRECTORY}</watchDirectory> becomes <watchDirectory>/var/geobatch/input/ingestion</watchDirectory>  -->
+
+	
+	<!-- ID MUST be the same as file name -->
+	<id>reprocessFlow</id>
+	<name>UNREDD_reprocessing_flow</name>
+	<description>UNREDD - Reprocess layers, stats and charts on the staging system.</description>
+
+	<autorun>true</autorun>
+
+	<EventGeneratorConfiguration>
+		<id>reprocessEGC</id>
+		<serviceID>fsEventGeneratorService</serviceID>
+
+		<!-- Place here the absolute path of your ingestion dir. Geobatch continuosly watch there for new inputs -->
+		<!-- SUGGESTION: keep the watch dir into GEOBATCH_CONFIG_DIR and externalize it outside the application deploy (see documentation) -->
+		<watchDirectory>{WATCH_DIRECTORY}</watchDirectory>
+		<wildCard>*.xml</wildCard>
+
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+	</EventGeneratorConfiguration>
+
+	<EventConsumerConfiguration>
+		<id>reprocessECC</id>
+
+		<listenerId>ReprocessConsumerLogger0</listenerId>
+		<listenerId>ReprocessCumulator0</listenerId>
+		<listenerId>ReprocessStatusActionLogger0</listenerId>
+
+		<performBackup>false</performBackup>
+
+		<!-- First and only Action configuration -->
+		<ReprocessConfiguration>
+			<serviceID>ReprocessGeneratorService</serviceID>
+
+			<id>ReprocessActionConfiguration</id>
+			<name>Reprocess_Action</name>
+			<description>Single-step action for reprocessing layers, stats, charts</description>
+			
+			<listenerId>ReprocessConsumerLogger0</listenerId>
+            <listenerId>ReprocessCumulator0</listenerId>
+            <listenerId>ReprocessStatusActionLogger0</listenerId>
+			<failIgnored>false</failIgnored>
+
+			<!-- The Url and credentials of the Staging Geostore -->
+			<geoStoreConfig>
+				<url>http://localhost:{PORT}/{STAGING_GEOSTORE_CONTEXT_NAME}/rest</url>
+				<username>{USERNAME}</username>
+				<password>{PASSWORD}</password>
+			</geoStoreConfig>
+
+			<!-- Credentials and path for the staging Postgis used by geoserver for store infos about ImageMosaic granules ingested-->
+			<!-- host and port are the postgis default, change it if your deploy has different setup -->
+			<postGisConfig>
+				<host>localhost</host>
+				<port>5432</port>
+				<database>{DB_NAME}</database>
+				<schema>{DB_SCHEMA}</schema>
+				<!-- The user must have at least insert ad select grants -->
+				<username>{USERNAME}</username>
+				<password>{PASSWORD}</password>
+			</postGisConfig>
+
+			<!-- Gdal rasterize, used for create a raster file during vector layerUpdate ingestion -->
+			<rasterizeConfig>
+				<executable>{GDAL_EXECUTABLE}</executable> <!-- for example: gdal_rasterize -->
+				<taskExecutorXslFileName>{XSL_FILENAME}</taskExecutorXslFileName> <!--  for example:  [path_to]/gdalrasterize.xsl -->
+				<freeMarkerTemplate>{XML_FILE_NAME}</freeMarkerTemplate> <!--  for example:  [path_to]/gdalrasterize.xml -->
+			</rasterizeConfig>
+
+			<overviewsEmbedderConfiguration>
+				<id>overviewEmbedder</id>
+				<name>overviewEmbedder</name>
+				<description>Generate Overviews for a given Geotiff</description>
+				<failIgnored>false</failIgnored>
+
+				<JAICapacity>0</JAICapacity>
+				<compressionRatio>0.75</compressionRatio>
+				<compressionScheme>Nearest</compressionScheme> <!-- Nearest, Bilinear, Bicubic, Average, Filtered; -->
+				<downsampleStep>2</downsampleStep>
+				<numSteps>10</numSteps>
+				<tileH>512</tileH>
+				<tileW>512</tileW>
+				<wildcardString>*.*</wildcardString>
+				<logNotification>true</logNotification>
+				<interp>0</interp>
+			</overviewsEmbedderConfiguration>
+			
+		</ReprocessConfiguration>
+
+
+	</EventConsumerConfiguration>
+
+	<ListenerConfigurations>
+		<StatusProgressListener>
+			<serviceID>statusListenerService</serviceID>
+			<id>ReprocessStatusActionLogger0</id>
+		</StatusProgressListener>
+
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ReprocessActionLogger0</id>
+
+			<loggerName>ReprocessActionLogger0</loggerName>
+		</LoggingProgressListener>
+
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ReprocessConsumerLogger0</id>
+
+			<loggerName>ReprocessConsumerLogger0</loggerName>
+		</LoggingProgressListener>
+
+		<CumulatingProgressListener>
+			<serviceID>cumulatingListenerService</serviceID>
+			<id>ReprocessCumulator0</id>
+		</CumulatingProgressListener>
+	</ListenerConfigurations>
+
+</FlowConfiguration>

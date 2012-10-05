@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Chart</title>
+    
+    
+    <!-- 1. Add these JavaScript inclusions in the head of your page -->
+    <!--
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://www.rdc-snsf.org/js/highcharts/highcharts.js"></script>
+    -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="/diss_frontend/js/jquery-1.7.1.min.js"></script>-->
+    <script type="text/javascript" src="/diss_frontend/js/highcharts/highcharts.js"></script>
+    <!-- 2. Add the JavaScript to initialize the chart on document ready -->
+    <script type="text/javascript">
+      var gup = function (name) {
+        name = name.replace(/[\\[]/,"\\\\\\[").replace(/[\\]]/,"\\\\\\]");
+        var regexS = "[\\?&]"+name+"=([^&#]*)";
+        var regex = new RegExp( regexS );
+        var results = regex.exec( window.location.href );
+        if (results == null)
+          return "";
+        else
+          return decodeURIComponent(results[1]);
+      }
+
+      \$(document).ready(function() {
+        var colors = Highcharts.getOptions().colors;
+        //console.log(colors); // DEBUG
+
+        // FACET custom colors
+        var fccColors = {
+          atlanticForest: "#005700",
+          chacoWoodlands: "#01E038",
+          nonForest: "#FFFF9C",
+          water: "#3938FE"
+        };
+
+        \$('#title').text(gup('name').toLowerCase());
+
+
+
+        chart1 = new Highcharts.Chart({
+          chart: {
+            renderTo: 'container1',
+            defaultSeriesType: 'line'
+          },
+          title: {
+            //text: 'Classification des forêts',
+            text: '<%=  loc["deforestation"] %>',
+            x: -20 //center
+          },
+          subtitle: {
+            text: '<%= firstYear + "-" + lastYear %>',
+            x: -20
+          },
+          xAxis: {
+            categories: [
+              <% forest.keySet().eachWithIndex { year, i -> %>
+              '<%= year  %>'
+              <%   if (i + 1 < forest.size()) print ',' %>
+              <% } %>
+            ],
+            labels: {
+              rotation: -45,
+              align: 'right',
+              style: {
+                font: 'normal 10px Verdana, sans-serif'
+              }
+            }
+          },
+          yAxis: {
+            title: {
+              text: '<%= loc["area"] %> (Km<sup>2</sup>)'
+            },
+            plotLines: [{
+              value: 0,
+              width: 1,
+              color: '#808080'
+            }]
+          },
+          tooltip: {
+            formatter: function() {
+              //return '<b>'+ this.series.name +'</b><br/>'+
+              return this.x +': '+ this.y.toFixed(0) +' Km<sup>2</sup>';
+            }
+          },
+          legend: {
+            enabled: false,
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            x: -10,
+            y: 100,
+            borderWidth: 0
+          },
+          series: [{
+            name: '<%= loc["deforestation"] %>',
+            data: [
+              <% forest.eachWithIndex() { year, values, i -> %>
+              // <%=  (values[0] - forest[firstYear][0]) / 1E6 %>
+              <%=  (values[0]) / 1E6 %>
+              <%   if (i + 1 < forest.size()) print ',' %>
+              <% } %>
+            ],
+            color: fccColors.atlanticForest
+          }],
+          credits: {
+            enabled: false
+          }
+        });
+
+      });
+    </script>
+    
+    <style type="text/css">
+      body
+      {
+        font: 100% "Trebuchet MS", sans-serif;
+        margin: 0;
+      }
+      
+      #top
+      {
+        position: relative;
+        width: 800px;
+      }
+      
+      #title
+      {
+        font-size: 120%;
+        width: 700px;
+        top: 10px;
+        text-align: center;
+        position: relative;
+        margin: auto;
+        text-transform:capitalize;
+      }
+            
+      #container1
+      {
+        /*border: 1px dashed grey;*/
+        width: 800px;
+        height: 400px;
+        margin: 0 auto;
+        position: absolute;
+        left: 0;
+        top: 50px;
+      }
+            
+      .print {
+        display:block;
+        width: 32px;
+        height: 32px;
+        float: left;
+        /*padding:5px 0 0px 20px;
+        color:#8e8e8e;*/
+      }
+      
+      a img {
+        border: none;
+      }
+      
+      #hover_text,#disclaimer
+      {
+        width: 800px;
+        height: 20px;
+        font-size: 80%;
+        margin: 0 auto;
+        position: absolute;
+        text-align: center;
+      }
+      
+      #hover_text
+      {
+        top: 480px;
+      }
+      
+      #disclaimer
+      {
+        top: 495px;
+      }
+      
+      @media print {
+        #print_link
+        {
+          display: none;
+        }
+        
+        #hover_text
+        {
+          display: none;
+        }
+      }
+    </style>
+    
+  </head>
+  <body>
+    <div id="top">
+      <div id="print_link">
+        <a href="#print" title="<%= loc.print_this_chart %>" class="print" onClick="window.print();return false;"><img src="http://www.rdc-snsf.org/images/Printer.png"></a>
+      </div>
+      <div id="title"></div>
+    </div>
+    
+    <!-- 3. Add the containers -->
+    <div id="container1"></div>
+    
+    <!--
+    <div id="container2"></div>
+    <div id="container3"></div>
+    <div id="container4"></div>
+    -->
+    
+    <div id="hover_text"><%= loc.hover_text %></div>
+    <!--    
+    <div id="disclaimer"><%= loc.facet_disclaimer %></div>
+    -->
+    
+  </body>
+</html>

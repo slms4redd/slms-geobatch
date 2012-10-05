@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<GdalRasterize>
+    <a>${ATTRIBUTENAME}</a>
+    <#if OT??><ot>${OT}</ot></#if>
+    <#if WHERE??><where>${WHERE}</where></#if>
+    <co>${TILED}</co>
+    <co>${TILEH}</co>
+    <co>${TILEW}</co>
+    <of>${OF}</of>
+    <layer>${LAYERNAME}</layer>
+    <size>
+        <width>${WIDTH}</width>
+        <height>${HEIGHT}</height>
+    </size>
+    <box>
+        <rx0>${RX0}</rx0>
+        <ry0>${RY0}</ry0>
+        <rx1>${RX1}</rx1>
+        <ry1>${RY1}</ry1>
+    </box>
+    <nodata>${NODATA}</nodata>
+    <src>${SRC}</src>
+    <outputfilename>${OUTPUTFILENAME}</outputfilename>
+</GdalRasterize>

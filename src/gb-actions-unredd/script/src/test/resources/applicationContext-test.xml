@@ -17,9 +17,9 @@
     </bean>
 
     <bean id="geoServerConfig" class="it.geosolutions.geobatch.unredd.script.model.GeoServerBasicConfig">
-        <property name="geoserverURL" value="http://localhost:8201/stg_geoserver"/>
+        <property name="geoserverURL" value="http://localhost:8081/geoserver"/>
         <property name="geoserverUID" value="admin"/>
-        <property name="geoserverPWD" value="Unr3dd"/>
+        <property name="geoserverPWD" value="geoserver"/>
         <property name="workspace" value="unredd"/>
     </bean>
 

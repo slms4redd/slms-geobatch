@@ -19,7 +19,6 @@
  */
 package it.geosolutions.geobatch.unredd.script.util;
 
-import static org.junit.Assert.assertTrue;
 import it.geosolutions.geobatch.unredd.script.exception.PostGisException;
 import it.geosolutions.geobatch.unredd.script.model.PostGisConfig;
 import it.geosolutions.geobatch.unredd.script.test.BaseTest;
@@ -31,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.geotools.TestData;
 import org.geotools.data.DataStore;
 import org.geotools.data.Transaction;
 import org.geotools.jdbc.JDBCDataStore;
@@ -64,15 +64,12 @@ public class MosaicTest extends BaseTest {
     @Test
     public void testMosaic() throws Exception {
     	
-    	// NB These are local directory
-    	File mosaicDir = new File(mosaicDirPath);
-        //File mosaicDir = new File("/home/geosol/data/unredd/ingestion/intact_forest");
-        
+    	File mosaicDir = TestData.file(this,"mosaic_dir");
+    	
     	assertTrue(mosaicDir.exists());
         assertTrue(mosaicDir.isDirectory());
 
-        File rasterFile = new File(rasterFilePath);
-//        File rasterFile = new File("/home/geosol/data/unredd/ingestion/src/intact_forest_2005.tif");
+        File rasterFile = TestData.file(this,"sample.tiff");
 
         double [] bbox = new double[4];
         bbox[0] = -180;
@@ -80,9 +77,9 @@ public class MosaicTest extends BaseTest {
         bbox[2] = -180;
         bbox[3] = 180;
         
+        
         Mosaic mosaic = new Mosaic(geoServerConfig, mosaicDir, getTempDir(), getConfigDir());
         mosaic.add("unredd", "intact_forest", rasterFile, "EPSG:4326", bbox);
-
 
 //        LOGGER.info("Connecting to " + postGisConfig);
 //        assertEquals(48, count(postGisConfig, LAYER));

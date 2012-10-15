@@ -12,14 +12,9 @@
   <!-- =========================================================== -->
   <!--     Project Description                                     -->
   <!-- =========================================================== -->
-  <parent>
-    <groupId>it.geosolutions.geobatch</groupId>
-    <artifactId>gb</artifactId>
-    <version>1.3-SNAPSHOT</version>
-  </parent>
   <groupId>it.geosolutions.geobatch.unredd</groupId>
   <artifactId>gb-unredd</artifactId>
-  <version>1.3-SNAPSHOT</version>
+  <version>1.0-RC1</version>
   <packaging>pom</packaging>
   
   <name>GeoBatch UNREDD root</name>
@@ -54,11 +49,15 @@
     <stress.skip.pattern>**/*StressTest.java</stress.skip.pattern>
     <test.maxHeapSize>512M</test.maxHeapSize>
     <src.output>${basedir}/target</src.output>
-    <gb.version>1.3-SNAPSHOT</gb.version>
-    <gt.version>8.0</gt.version>
-    <unredd.version>1.3-SNAPSHOT</unredd.version>
-    <geostore.version>1.0-SNAPSHOT</geostore.version>
+    <gb.version>1.3-BETA3</gb.version>
+    <gt.version>8-SNAPSHOT</gt.version>
+    <unredd.version>1.0-RC1</unredd.version>
+    <geostore.version>1.0.1</geostore.version>
     <unredd.utils.version>1.0</unredd.utils.version>
+	<jetty.version>6.1.8</jetty.version>
+	<log4j.version>1.2.16</log4j.version>
+	<javaassist.version>3.13.0-GA</javaassist.version>
+	<junit.version>4.10</junit.version>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
@@ -68,14 +67,61 @@
   <!-- =========================================================== -->
   <dependencyManagement>
     <dependencies>
-      <!-- inherit DependencyManagement -->
-      <dependency>
-        <groupId>it.geosolutions.geobatch</groupId>
-        <artifactId>gb</artifactId>
-        <version>${gb.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>     
+    <!-- =========================================================== -->
+    <!-- GeoBatch -->
+    <!-- =========================================================== -->
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-core-impl</artifactId>
+	  <version>${gb.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-fs-catalog</artifactId>
+	  <version>${gb.version}</version>
+    </dependency>
+    <!-- tools -->
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-action-tools</artifactId>
+	  <version>${gb.version}</version>
+    </dependency>
+    <!--  imported actions -->
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-action-scripting</artifactId>
+	  <version>${gb.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-action-taskexecutor</artifactId>
+	  <version>${gb.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-action-imagemosaic</artifactId>
+	  <version>${gb.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-action-geotiff</artifactId>
+	  <version>${gb.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-action-freemarker</artifactId>
+	  <version>${gb.version}</version>
+    </dependency>
+	<dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-gui</artifactId>
+	  <version>${gb.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-dao-xstream</artifactId>
+	  <version>${gb.version}</version>
+    </dependency>
       <!-- =========================================================== -->
       <!-- Other UNREDD modules -->
       <!-- =========================================================== -->
@@ -141,12 +187,81 @@
       <!-- =========================================================== -->
       <!-- GEOTOOOLS -->   
       <!-- =========================================================== -->
-      <dependency>
-	<groupId>org.geotools</groupId>
-	<artifactId>gt-property</artifactId>
-	<version>${gt.version}</version>
-      	<scope>test</scope>      
-      </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-api</artifactId>
+	  <version>${gt.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-main</artifactId>
+	  <version>${gt.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-jdbc</artifactId>
+	  <version>${gt.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-property</artifactId>
+	  <version>${gt.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-geotiff</artifactId>
+	  <version>${gt.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-opengis</artifactId>
+	  <version>${gt.version}</version>
+    </dependency>
+	<dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-sample-data</artifactId>
+	  <version>${gt.version}</version>
+      <scope>test</scope>
+    </dependency>
+	<dependency>
+	  <groupId>org.geotools</groupId>
+	  <artifactId>gt-property</artifactId>
+	  <version>${gt.version}</version>
+      <scope>test</scope>      
+    </dependency>
+	<!-- ============================== -->
+    <!-- log4j -->
+    <!-- ============================== -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+	  <version>${log4j.version}</version>
+    </dependency>
+    <!-- ============================== -->
+    <!-- Test: JETTY -->
+    <!-- ============================== -->
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+	  <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jsp-2.0</artifactId>
+	  <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+	  <version>${javaassist.version}</version>
+    </dependency>
+	<dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+	  <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     </dependencies>
   </dependencyManagement>
   <build>

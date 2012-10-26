@@ -99,8 +99,8 @@ public class Mosaic {
         imageMosaicConfiguration.setTimeDimEnabled("true");
         imageMosaicConfiguration.setAllowMultithreading(true);
         imageMosaicConfiguration.setLatLonMinBoundingBoxX(bbox[0]);
-        imageMosaicConfiguration.setLatLonMaxBoundingBoxX(bbox[2]);
-        imageMosaicConfiguration.setLatLonMinBoundingBoxY(bbox[1]);
+        imageMosaicConfiguration.setLatLonMaxBoundingBoxX(bbox[1]);
+        imageMosaicConfiguration.setLatLonMinBoundingBoxY(bbox[2]);
         imageMosaicConfiguration.setLatLonMaxBoundingBoxY(bbox[3]);
      
         

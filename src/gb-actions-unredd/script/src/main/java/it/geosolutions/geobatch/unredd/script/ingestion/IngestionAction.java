@@ -454,8 +454,8 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
         try {
             double [] bbox = new double[4];
             bbox[0] = Double.valueOf(layer.getAttribute(Attributes.RASTERX0));
-            bbox[1] = Double.valueOf(layer.getAttribute(Attributes.RASTERX1));
-            bbox[2] = Double.valueOf(layer.getAttribute(Attributes.RASTERY0));
+            bbox[1] = Double.valueOf(layer.getAttribute(Attributes.RASTERY0));
+            bbox[2] = Double.valueOf(layer.getAttribute(Attributes.RASTERX1));
             bbox[3] = Double.valueOf(layer.getAttribute(Attributes.RASTERY1));
             
             Mosaic mosaic = new Mosaic(cfg.getGeoServerConfig(), mosaicDir, getTempDir(), getConfigDir());

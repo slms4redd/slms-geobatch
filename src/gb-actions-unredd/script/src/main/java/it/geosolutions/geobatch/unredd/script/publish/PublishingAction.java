@@ -75,6 +75,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
     private final static Logger LOGGER = LoggerFactory.getLogger(PublishingAction.class);
     private GeoStoreUtil srcGeostore = null;
     private GeoStoreUtil dstGeostore = null;
+    private static final String DEFAULT_MOSAIC_STYLE = "raster";
     /**
      * configuration
      */
@@ -246,18 +247,27 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
 	        	File srcRasterFile = new File(srcPath, filename);
 	        	File mosaicDir = new File(dstPath);
 	        	
+	        	String style = layerResource.getAttribute(UNREDDLayer.Attributes.LAYERSTYLE);
+	                if(style==null || style.isEmpty()){
+	                    style = DEFAULT_MOSAIC_STYLE;
+	                }
+	                StringBuilder msg = new StringBuilder();
+	                msg.append("Publishing the Mosaic Granule with Style -> ");
+	                msg.append(style);
+	                LOGGER.info(msg.toString());
+	        	
 	        	//create bounding box with values setted on GeoStore
 	        	double [] bbox = new double[4];
 	            bbox[0] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERX0));
-	            bbox[1] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERX1));
-	            bbox[2] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERY0));
+	            bbox[1] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERY0));
+	            bbox[2] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERX1));
 	            bbox[3] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERY1));
 	        	
 //	            Mosaic mosaic = new Mosaic(cfg.getGeoServerConfig(), mosaicDir, getTempDir(), getConfigDir());
 //	            mosaic.add(cfg.getGeoServerConfig().getWorkspace(), layername, rasterFile, "EPSG:4326", bbox);
 	            
 	            Mosaic mosaic = new Mosaic(conf.getDstGeoServerConfig(), mosaicDir, getTempDir(), getConfigDir());
-	            mosaic.add(conf.getDstGeoServerConfig().getWorkspace(), layerName, srcRasterFile, "EPSG:4326", bbox);
+	            mosaic.add(conf.getDstGeoServerConfig().getWorkspace(), layerName, srcRasterFile, "EPSG:4326", bbox, style);
 	        }
 
         } catch (PostGisException e) {

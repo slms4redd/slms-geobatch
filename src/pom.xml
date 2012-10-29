@@ -53,7 +53,7 @@
     <gt.version>8-SNAPSHOT</gt.version>
     <unredd.version>1.0-RC1</unredd.version>
     <geostore.version>1.0.1</geostore.version>
-    <unredd.utils.version>1.0</unredd.utils.version>
+    <unredd.utils.version>1.1-SNAPSHOT</unredd.utils.version>
 	<jetty.version>6.1.8</jetty.version>
 	<log4j.version>1.2.16</log4j.version>
 	<javaassist.version>3.13.0-GA</javaassist.version>

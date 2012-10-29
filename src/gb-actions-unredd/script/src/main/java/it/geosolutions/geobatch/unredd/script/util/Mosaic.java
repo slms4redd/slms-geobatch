@@ -67,7 +67,7 @@ public class Mosaic {
    * @throws ActionException
    * @throws IOException
    */
-    public void add(String workspace, String mosaicName, File tiff, String crs, double bbox[]) throws SecurityException, ActionException, IOException {
+    public void add(String workspace, String mosaicName, File tiff, String crs, double bbox[], String style) throws SecurityException, ActionException, IOException {
         
         if ( ! tiff.exists())
             throw new FileNotFoundException("TIF file not found: "+tiff);
@@ -95,7 +95,7 @@ public class Mosaic {
         imageMosaicConfiguration.setDefaultNamespace(workspace);
         imageMosaicConfiguration.setCrs(crs);
         imageMosaicConfiguration.setConfigDir(mosaicDir);
-        imageMosaicConfiguration.setDefaultStyle("raster");
+        imageMosaicConfiguration.setDefaultStyle(style);
         imageMosaicConfiguration.setTimeDimEnabled("true");
         imageMosaicConfiguration.setAllowMultithreading(true);
         imageMosaicConfiguration.setLatLonMinBoundingBoxX(bbox[0]);

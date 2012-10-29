@@ -79,7 +79,7 @@ public class MosaicTest extends BaseTest {
         
         
         Mosaic mosaic = new Mosaic(geoServerConfig, mosaicDir, getTempDir(), getConfigDir());
-        mosaic.add("unredd", "intact_forest", rasterFile, "EPSG:4326", bbox);
+        mosaic.add("unredd", "intact_forest", rasterFile, "EPSG:4326", bbox, "raster");
 
 //        LOGGER.info("Connecting to " + postGisConfig);
 //        assertEquals(48, count(postGisConfig, LAYER));

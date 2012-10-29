@@ -77,6 +77,8 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
 
     private static final String INFO_XML = "info.xml";
     
+    private static final String DEFAULT_MOSAIC_STYLE = "raster";
+    
     private static final String DATA_DIR_NAME="data";
 
     public IngestionAction(IngestionConfiguration configuration)
@@ -452,6 +454,16 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
         //  - copy the raster into the mosaic dir (with current filename)
         //  - add the granule in the tile db
         try {
+            
+            String style = layer.getAttribute(UNREDDLayer.Attributes.LAYERSTYLE);
+            if(style==null || style.isEmpty()){
+                style = DEFAULT_MOSAIC_STYLE;
+            }
+            StringBuilder msg = new StringBuilder();
+            msg.append("Publishing the Mosaic Granule with Style -> ");
+            msg.append(style);
+            LOGGER.info(msg.toString());
+            
             double [] bbox = new double[4];
             bbox[0] = Double.valueOf(layer.getAttribute(Attributes.RASTERX0));
             bbox[1] = Double.valueOf(layer.getAttribute(Attributes.RASTERY0));
@@ -459,7 +471,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
             bbox[3] = Double.valueOf(layer.getAttribute(Attributes.RASTERY1));
             
             Mosaic mosaic = new Mosaic(cfg.getGeoServerConfig(), mosaicDir, getTempDir(), getConfigDir());
-            mosaic.add(cfg.getGeoServerConfig().getWorkspace(), layername, rasterFile, "EPSG:4326", bbox);
+            mosaic.add(cfg.getGeoServerConfig().getWorkspace(), layername, rasterFile, "EPSG:4326", bbox, style);
         
         } catch (Exception e) {
             this.listenerForwarder.progressing(60, "Error in ImageMosaic: " + e.getMessage());

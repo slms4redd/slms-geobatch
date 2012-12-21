@@ -6,547 +6,559 @@
             http://geobatch.codehaus.org
 
 ======================================================================= -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  
-  <!-- =========================================================== -->
-  <!--     Project Description                                     -->
-  <!-- =========================================================== -->
-  <groupId>it.geosolutions.geobatch.unredd</groupId>
-  <artifactId>gb-unredd</artifactId>
-  <version>1.0-RC1</version>
-  <packaging>pom</packaging>
-  
-  <name>GeoBatch UNREDD root</name>
-  <description>The GeoBatch project for unredd</description>
-  <url>https://github.com/nfms4redd/nfms-geobatch</url>
-  
-  <scm>
-    <connection>scm:git@github.com:nfms4redd/nfms-geobatch.git</connection>
-    <url>https://github.com/nfms4redd/nfms-geobatch.git</url>
-  </scm>
-  
-  <organization>
-    <name>GeoSolutions</name>
-    <url>http://www.geo-solutions.it</url>
-  </organization>
-  <inceptionYear>2011</inceptionYear>
-  
-  <licenses>
-    <license>
-      <name>Lesser General Public License (LGPL)</name>
-      <url>http://www.gnu.org/copyleft/lesser.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  
-  <properties>
-    <allow.test.skip>true</allow.test.skip>
-    <allow.test.failure.ignore>false</allow.test.failure.ignore>
-    <extensive.tests>false</extensive.tests>
-    <interactive.tests>false</interactive.tests>
-    <online.skip.pattern>**/*OnlineTest.java</online.skip.pattern>
-    <stress.skip.pattern>**/*StressTest.java</stress.skip.pattern>
-    <test.maxHeapSize>512M</test.maxHeapSize>
-    <src.output>${basedir}/target</src.output>
-    <gb.version>1.3-BETA3</gb.version>
-    <gt.version>8-SNAPSHOT</gt.version>
-    <unredd.version>1.0-RC1</unredd.version>
-    <geostore.version>1.0.1</geostore.version>
-    <unredd.utils.version>1.1-SNAPSHOT</unredd.utils.version>
-	<jetty.version>6.1.8</jetty.version>
-	<log4j.version>1.2.16</log4j.version>
-	<javaassist.version>3.13.0-GA</javaassist.version>
-	<junit.version>4.10</junit.version>
-  </properties>
-  <!-- =========================================================== -->
-  <!--     Dependency Management                                   -->
-  <!--     If a POM declares one of those dependencies, then it    -->
-  <!--     will use the version specified here. Otherwise, those   -->
-  <!--     dependencies are ignored.                               -->
-  <!-- =========================================================== -->
-  <dependencyManagement>
-    <dependencies>
-    <!-- =========================================================== -->
-    <!-- GeoBatch -->
-    <!-- =========================================================== -->
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-core-impl</artifactId>
-	  <version>${gb.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-fs-catalog</artifactId>
-	  <version>${gb.version}</version>
-    </dependency>
-    <!-- tools -->
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
-	  <version>${gb.version}</version>
-    </dependency>
-    <!--  imported actions -->
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-scripting</artifactId>
-	  <version>${gb.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-taskexecutor</artifactId>
-	  <version>${gb.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-imagemosaic</artifactId>
-	  <version>${gb.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-geotiff</artifactId>
-	  <version>${gb.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-freemarker</artifactId>
-	  <version>${gb.version}</version>
-    </dependency>
-	<dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-gui</artifactId>
-	  <version>${gb.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-dao-xstream</artifactId>
-	  <version>${gb.version}</version>
-    </dependency>
-      <!-- =========================================================== -->
-      <!-- Other UNREDD modules -->
-      <!-- =========================================================== -->
-      <dependency>
-        <groupId>it.geosolutions.geobatch.unredd</groupId>
-        <artifactId>gb-action-unredd-statistics</artifactId>
-        <version>${unredd.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>it.geosolutions.geobatch.unredd</groupId>
-        <artifactId>gb-action-unredd-script</artifactId>
-        <version>${unredd.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>it.geosolutions.geobatch.unredd</groupId>
-        <artifactId>gb-action-unredd-geostore</artifactId>
-        <version>${unredd.version}</version>
-      </dependency>
-      <!-- =========================================================== -->
-      <!-- UNREDD Utils modules -->
-      <!-- =========================================================== -->
-      <dependency>
-      	<groupId>it.geosolutions.unredd</groupId>
-      	<artifactId>unredd-geostore-model</artifactId>
-      	<version>${unredd.utils.version}</version>
-    	</dependency>
-      <dependency>
-      	<groupId>it.geosolutions.unredd</groupId>
-      	<artifactId>teststats</artifactId>
-      	<version>${unredd.utils.version}</version>
-      </dependency>
-      <!-- =========================================================== -->
-      <!-- GeoStore -->
-      <!-- =========================================================== -->
-      <dependency>
-        <groupId>it.geosolutions.geostore</groupId>
-        <artifactId>geostore-model</artifactId>
-        <version>${geostore.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>it.geosolutions.geostore</groupId>
-        <artifactId>geostore-services-api</artifactId>
-        <version>${geostore.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>it.geosolutions.geostore</groupId>
-        <artifactId>geostore-rest-api</artifactId>
-        <version>${geostore.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>it.geosolutions.geostore</groupId>
-        <artifactId>geostore-rest-client</artifactId>
-        <version>${geostore.version}</version>
-      </dependency>
-      <!-- =========================================================== -->
-      <!--  -->
-      <!-- =========================================================== -->
-      <dependency>
-        <groupId>com.sun.jersey.contribs</groupId>
-        <artifactId>jersey-multipart</artifactId>
-        <version>1.9.1</version>
-      </dependency>
-      <!-- =========================================================== -->
-      <!-- GEOTOOOLS -->   
-      <!-- =========================================================== -->
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-api</artifactId>
-	  <version>${gt.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-main</artifactId>
-	  <version>${gt.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-jdbc</artifactId>
-	  <version>${gt.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-property</artifactId>
-	  <version>${gt.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-geotiff</artifactId>
-	  <version>${gt.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-opengis</artifactId>
-	  <version>${gt.version}</version>
-    </dependency>
-	<dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-sample-data</artifactId>
-	  <version>${gt.version}</version>
-      <scope>test</scope>
-    </dependency>
-	<dependency>
-	  <groupId>org.geotools</groupId>
-	  <artifactId>gt-property</artifactId>
-	  <version>${gt.version}</version>
-      <scope>test</scope>      
-    </dependency>
-	<!-- ============================== -->
-    <!-- log4j -->
-    <!-- ============================== -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-	  <version>${log4j.version}</version>
-    </dependency>
-    <!-- ============================== -->
-    <!-- Test: JETTY -->
-    <!-- ============================== -->
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty</artifactId>
-	  <version>${jetty.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jsp-2.0</artifactId>
-	  <version>${jetty.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.javassist</groupId>
-      <artifactId>javassist</artifactId>
-	  <version>${javaassist.version}</version>
-    </dependency>
-	<dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-	  <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    </dependencies>
-  </dependencyManagement>
-  <build>
-    <!-- TODO: the resources stuff hardcodes paths to source + test directories,
-      we should be able to use some properties here -->
-    <resources>
-      <resource>
-        <directory>${basedir}/src/main/resources</directory>
-        <includes>
-          <include>**/*.txt</include>
-          <include>**/*.sql</include>
-          <include>**/*.html</include>
-          <include>**/*.xsd</include>
-          <include>**/*.xsl</include>
-          <include>**/*.xml</include>
-          <include>**/*.utf</include>
-          <include>**/*.prj</include>
-          <include>**/*.py</include>
-          <include>**/*.properties</include>
-          <include>**/*.query</include>
-          <include>**/*.xquery</include>
-          <include>**/*.serialized</include>
-          <include>META-INF/*.jai</include>
-          <include>META-INF/mailcap</include>
-          <include>META-INF/services/**</include>
-          <include>applicationContext.xml</include>
-          <include>**/*.ftl</include>
-          <include>**/placeholder</include>
-          <!-- used for otherwise empty dirs -->
-        </includes>
-        <excludes>
-          <exclude>**/doc-files/**</exclude>
-        </excludes>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>${basedir}/src/test/resources</directory>
-        <includes>
-          <include>META-INF/services/**</include>
-          <include>**/test-data/**</include>
-          <include>**/*.html</include>
-          <include>**/*.xsd</include>
-          <include>**/*.xsl</include>
-          <include>**/*.xml</include>
-          <include>**/*.csv</include>
-          <include>**/*.sld</include>
-          <include>**/*.svg</include>
-          <include>**/*.gml</include>
-          <include>**/*.wkt</include>
-          <include>**/*.txt</include>
-          <include>**/*.sql</include>
-          <include>**/*.png</include>
-          <include>**/*.prj</include>
-          <include>**/*.py</include>
-          <include>**/*.properties</include>
-          <include>**/*.serialized</include>
-          <include>**/*.ftl</include>
-          <include>**/*.tif</include>
-          <include>**/*.tiff</include>
-          <include>**/*.zip</include>
-          <include>**/placeholder</include>
-          <!-- used for otherwise empty dirs -->
-        </includes>
-        <excludes>
-          <exclude>**/doc-files/**</exclude>
-        </excludes>
-      </testResource>
-    </testResources>
-    <plugins>
-      <!-- ======================================================= -->
-      <!--     Compilation.                                        -->
-      <!-- ======================================================= -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <!-- The -source argument for the Java compiler. -->
-          <target>1.6</target>
-          <!-- The -target argument for the Java compiler. -->
-          <debug>true</debug>
-          <!-- Whether to include debugging information.   -->
-          <encoding>UTF-8</encoding>
-          <!-- The -encoding argument for the Java compiler. -->
-        </configuration>
-      </plugin>
-     
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- eclipse ide integration -->
-      <plugin>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>2.5</version>
-        <configuration>
-          <additionalProjectnatures>
-            <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
-          </additionalProjectnatures>
-        </configuration>
-      </plugin>
-      <!-- ======================================================= -->
-      <!--     JAR packaging.                                      -->
-      <!-- ======================================================= -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-      <!-- ======================================================= -->
-      <!--     Source packaging.                                      -->
-      <!-- ======================================================= -->
-      <plugin>
-        <inherited>true</inherited>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <configuration>
-          <attach>false</attach>
-        </configuration>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ftp</artifactId>
-        <version>1.0-beta-2</version>
-      </extension>
-    </extensions>
-  </build>
-  <!-- ================================================================== -->
-  <!--     Repositories. This is where Maven looks for dependencies. The  -->
-  <!--     Maven repository is implicit and doesn't need to be specified. -->
-  <!-- ================================================================== -->
-  <repositories>
-    <repository>
-      <id>geosolutions</id>
-      <name>GeoSolutions Repository</name>
-      <url>http://maven.geo-solutions.it</url>
-    </repository>
-    <repository>
-      <id>java.net</id>
-      <name>java.net Repository</name>
-      <url>http://download.java.net/maven/2/</url>
-    </repository>
-    <repository>
-      <id>JBoss</id>
-      <url>http://repository.jboss.com/maven2</url>
-    </repository>
-    <repository>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>opengeo</id>
-      <name>OpenGeo Maven Repository</name>
-      <url>http://repo.opengeo.org</url>
-    </repository>
-  </repositories>
-  <!-- =========================================================== -->
-  <!--     Plugin repositories.                                    -->
-  <!--     This is where Maven looks for plugin dependencies.      -->
-  <!-- =========================================================== -->
-  <pluginRepositories>
-    <pluginRepository>
-      <id>codehaus-snapshot-plugins</id>
-      <name>codehaus-shapshot-plugins</name>
-      <url>http://snapshots.repository.codehaus.org/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
-  <!-- =========================================================== -->
-  <!--     Modules for the build in approximate dependency order   -->
-  <!-- =========================================================== -->
-  <modules>
-    <module>gb-actions-unredd</module>
-    <module>gb-application-unredd</module>
-  </modules>
-  <distributionManagement>
-    <!--..................................-->
-    <!--      GeoSolutions Repository     -->
-    <!--..................................-->
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>geosolutions</id>
-      <url>ftp://maven.geo-solutions.it</url>
-    </repository>
-  </distributionManagement>
-  <!-- Profiles set on the command-line overwrite default properties. -->
-  <profiles>
-    <profile>
-      <id>extensive.tests</id>
-      <properties>
-        <extensive.tests>true</extensive.tests>
-      </properties>
-    </profile>
-    <profile>
-      <id>interactive.tests</id>
-      <properties>
-        <interactive.tests>true</interactive.tests>
-      </properties>
-    </profile>
-    <profile>
-      <id>site.build</id>
-      <properties>
-        <allow.test.skip>false</allow.test.skip>
-        <allow.test.failure.ignore>true</allow.test.failure.ignore>
-        <extensive.tests>true</extensive.tests>
-      </properties>
-    </profile>
-    <profile>
-      <id>online</id>
-      <properties>
-        <online.skip.pattern>disabled</online.skip.pattern>
-      </properties>
-    </profile>
-    <profile>
-      <id>stress</id>
-      <properties>
-        <stress.skip.pattern>disabled</stress.skip.pattern>
-      </properties>
-    </profile>
-    <profile>
-      <id>java5</id>
-      <activation>
-        <jdk>1.5</jdk>
-      </activation>
-      <reporting>
+    <modelVersion>4.0.0</modelVersion>
+  
+    <!-- =========================================================== -->
+    <!--     Project Description                                     -->
+    <!-- =========================================================== -->
+    <groupId>it.geosolutions.geobatch.unredd</groupId>
+    <artifactId>gb-unredd</artifactId>
+    <version>1.0-RC1</version>
+    <packaging>pom</packaging>
+  
+    <name>GeoBatch UNREDD root</name>
+    <description>The GeoBatch project for unredd</description>
+    <url>https://github.com/nfms4redd/nfms-geobatch</url>
+  
+    <scm>
+        <connection>scm:git@github.com:nfms4redd/nfms-geobatch.git</connection>
+        <url>https://github.com/nfms4redd/nfms-geobatch.git</url>
+    </scm>
+  
+    <organization>
+        <name>GeoSolutions</name>
+        <url>http://www.geo-solutions.it</url>
+    </organization>
+    <inceptionYear>2011</inceptionYear>
+  
+    <licenses>
+        <license>
+            <name>Lesser General Public License (LGPL)</name>
+            <url>http://www.gnu.org/copyleft/lesser.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <allow.test.skip>true</allow.test.skip>
+        <allow.test.failure.ignore>false</allow.test.failure.ignore>
+        <extensive.tests>false</extensive.tests>
+        <interactive.tests>false</interactive.tests>
+        <online.skip.pattern>**/*OnlineTest.java</online.skip.pattern>
+        <stress.skip.pattern>**/*StressTest.java</stress.skip.pattern>
+        <test.maxHeapSize>512M</test.maxHeapSize>
+        <src.output>${basedir}/target</src.output>
+        <gb.version>1.3-BETA3</gb.version>
+        <gt.version>8-SNAPSHOT</gt.version>
+        <unredd.version>1.0-RC1</unredd.version>
+        <geostore.version>1.0.1</geostore.version>
+        <unredd.utils.version>1.1-SNAPSHOT</unredd.utils.version>
+        <jetty.version>6.1.8</jetty.version>
+        <log4j.version>1.2.16</log4j.version>
+        <javaassist.version>3.13.0-GA</javaassist.version>
+        <junit.version>4.10</junit.version>
+    </properties>
+    <!-- =========================================================== -->
+    <!--     Dependency Management                                   -->
+    <!--     If a POM declares one of those dependencies, then it    -->
+    <!--     will use the version specified here. Otherwise, those   -->
+    <!--     dependencies are ignored.                               -->
+    <!-- =========================================================== -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- =========================================================== -->
+            <!-- GeoBatch -->
+            <!-- =========================================================== -->
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-core-impl</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-fs-catalog</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <!-- tools -->
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-action-tools</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <!--  imported actions -->
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-action-scripting</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-action-taskexecutor</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-action-imagemosaic</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-action-geotiff</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-action-freemarker</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-gui</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-dao-xstream</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <!-- =========================================================== -->
+            <!-- Other UNREDD modules -->
+            <!-- =========================================================== -->
+            <dependency>
+                <groupId>it.geosolutions.geobatch.unredd</groupId>
+                <artifactId>gb-action-unredd-statistics</artifactId>
+                <version>${unredd.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geobatch.unredd</groupId>
+                <artifactId>gb-action-unredd-script</artifactId>
+                <version>${unredd.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geobatch.unredd</groupId>
+                <artifactId>gb-action-unredd-geostore</artifactId>
+                <version>${unredd.version}</version>
+            </dependency>
+            <!-- =========================================================== -->
+            <!-- UNREDD Utils modules -->
+            <!-- =========================================================== -->
+            <dependency>
+                <groupId>it.geosolutions.unredd</groupId>
+                <artifactId>unredd-geostore-model</artifactId>
+                <version>${unredd.utils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.unredd</groupId>
+                <artifactId>teststats</artifactId>
+                <version>${unredd.utils.version}</version>
+            </dependency>
+            <!-- =========================================================== -->
+            <!-- GeoStore -->
+            <!-- =========================================================== -->
+            <dependency>
+                <groupId>it.geosolutions.geostore</groupId>
+                <artifactId>geostore-model</artifactId>
+                <version>${geostore.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geostore</groupId>
+                <artifactId>geostore-services-api</artifactId>
+                <version>${geostore.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geostore</groupId>
+                <artifactId>geostore-rest-api</artifactId>
+                <version>${geostore.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geostore</groupId>
+                <artifactId>geostore-rest-client</artifactId>
+                <version>${geostore.version}</version>
+            </dependency>
+            <!-- =========================================================== -->
+            <!--  -->
+            <!-- =========================================================== -->
+            <dependency>
+                <groupId>com.sun.jersey.contribs</groupId>
+                <artifactId>jersey-multipart</artifactId>
+                <version>1.9.1</version>
+            </dependency>
+            <!-- =========================================================== -->
+            <!-- GEOTOOOLS -->
+            <!-- =========================================================== -->
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-api</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-main</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-jdbc</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-property</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-geotiff</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-opengis</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-sample-data</artifactId>
+                <version>${gt.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- ============================== -->
+            <!-- log4j -->
+            <!-- ============================== -->
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <!-- ============================== -->
+            <!-- Test: JETTY -->
+            <!-- ============================== -->
+            <dependency>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jsp-2.0</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javaassist.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <!-- TODO: the resources stuff hardcodes paths to source + test directories,
+        we should be able to use some properties here -->
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*.txt</include>
+                    <include>**/*.sql</include>
+                    <include>**/*.html</include>
+                    <include>**/*.xsd</include>
+                    <include>**/*.xsl</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.utf</include>
+                    <include>**/*.prj</include>
+                    <include>**/*.py</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.query</include>
+                    <include>**/*.xquery</include>
+                    <include>**/*.serialized</include>
+                    <include>META-INF/*.jai</include>
+                    <include>META-INF/mailcap</include>
+                    <include>META-INF/services/**</include>
+                    <include>applicationContext.xml</include>
+                    <include>**/*.ftl</include>
+                    <include>**/placeholder</include>
+                    <!-- used for otherwise empty dirs -->
+                </includes>
+                <excludes>
+                    <exclude>**/doc-files/**</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/test/resources</directory>
+                <includes>
+                    <include>META-INF/services/**</include>
+                    <include>**/test-data/**</include>
+                    <include>**/*.html</include>
+                    <include>**/*.xsd</include>
+                    <include>**/*.xsl</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.csv</include>
+                    <include>**/*.sld</include>
+                    <include>**/*.svg</include>
+                    <include>**/*.gml</include>
+                    <include>**/*.wkt</include>
+                    <include>**/*.txt</include>
+                    <include>**/*.sql</include>
+                    <include>**/*.png</include>
+                    <include>**/*.prj</include>
+                    <include>**/*.py</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.serialized</include>
+                    <include>**/*.ftl</include>
+                    <include>**/*.tif</include>
+                    <include>**/*.tiff</include>
+                    <include>**/*.zip</include>
+                    <include>**/placeholder</include>
+                    <!-- used for otherwise empty dirs -->
+                </includes>
+                <excludes>
+                    <exclude>**/doc-files/**</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
+
+
         <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <source>1.5</source>
-            </configuration>
-          </plugin>
+            <!-- ======================================================= -->
+            <!--     Compilation.                                        -->
+            <!-- ======================================================= -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <!-- The -source argument for the Java compiler. -->
+                    <target>1.6</target>
+                    <!-- The -target argument for the Java compiler. -->
+                    <debug>true</debug>
+                    <!-- Whether to include debugging information.   -->
+                    <encoding>UTF-8</encoding>
+                    <!-- The -encoding argument for the Java compiler. -->
+                </configuration>
+            </plugin>
+     
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- eclipse ide integration -->
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <additionalProjectnatures>
+                        <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+                    </additionalProjectnatures>
+                </configuration>
+            </plugin>
+            <!-- ======================================================= -->
+            <!--     JAR packaging.                                      -->
+            <!-- ======================================================= -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <!-- ======================================================= -->
+            <!--     Source packaging.                                      -->
+            <!-- ======================================================= -->
+            <plugin>
+                <inherited>true</inherited>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <attach>false</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-      </reporting>
-    </profile>
-    <profile>
-      <id>site.geosolutions</id>
-      <distributionManagement>
-        <site>
-          <id>site-geosolutions</id>
-          <name>Web site for Maven reports</name>
-          <url>scp://www.geo-solutions.it/var/www/geo-solutions.it/maven/reports/gb</url>
-        </site>
-      </distributionManagement>
-    </profile>
-    <!-- deploy libs -->
-    <profile>
-      <id>deployJar</id>
-      <activation>
-        <property>
-          <name>deployJar</name>
-        </property>
-      </activation>
-      <modules>
-        <module>deploy</module>
-      </modules>
-    </profile>
-  </profiles>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>2.3</version>
+            </extension>
+        </extensions>
+    </build>
+
+
+    <!-- ================================================================== -->
+    <!--     Repositories. This is where Maven looks for dependencies. The  -->
+    <!--     Maven repository is implicit and doesn't need to be specified. -->
+    <!-- ================================================================== -->
+    <repositories>
+        <repository>
+            <id>geosolutions</id>
+            <name>GeoSolutions Repository</name>
+            <url>http://maven.geo-solutions.it</url>
+        </repository>
+        <repository>
+            <id>java.net</id>
+            <name>java.net Repository</name>
+            <url>http://download.java.net/maven/2/</url>
+        </repository>
+        <repository>
+            <id>JBoss</id>
+            <url>http://repository.jboss.com/maven2</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>opengeo</id>
+            <name>OpenGeo Maven Repository</name>
+            <url>http://repo.opengeo.org</url>
+        </repository>
+
+        <repository>
+            <id>nfms4redd</id>
+            <name>nfms4redd maven repository</name>
+            <url>http://maven.nfms4redd.org/</url>
+        </repository>
+        
+    </repositories>
+
+    
+    <!-- =========================================================== -->
+    <!--     Plugin repositories.                                    -->
+    <!--     This is where Maven looks for plugin dependencies.      -->
+    <!-- =========================================================== -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>codehaus-snapshot-plugins</id>
+            <name>codehaus-shapshot-plugins</name>
+            <url>http://snapshots.repository.codehaus.org/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
+
+    <!-- =========================================================== -->
+    <!--     Modules for the build in approximate dependency order   -->
+    <!-- =========================================================== -->
+    <modules>
+        <module>gb-actions-unredd</module>
+        <module>gb-application-unredd</module>
+    </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>nfms4redd</id>
+            <url>ftp://maven.nfms4redd.org/repo</url>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+    </distributionManagement>
+
+    <!-- Profiles set on the command-line overwrite default properties. -->
+    <profiles>
+        <profile>
+            <id>extensive.tests</id>
+            <properties>
+                <extensive.tests>true</extensive.tests>
+            </properties>
+        </profile>
+        <profile>
+            <id>interactive.tests</id>
+            <properties>
+                <interactive.tests>true</interactive.tests>
+            </properties>
+        </profile>
+        <profile>
+            <id>site.build</id>
+            <properties>
+                <allow.test.skip>false</allow.test.skip>
+                <allow.test.failure.ignore>true</allow.test.failure.ignore>
+                <extensive.tests>true</extensive.tests>
+            </properties>
+        </profile>
+        <profile>
+            <id>online</id>
+            <properties>
+                <online.skip.pattern>disabled</online.skip.pattern>
+            </properties>
+        </profile>
+        <profile>
+            <id>stress</id>
+            <properties>
+                <stress.skip.pattern>disabled</stress.skip.pattern>
+            </properties>
+        </profile>
+        <profile>
+            <id>java5</id>
+            <activation>
+                <jdk>1.5</jdk>
+            </activation>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <source>1.5</source>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
+        <profile>
+            <id>site.geosolutions</id>
+            <distributionManagement>
+                <site>
+                    <id>site-geosolutions</id>
+                    <name>Web site for Maven reports</name>
+                    <url>scp://www.geo-solutions.it/var/www/geo-solutions.it/maven/reports/gb</url>
+                </site>
+            </distributionManagement>
+        </profile>
+        <!-- deploy libs -->
+        <profile>
+            <id>deployJar</id>
+            <activation>
+                <property>
+                    <name>deployJar</name>
+                </property>
+            </activation>
+            <modules>
+                <module>deploy</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

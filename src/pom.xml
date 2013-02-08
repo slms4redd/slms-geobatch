@@ -52,7 +52,7 @@
         <stress.skip.pattern>**/*StressTest.java</stress.skip.pattern>
         <test.maxHeapSize>512M</test.maxHeapSize>
         <src.output>${basedir}/target</src.output>
-        <gb.version>1.3-BETA3</gb.version>
+        <gb.version>1.3-RC2</gb.version>
         <gt.version>8-SNAPSHOT</gt.version>
         <unredd.version>1.0-RC1</unredd.version>
         <geostore.version>1.0.1</geostore.version>

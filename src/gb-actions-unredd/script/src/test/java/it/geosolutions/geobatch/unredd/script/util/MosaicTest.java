@@ -22,6 +22,7 @@ package it.geosolutions.geobatch.unredd.script.util;
 import it.geosolutions.geobatch.unredd.script.exception.PostGisException;
 import it.geosolutions.geobatch.unredd.script.model.PostGisConfig;
 import it.geosolutions.geobatch.unredd.script.test.BaseTest;
+import it.geosolutions.unredd.geostore.utils.NameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,7 +80,7 @@ public class MosaicTest extends BaseTest {
         
         
         Mosaic mosaic = new Mosaic(geoServerConfig, mosaicDir, getTempDir(), getConfigDir());
-        mosaic.add("unredd", "intact_forest", rasterFile, "EPSG:4326", bbox, "raster");
+        mosaic.add("unredd", "intact_forest", rasterFile, "EPSG:4326", bbox, "raster", TestData.file("configuration/datastore.properties").getAbsolutePath());
 
 //        LOGGER.info("Connecting to " + postGisConfig);
 //        assertEquals(48, count(postGisConfig, LAYER));

@@ -44,8 +44,11 @@ public class IngestionConfiguration extends ActionConfiguration implements Confi
     private GeotiffOverviewsEmbedderConfiguration overviewsEmbedderConfiguration;
     private GeotiffRetilerConfiguration retilerConfiguration;
     private GeoServerBasicConfig geoServerConfig;
-//    private String workspace = "unredd";
     private File originalDataTargetDir;
+    /**
+     * The absolute path of datastore.properties (STAGING) used in the ImageMosaic action.
+     */
+    private String datastorePath;
 	
     public IngestionConfiguration(String id, String name, String description) {
         super(id, name, description);
@@ -95,14 +98,6 @@ public class IngestionConfiguration extends ActionConfiguration implements Confi
         this.geoServerConfig = geoServerConfig;
     }
 
-//    public String getWorkspace() {
-//        return workspace;
-//    }
-//
-//    public void setWorkspace(String workspace) {
-//        this.workspace = workspace;
-//    }
-
     public File getOriginalDataTargetDir() {
         return originalDataTargetDir;
     }
@@ -118,8 +113,16 @@ public class IngestionConfiguration extends ActionConfiguration implements Confi
     public void setRetilerConfiguration(GeotiffRetilerConfiguration retilerConfiguration) {
         this.retilerConfiguration = retilerConfiguration;
     }
+    
+    public String getDatastorePath() {
+        return datastorePath;
+    }
+    
+    public void setDatastorePath(String datastorePath) {
+        this.datastorePath = datastorePath;
+    }
 
-	@Override
+    @Override
     public IngestionConfiguration clone(){
         final IngestionConfiguration ret = (IngestionConfiguration)super.clone();
 

@@ -34,6 +34,8 @@ import it.geosolutions.geobatch.unredd.script.model.PostGisConfig;
  */
 public class PublishingConfiguration extends ActionConfiguration implements Configuration {
 
+    
+    
     private GeoStoreConfig srcGeoStoreConfig;
     private PostGisConfig  srcPostGisConfig;
     private GeoServerBasicConfig srcGeoServerConfig;
@@ -41,6 +43,11 @@ public class PublishingConfiguration extends ActionConfiguration implements Conf
     private GeoStoreConfig dstGeoStoreConfig;
     private PostGisConfig  dstPostGisConfig;
     private GeoServerBasicConfig dstGeoServerConfig;
+    
+    /**
+     * The absolute path of datastore.properties (DISSEMINATION) used in the ImageMosaic action.
+     */
+    private String datastorePath;
 	
     public PublishingConfiguration(String id, String name, String description) {
         super(id, name, description);
@@ -94,8 +101,15 @@ public class PublishingConfiguration extends ActionConfiguration implements Conf
         this.srcPostGisConfig = srcPostGisConfig;
     }
 
+    public String getDatastorePath() {
+        return datastorePath;
+    }
 
-	@Override
+    public void setDatastorePath(String datastorePath) {
+        this.datastorePath = datastorePath;
+    }
+
+    @Override
     public PublishingConfiguration clone(){
         final PublishingConfiguration ret = (PublishingConfiguration)super.clone();
 

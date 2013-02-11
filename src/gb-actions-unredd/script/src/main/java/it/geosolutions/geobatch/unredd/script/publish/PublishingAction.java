@@ -262,12 +262,9 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
 	            bbox[1] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERY0));
 	            bbox[2] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERX1));
 	            bbox[3] = Double.valueOf(layerResource.getAttribute(Attributes.RASTERY1));
-	        	
-//	            Mosaic mosaic = new Mosaic(cfg.getGeoServerConfig(), mosaicDir, getTempDir(), getConfigDir());
-//	            mosaic.add(cfg.getGeoServerConfig().getWorkspace(), layername, rasterFile, "EPSG:4326", bbox);
 	            
 	            Mosaic mosaic = new Mosaic(conf.getDstGeoServerConfig(), mosaicDir, getTempDir(), getConfigDir());
-	            mosaic.add(conf.getDstGeoServerConfig().getWorkspace(), layerName, srcRasterFile, "EPSG:4326", bbox, style);
+	            mosaic.add(conf.getDstGeoServerConfig().getWorkspace(), layerName, srcRasterFile, "EPSG:4326", bbox, style, conf.getDatastorePath());
 	        }
 
         } catch (PostGisException e) {

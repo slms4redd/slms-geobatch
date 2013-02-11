@@ -471,7 +471,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
             bbox[3] = Double.valueOf(layer.getAttribute(Attributes.RASTERY1));
             
             Mosaic mosaic = new Mosaic(cfg.getGeoServerConfig(), mosaicDir, getTempDir(), getConfigDir());
-            mosaic.add(cfg.getGeoServerConfig().getWorkspace(), layername, rasterFile, "EPSG:4326", bbox, style);
+            mosaic.add(cfg.getGeoServerConfig().getWorkspace(), layername, rasterFile, "EPSG:4326", bbox, style, cfg.getDatastorePath());
         
         } catch (Exception e) {
             this.listenerForwarder.progressing(60, "Error in ImageMosaic: " + e.getMessage());

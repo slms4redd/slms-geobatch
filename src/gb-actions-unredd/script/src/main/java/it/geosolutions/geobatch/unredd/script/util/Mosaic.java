@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfig;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicAction;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicCommand;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
+import it.geosolutions.unredd.geostore.utils.NameUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,6 +38,13 @@ import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class is a Facade to the ImageMosaicAction. 
+ * Its methods creates the the ImageMosaicConfigurations from the supplyed parameters, the flow configuration or eventually from other exterbnal resources.
+ * Then it is responsible for run executing imagemosaicAction. 
+ * @author DamianoG
+ *
+ */
 public class Mosaic {
     private final static Logger LOGGER = LoggerFactory.getLogger(Mosaic.class);
 
@@ -57,17 +65,27 @@ public class Mosaic {
     }
 
   /**
+   * Execute the imagemosaic action. 
+   * Before execute the action setting this method set its configuration and provide a command that add
+   * a new granule. 
+   * This method works both in case of the granule is the first granule (so all the initialization steps must be done)
+   * or the N granule added.
+   * 
+   * TODO: refactor it due to much parameters are needed. (DamianoG 11-02-2013)
+   *   
    * 
    * @param workspace
    * @param mosaicName
-   * @param tiff
-   * @param crs
+   * @param tiff the granule file
+   * @param crs CoordinateReferenceSystem
    * @param bbox order must be minX maxX minY maxY
+   * @param datastorePath the absolute path of the datastore.properties file
+   * 
    * @throws SecurityException
    * @throws ActionException
    * @throws IOException
    */
-    public void add(String workspace, String mosaicName, File tiff, String crs, double bbox[], String style) throws SecurityException, ActionException, IOException {
+    public void add(String workspace, String mosaicName, File tiff, String crs, double bbox[], String style, String datastorePath) throws SecurityException, ActionException, IOException {
         
         if ( ! tiff.exists())
             throw new FileNotFoundException("TIF file not found: "+tiff);
@@ -102,7 +120,8 @@ public class Mosaic {
         imageMosaicConfiguration.setLatLonMinBoundingBoxY(bbox[1]);
         imageMosaicConfiguration.setLatLonMaxBoundingBoxX(bbox[2]);
         imageMosaicConfiguration.setLatLonMaxBoundingBoxY(bbox[3]);
-     
+        imageMosaicConfiguration.setDatastorePropertiesPath(datastorePath);
+        imageMosaicConfiguration.setTimeRegex(NameUtils.TIME_REGEX);
         
         File dsprop = new File(mosaicDir, "datastore.properties");
         imageMosaicConfiguration.setDatastorePropertiesPath(dsprop.getAbsolutePath());

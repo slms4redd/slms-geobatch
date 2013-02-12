@@ -122,9 +122,6 @@ public class Mosaic {
         imageMosaicConfiguration.setLatLonMaxBoundingBoxY(bbox[3]);
         imageMosaicConfiguration.setDatastorePropertiesPath(datastorePath);
         imageMosaicConfiguration.setTimeRegex(NameUtils.TIME_REGEX);
-        
-        File dsprop = new File(mosaicDir, "datastore.properties");
-        imageMosaicConfiguration.setDatastorePropertiesPath(dsprop.getAbsolutePath());
 
         ImageMosaicAction imageMosaicAction = new ImageMosaicAction(imageMosaicConfiguration);
         imageMosaicAction.setTempDir(tempDir);

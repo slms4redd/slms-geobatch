@@ -8,14 +8,14 @@
   <parent>
     <groupId>it.geosolutions.geobatch.unredd</groupId>
     <artifactId>gb-unredd</artifactId>
-    <version>1.0-RC1</version>
+    <version>1.0-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!-- Module Description -->
   <!-- =========================================================== -->
   <groupId>it.geosolutions.geobatch.unredd</groupId>
   <artifactId>gb-application-unredd</artifactId>
-  <version>1.0-RC1</version>
+  <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
   
   <name>GeoBatch UNREDD WebApp</name>

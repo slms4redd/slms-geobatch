@@ -11,7 +11,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch.unredd</groupId>
     <artifactId>gb-actions-unredd</artifactId>
-    <version>1.0-RC1</version>
+    <version>1.0-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->

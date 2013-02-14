@@ -98,7 +98,7 @@ public class Mosaic {
         ImageMosaicConfiguration imageMosaicConfiguration = new ImageMosaicConfiguration("ImageMosaic", "Configuring mosaic", null);
 
         if(geoServerCfg == null) {
-            LOGGER.warn("GeoServer configuration is missing. is this a test?");
+            if(LOGGER.isWarnEnabled()){LOGGER.warn("GeoServer configuration is missing. is this a test?");}
             imageMosaicConfiguration.setIgnoreGeoServer(true);
 
             imageMosaicConfiguration.setGeoserverURL("http://localhost:9/geoserver");
@@ -122,7 +122,8 @@ public class Mosaic {
         imageMosaicConfiguration.setLatLonMaxBoundingBoxY(bbox[3]);
         imageMosaicConfiguration.setDatastorePropertiesPath(datastorePath);
         imageMosaicConfiguration.setTimeRegex(NameUtils.TIME_REGEX);
-
+        if(LOGGER.isInfoEnabled()){LOGGER.info("Time_Regex used is: " + NameUtils.TIME_REGEX);}
+        
         ImageMosaicAction imageMosaicAction = new ImageMosaicAction(imageMosaicConfiguration);
         imageMosaicAction.setTempDir(tempDir);
         imageMosaicAction.setConfigDir(configDir);

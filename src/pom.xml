@@ -124,6 +124,16 @@
                 <artifactId>gb-dao-xstream</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-rest-impl</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-rest-api</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
             <!-- =========================================================== -->
             <!-- Other UNREDD modules -->
             <!-- =========================================================== -->

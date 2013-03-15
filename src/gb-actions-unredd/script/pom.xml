@@ -11,14 +11,14 @@
   <parent>
     <groupId>it.geosolutions.geobatch.unredd</groupId>
     <artifactId>gb-actions-unredd</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
   <groupId>it.geosolutions.geobatch.unredd</groupId>
   <artifactId>gb-action-unredd-script</artifactId>
-  <version>1.0-RC1</version>
+
   <packaging>jar</packaging>
   
   <name>GeoBatch UNREDD action: main flows</name>

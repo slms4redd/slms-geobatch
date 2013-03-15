@@ -45,7 +45,7 @@
     </licenses>
 
     <properties>
-        <unredd.version>1.0-RC1</unredd.version>
+        <unredd.version>1.4-SNAPSHOT</unredd.version>
         <gb.version>1.4-SNAPSHOT</gb.version>
 
         <gt.version>8-SNAPSHOT</gt.version>

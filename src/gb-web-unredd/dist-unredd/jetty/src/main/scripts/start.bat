@@ -1,0 +1,1 @@
+java -DGEOBATCH_CONFIG_DIR="%~dp0GEOBATCH_CONFIG_DIR" -Xmx1024m -classpath "%CLASSPATH%";geobatch/WEB-INF/lib/* it.geosolutions.geobatch.jetty.Start jetty.properties

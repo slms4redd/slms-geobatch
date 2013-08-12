@@ -23,6 +23,7 @@ package it.geosolutions.geobatch.unredd.geostore;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.unredd.geostore.model.ResourceList;
@@ -39,6 +40,7 @@ import it.geosolutions.geostore.services.rest.utils.GeoStoreJAXBContext;
 import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.util.Collection;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
@@ -253,6 +255,11 @@ public class GeostoreAction extends BaseAction<FileSystemEvent> {
         }
 
         return outputFile;
+    }
+
+    @Override
+    public boolean checkConfiguration() {
+        return true;
     }
 
 }

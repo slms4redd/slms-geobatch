@@ -23,6 +23,7 @@ package it.geosolutions.geobatch.unredd.script.reprocess;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderConfiguration;
@@ -50,6 +51,7 @@ import it.geosolutions.unredd.geostore.utils.NameUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -167,7 +169,7 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
      * @param request, this contains the list of the StatsDef to manage
      * @throws ActionException
      */
-    private void reprocessStats(ReprocessStatsRequest request) throws GeoStoreException, FlowException {
+    private void reprocessStats(ReprocessStatsRequest request) throws Exception {
 
         List<String> statsDefNames = request.getStatsNames();
         if (statsDefNames == null || statsDefNames.isEmpty()) {
@@ -274,7 +276,7 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
      * @param request
      * @throws ActionException
      */
-    public void reprocessChart(ReprocessChartRequest request) throws GeoStoreException, FlowException {
+    public void reprocessChart(ReprocessChartRequest request) throws Exception {
 
         this.listenerForwarder.setTask("Starting reprocessChart");
         List<Resource> chartScriptList = new ArrayList(request.getChartNames().size());
@@ -462,6 +464,11 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
         }
 
         return finalPath;
+    }
+
+    @Override
+    public boolean checkConfiguration() {
+        return true;
     }
 
 }

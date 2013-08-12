@@ -21,7 +21,6 @@ package it.geosolutions.geobatch.unredd.script.util;
 
 import it.geosolutions.geobatch.action.scripting.ScriptingAction;
 import it.geosolutions.geobatch.action.scripting.ScriptingConfiguration;
-import it.geosolutions.geobatch.action.scripting.ScriptingService;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.unredd.script.exception.FlowException;
 import it.geosolutions.geobatch.unredd.script.exception.GeoStoreException;
@@ -35,6 +34,7 @@ import it.geosolutions.unredd.geostore.model.UNREDDChartScript;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -212,7 +212,7 @@ public class FlowUtil {
     }
 
 
-    public void runScripts(GeoStoreUtil geoStore, Collection<Resource> chartScriptList) throws FlowException {
+    public void runScripts(GeoStoreUtil geoStore, Collection<Resource> chartScriptList) throws Exception {
         LOGGER.info("Running " + chartScriptList.size() + " scripts...");
         String currentScript = null;
         try {
@@ -232,7 +232,7 @@ public class FlowUtil {
         }
     }
 
-    protected void runScript(Resource chartScriptResource, Map<String, Object> properties) throws ActionException {
+    protected void runScript(Resource chartScriptResource, Map<String, Object> properties) throws Exception {
 
         UNREDDChartScript chartScript = new UNREDDChartScript(chartScriptResource);
         String scriptPath = chartScript.getAttribute(UNREDDChartScript.Attributes.SCRIPTPATH);
@@ -256,11 +256,11 @@ public class FlowUtil {
    	 	scriptConf.setScriptFile(scriptPath);
  	 	scriptConf.setProperties(properties);
 
-        ScriptingService scriptService = new ScriptingService("scriptId","scriptName","scriptDescr");
-   	 	if (!scriptService.canCreateAction(scriptConf))
-            throw new IllegalArgumentException("The arguments for the ScriptingAction are not complete or illegal");
+//        ScriptingService scriptService = new ScriptingService("scriptId","scriptName","scriptDescr");
+//   	 	if (!scriptService.canCreateAction(scriptConf))
+//            throw new IllegalArgumentException("The arguments for the ScriptingAction are not complete or illegal");
 
-        ScriptingAction scriptAction = scriptService.createAction(scriptConf);
+        ScriptingAction scriptAction = new ScriptingAction(scriptConf);
         scriptAction.setTempDir(tempDir);
         scriptAction.setConfigDir(configDir);
         

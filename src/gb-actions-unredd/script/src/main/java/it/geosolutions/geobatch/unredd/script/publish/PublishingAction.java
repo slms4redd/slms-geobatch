@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.unredd.script.publish;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.unredd.script.exception.FlowException;
@@ -49,6 +50,7 @@ import it.geosolutions.unredd.geostore.utils.NameUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -608,6 +610,11 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
         } catch (IOException e) {
         	throw new ActionException(this, "Error while copying features", e);
 		} 
+    }
+    
+    @Override
+    public boolean checkConfiguration() {
+        return true;
     }
 
 }

@@ -71,7 +71,7 @@ public class FlowUtilsTest extends BaseTest {
      */
     @Test
 //    @Ignore
-    public void testRunScripts() throws GeoStoreException, IOException, FlowException {
+    public void testRunScripts() throws Exception {
         assertNotNull(getGeoStoreUtil());
         assumeTrue(pingGeoStore());
 

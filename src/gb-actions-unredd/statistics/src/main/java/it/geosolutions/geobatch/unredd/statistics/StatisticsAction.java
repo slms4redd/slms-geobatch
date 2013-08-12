@@ -21,12 +21,9 @@
  */
 package it.geosolutions.geobatch.unredd.statistics;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
-import java.io.File;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -92,6 +89,11 @@ public class StatisticsAction extends BaseAction<EventObject> {
         }
         
         return ret;
+    }
+
+    @Override
+    public boolean checkConfiguration() {
+        return true;
     }
     
 }

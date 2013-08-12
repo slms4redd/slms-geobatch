@@ -23,9 +23,9 @@
 package it.geosolutions.geobatch.unredd.script.util;
 
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedder;
+import it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderAction;
 import it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderConfiguration;
-import it.geosolutions.geobatch.geotiff.retile.GeotiffRetiler;
+import it.geosolutions.geobatch.geotiff.retile.GeotiffRetilerAction;
 import it.geosolutions.geobatch.geotiff.retile.GeotiffRetilerConfiguration;
 //import it.geosolutions.geobatch.unredd.script.IngestionActionion;
 
@@ -60,7 +60,7 @@ public class GeoTiff {
 		}
 //		retilerConfig.setWorkingDirectory(context);
 
-        GeotiffRetiler retiler = new GeotiffRetiler(retilerConfig);
+        GeotiffRetilerAction retiler = new GeotiffRetilerAction(retilerConfig);
         retiler.setTempDir(tempDir);
 
 		//listenerForwarder.setTask("starting retiler");
@@ -86,7 +86,7 @@ public class GeoTiff {
 	    //listenerForwarder.setTask("Subsample algorithm defined");
 //		overviewConfig.setWorkingDirectory(instanceWorkingDir.getAbsolutePath());
         
-		GeotiffOverviewsEmbedder overview = new GeotiffOverviewsEmbedder(overviewConfig);
+		GeotiffOverviewsEmbedderAction overview = new GeotiffOverviewsEmbedderAction(overviewConfig);
         overview.setTempDir(tempDir);
 		//listenerForwarder.setTask("starting overviews embedder");
 

@@ -147,20 +147,25 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
      */
     public void basicChecks() throws ActionException {
 
-        if ( cfg.getOriginalDataTargetDir() == null || ! cfg.getOriginalDataTargetDir().canWrite() || ! cfg.getOriginalDataTargetDir().isDirectory())
-            throw new ActionException(this, "Error in OriginalDataTargetDir "+ cfg.getOriginalDataTargetDir());
+        if ( cfg.getOriginalDataTargetDir() == null || ! cfg.getOriginalDataTargetDir().canWrite() || ! cfg.getOriginalDataTargetDir().isDirectory()){
+            LOGGER.warn("OriginalDataTargetDir is not setted or has been wrong specified or GeoBatch doesn't have write permissions");
+        }
 
-        if(cfg.getRetilerConfiguration() == null)
+        if(cfg.getRetilerConfiguration() == null){
             throw new ActionException(this, "RetilerConfiguration not set");
+        }
 
-        if(cfg.getGeoStoreConfig() == null)
+        if(cfg.getGeoStoreConfig() == null){
             throw new ActionException(this, "GeoStoreConfiguration not set");
+        }
 
-        if(cfg.getPostGisConfig() == null)
+        if(cfg.getPostGisConfig() == null){
             throw new ActionException(this, "PostGisConfiguration not set");
+        }
 
-        if(cfg.getGeoServerConfig() == null)
+        if(cfg.getGeoServerConfig() == null){
             LOGGER.warn("GeoServer config is null. GeoServer data will not be refreshed");
+        }
     }
 
 
@@ -210,7 +215,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
         try {
             request = RequestJDOMReader.parseFile(infoXmlFile);
         } catch (Exception e) {
-            throw new ActionException(this, "Error reading info.xml file " + infoXmlFile + " : " + e.getMessage(), e);
+            throw new ActionException(this, "Error reading info.xml file, Are you sure to have built the input zip pkg in the right way? Note that all the content must be placed in the zip root folder, no any other subfolder are allowed..." , e);
         }
 
         if(request.getFormat() == null) {

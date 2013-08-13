@@ -8,7 +8,7 @@
   <!-- Please do not remove the above placeholder -->
   <parent>
     <groupId>it.geosolutions.geobatch.unredd</groupId>
-    <artifactId>gb-web-unredd</artifactId>
+    <artifactId>gb-unredd</artifactId>
     <version>1.4-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->

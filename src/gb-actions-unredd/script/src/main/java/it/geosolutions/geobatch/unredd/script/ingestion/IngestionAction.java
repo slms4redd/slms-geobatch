@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.unredd.script.ingestion;
 //import it.geosolutions.geobatch.unredd.script.util.rasterize.Rasterize;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.unredd.script.exception.FlowException;
@@ -69,6 +70,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Luca Paolino - luca.paolino@geo-solutions.it
  */
+@Action(configurationClass=IngestionConfiguration.class)
 public class IngestionAction extends BaseAction<FileSystemEvent> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(IngestionAction.class);

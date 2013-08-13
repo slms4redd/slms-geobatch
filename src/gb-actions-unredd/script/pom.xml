@@ -18,7 +18,6 @@
   <!-- =========================================================== -->
   <groupId>it.geosolutions.geobatch.unredd</groupId>
   <artifactId>gb-action-unredd-script</artifactId>
-
   <packaging>jar</packaging>
   
   <name>GeoBatch UNREDD action: main flows</name>

@@ -24,11 +24,13 @@ package it.geosolutions.geobatch.unredd.script.publish;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.unredd.script.exception.FlowException;
 import it.geosolutions.geobatch.unredd.script.exception.GeoStoreException;
 import it.geosolutions.geobatch.unredd.script.exception.PostGisException;
+import it.geosolutions.geobatch.unredd.script.ingestion.IngestionConfiguration;
 import it.geosolutions.geobatch.unredd.script.model.Request;
 import it.geosolutions.geobatch.unredd.script.util.FlowUtil;
 import it.geosolutions.geobatch.unredd.script.util.GeoStoreUtil;
@@ -70,6 +72,7 @@ import org.slf4j.LoggerFactory;
  * @author Simone Giannecchin, GeoSolutions
  *
  */
+@Action(configurationClass=PublishingConfiguration.class)
 public class PublishingAction extends BaseAction<FileSystemEvent> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(PublishingAction.class);

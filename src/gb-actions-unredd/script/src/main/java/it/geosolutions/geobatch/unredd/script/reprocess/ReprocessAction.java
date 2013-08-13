@@ -23,12 +23,14 @@ package it.geosolutions.geobatch.unredd.script.reprocess;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderConfiguration;
 import it.geosolutions.geobatch.unredd.script.exception.FlowException;
 import it.geosolutions.geobatch.unredd.script.exception.GeoStoreException;
 import it.geosolutions.geobatch.unredd.script.model.RasterizeConfig;
+import it.geosolutions.geobatch.unredd.script.publish.PublishingConfiguration;
 import it.geosolutions.geobatch.unredd.script.reprocess.model.ReprocessChartRequest;
 import it.geosolutions.geobatch.unredd.script.reprocess.model.ReprocessLayerRequest;
 import it.geosolutions.geobatch.unredd.script.reprocess.model.ReprocessRequest;
@@ -67,6 +69,7 @@ import org.slf4j.LoggerFactory;
  * @author Luca Paolino - luca.paolino@geo-solutions.it
  *
  */
+@Action(configurationClass=ReprocessConfiguration.class)
 public class ReprocessAction extends BaseAction<FileSystemEvent> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ReprocessAction.class);

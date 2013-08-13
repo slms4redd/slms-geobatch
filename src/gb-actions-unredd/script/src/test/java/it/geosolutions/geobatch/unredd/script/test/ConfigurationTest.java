@@ -23,7 +23,6 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderConfiguration;
 import it.geosolutions.geobatch.geotiff.retile.GeotiffRetilerConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistry;
-import it.geosolutions.geobatch.unredd.script.ScriptAliasRegistrar;
 import it.geosolutions.geobatch.unredd.script.ingestion.IngestionConfiguration;
 import it.geosolutions.geobatch.unredd.script.model.GeoServerBasicConfig;
 import it.geosolutions.geobatch.unredd.script.model.GeoStoreConfig;
@@ -87,7 +86,8 @@ public class ConfigurationTest extends BaseTest {
         AliasRegistry aliasRegistry = new AliasRegistry();
         Alias alias = new Alias();
         alias.setAliasRegistry(aliasRegistry);
-        new ScriptAliasRegistrar(aliasRegistry);
+        // FIXME see improvements done in the latest snapshots of GB 1.4 
+        //new ScriptAliasRegistrar(aliasRegistry);
         XStream xstream = new XStream();
         alias.setAliases(xstream);
         

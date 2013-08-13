@@ -21,7 +21,6 @@ package it.geosolutions.geobatch.unredd.script.test;
 
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistry;
-import it.geosolutions.geobatch.unredd.script.ScriptAliasRegistrar;
 import it.geosolutions.geobatch.unredd.script.model.GeoServerBasicConfig;
 import it.geosolutions.geobatch.unredd.script.model.GeoStoreConfig;
 import it.geosolutions.geobatch.unredd.script.model.PostGisConfig;
@@ -45,6 +44,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.slf4j.Logger;
@@ -259,11 +259,13 @@ public abstract class BaseTest extends Assert{
         }
     }
 
+    @Ignore
     protected ActionConfiguration loadActionConfig(String filename) throws Exception {
         File file = loadFile(filename);
         assertNotNull(file);
         AliasRegistry aliasRegistry = new AliasRegistry();
-        new ScriptAliasRegistrar(aliasRegistry); // register static info
+        // FIXME alias registrar is became useless with new GB flow loading 
+        //new ScriptAliasRegistrar(aliasRegistry); // register static info
         XStream xstream = new XStream();
         Alias alias = new Alias();
         alias.setAliasRegistry(aliasRegistry);

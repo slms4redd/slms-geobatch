@@ -298,12 +298,12 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
         // this attribute is read for moving the raster file to the destination directory, not for rasterization
         String mosaicDirPath = layer.getAttribute(UNREDDLayer.Attributes.MOSAICPATH);
         if( mosaicDirPath == null) {
-            throw new ActionException(this, "Null mosaic directory for layer:"+layername);
+            throw new ActionException(this, "Null mosaic directory for layer: '" + layername + "'... check the layer configuration on geostore");
         }
 
         File mosaicDir = new File(mosaicDirPath);
         if( ! mosaicDir.isDirectory() && ! mosaicDir.isAbsolute()) {
-            throw new ActionException(this, "Bad mosaic directory for layer:"+layername+": " + mosaicDir);
+            throw new ActionException(this, "Bad mosaic directory for layer '" + layername + "': " + mosaicDir + " doesn't exist... create it or check the layer configuration on geostore");
         }
 
         // ******************

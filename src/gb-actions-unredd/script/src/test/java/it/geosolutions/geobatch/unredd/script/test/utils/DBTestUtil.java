@@ -22,8 +22,6 @@
 
 package it.geosolutions.geobatch.unredd.script.test.utils;
 
-import it.geosolutions.geobatch.unredd.script.ingestion.IngestionAction;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;

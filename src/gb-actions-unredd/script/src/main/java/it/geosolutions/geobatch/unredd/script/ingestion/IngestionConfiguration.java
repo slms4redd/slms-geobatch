@@ -23,13 +23,13 @@ package it.geosolutions.geobatch.unredd.script.ingestion;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfig;
 import it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderConfiguration;
 import it.geosolutions.geobatch.geotiff.retile.GeotiffRetilerConfiguration;
 import it.geosolutions.geobatch.unredd.script.model.GeoServerBasicConfig;
 import it.geosolutions.geobatch.unredd.script.model.GeoStoreConfig;
 import it.geosolutions.geobatch.unredd.script.model.PostGisConfig;
 import it.geosolutions.geobatch.unredd.script.model.RasterizeConfig;
+
 import java.io.File;
 
 /**

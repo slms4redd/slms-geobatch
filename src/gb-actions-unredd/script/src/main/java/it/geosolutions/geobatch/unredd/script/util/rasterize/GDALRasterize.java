@@ -22,16 +22,11 @@
 
 package it.geosolutions.geobatch.unredd.script.util.rasterize;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import it.geosolutions.geobatch.actions.freemarker.FreeMarkerAction;
+import it.geosolutions.geobatch.actions.freemarker.FreeMarkerConfiguration;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.task.TaskExecutor;
 import it.geosolutions.geobatch.task.TaskExecutorConfiguration;
-
-//FreeMarker
-import it.geosolutions.geobatch.actions.freemarker.*;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.unredd.script.model.PostGisConfig;
 import it.geosolutions.geobatch.unredd.script.model.RasterizeConfig;
 import it.geosolutions.geobatch.unredd.script.util.PostGISUtils;
@@ -39,6 +34,12 @@ import it.geosolutions.geobatch.unredd.script.util.SingleFileActionExecutor;
 import it.geosolutions.unredd.geostore.model.UNREDDLayer;
 import it.geosolutions.unredd.geostore.model.UNREDDLayerUpdate;
 import it.geosolutions.unredd.geostore.model.UNREDDLayerUpdate.Attributes;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

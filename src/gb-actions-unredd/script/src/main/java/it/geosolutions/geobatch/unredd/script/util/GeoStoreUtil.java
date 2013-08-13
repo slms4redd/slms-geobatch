@@ -22,7 +22,6 @@
 
 package it.geosolutions.geobatch.unredd.script.util;
 
-import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.unredd.geostore.GeostoreAction;
 import it.geosolutions.geobatch.unredd.geostore.GeostoreActionConfiguration;
 import it.geosolutions.geobatch.unredd.geostore.GeostoreOperation;
@@ -39,8 +38,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
 import org.apache.commons.io.FileUtils;

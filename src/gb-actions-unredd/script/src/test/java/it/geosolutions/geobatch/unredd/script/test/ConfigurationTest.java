@@ -19,16 +19,9 @@
  */
 package it.geosolutions.geobatch.unredd.script.test;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.thoughtworks.xstream.XStream;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfig;
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderConfiguration;
 import it.geosolutions.geobatch.geotiff.retile.GeotiffRetilerConfiguration;
-
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import it.geosolutions.geobatch.unredd.script.ScriptAliasRegistrar;
 import it.geosolutions.geobatch.unredd.script.ingestion.IngestionConfiguration;
@@ -38,13 +31,14 @@ import it.geosolutions.geobatch.unredd.script.model.PostGisConfig;
 import it.geosolutions.geobatch.unredd.script.model.RasterizeConfig;
 import it.geosolutions.geobatch.unredd.script.reprocess.ReprocessConfiguration;
 import it.geosolutions.geobatch.xstream.Alias;
-import java.io.BufferedInputStream;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import org.apache.commons.io.IOUtils;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  *

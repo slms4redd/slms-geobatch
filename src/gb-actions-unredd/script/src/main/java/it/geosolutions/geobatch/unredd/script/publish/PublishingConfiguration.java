@@ -21,8 +21,6 @@
  */
 package it.geosolutions.geobatch.unredd.script.publish;
 
-import java.util.Map;
-
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.unredd.script.model.GeoServerBasicConfig;

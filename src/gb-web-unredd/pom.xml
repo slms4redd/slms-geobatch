@@ -12,14 +12,14 @@
   <parent>
     <groupId>it.geosolutions.geobatch.unredd</groupId>
     <artifactId>gb-unredd</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
   <groupId>it.geosolutions.geobatch.unredd</groupId>
   <artifactId>gb-web-unredd</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.4-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>GeoBatch web</name>
   <description>GeoSolutions GeoBatch web.</description>

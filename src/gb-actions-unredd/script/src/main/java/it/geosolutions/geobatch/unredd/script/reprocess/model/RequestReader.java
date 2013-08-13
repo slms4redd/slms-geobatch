@@ -20,8 +20,10 @@
 package it.geosolutions.geobatch.unredd.script.reprocess.model;
 
 import java.io.File;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

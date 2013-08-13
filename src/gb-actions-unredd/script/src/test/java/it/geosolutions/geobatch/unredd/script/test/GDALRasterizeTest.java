@@ -22,16 +22,14 @@
 
 package it.geosolutions.geobatch.unredd.script.test;
 
-import it.geosolutions.geobatch.unredd.script.model.RasterizeConfig;
-
-import java.io.File;
+import static org.junit.Assume.assumeTrue;
 import it.geosolutions.geobatch.unredd.script.util.rasterize.GDALRasterize;
 import it.geosolutions.unredd.geostore.model.UNREDDLayer;
 import it.geosolutions.unredd.geostore.model.UNREDDLayer.Attributes;
 import it.geosolutions.unredd.geostore.model.UNREDDLayerUpdate;
 
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
+import java.io.File;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

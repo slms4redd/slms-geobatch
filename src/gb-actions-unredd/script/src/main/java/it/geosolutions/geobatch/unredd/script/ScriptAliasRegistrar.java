@@ -22,12 +22,12 @@
 
 package it.geosolutions.geobatch.unredd.script;
 
-import it.geosolutions.geobatch.unredd.script.reprocess.ReprocessConfiguration;
-import it.geosolutions.geobatch.unredd.script.publish.PublishingConfiguration;
-import it.geosolutions.geobatch.unredd.script.ingestion.IngestionConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
+import it.geosolutions.geobatch.unredd.script.ingestion.IngestionConfiguration;
 import it.geosolutions.geobatch.unredd.script.model.GeoServerBasicConfig;
+import it.geosolutions.geobatch.unredd.script.publish.PublishingConfiguration;
+import it.geosolutions.geobatch.unredd.script.reprocess.ReprocessConfiguration;
 
 /**
  * Register XStream aliases for the relevant services we ship in this class.

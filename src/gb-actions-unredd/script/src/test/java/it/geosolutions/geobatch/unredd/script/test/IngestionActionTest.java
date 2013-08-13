@@ -22,13 +22,13 @@
 
 package it.geosolutions.geobatch.unredd.script.test;
 
+import static org.junit.Assume.assumeTrue;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.unredd.script.exception.FlowException;
 import it.geosolutions.geobatch.unredd.script.exception.GeoStoreException;
 import it.geosolutions.geobatch.unredd.script.ingestion.IngestionAction;
 import it.geosolutions.geobatch.unredd.script.ingestion.IngestionConfiguration;
 import it.geosolutions.geobatch.unredd.script.test.utils.UNREDDGeoStoreTestUtil;
-import it.geosolutions.geobatch.unredd.script.util.PostGISUtils;
 import it.geosolutions.geobatch.unredd.script.util.SingleFileActionExecutor;
 import it.geosolutions.geostore.services.rest.model.RESTResource;
 import it.geosolutions.unredd.geostore.model.UNREDDCategories;
@@ -40,10 +40,7 @@ import it.geosolutions.unredd.geostore.utils.NameUtils;
 
 import java.io.File;
 
-
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;

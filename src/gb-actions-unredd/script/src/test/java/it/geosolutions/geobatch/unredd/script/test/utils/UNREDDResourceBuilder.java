@@ -23,16 +23,14 @@
 package it.geosolutions.geobatch.unredd.script.test.utils;
 
 
-import it.geosolutions.geobatch.unredd.script.util.FlowUtil;
-import it.geosolutions.unredd.geostore.model.UNREDDLayerUpdate;
-import it.geosolutions.unredd.geostore.model.UNREDDStatsDef;
 import it.geosolutions.geostore.services.dto.ShortAttribute;
-
 import it.geosolutions.geostore.services.rest.model.RESTResource;
 import it.geosolutions.unredd.geostore.model.UNREDDChartScript;
 import it.geosolutions.unredd.geostore.model.UNREDDChartScript.ReverseAttributes;
 import it.geosolutions.unredd.geostore.model.UNREDDLayer;
+import it.geosolutions.unredd.geostore.model.UNREDDLayerUpdate;
 import it.geosolutions.unredd.geostore.model.UNREDDStatsData;
+import it.geosolutions.unredd.geostore.model.UNREDDStatsDef;
 import it.geosolutions.unredd.geostore.utils.NameUtils;
 
 import java.util.List;

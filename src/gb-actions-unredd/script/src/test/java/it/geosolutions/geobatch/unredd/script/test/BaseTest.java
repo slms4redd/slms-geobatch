@@ -19,7 +19,6 @@
  */
 package it.geosolutions.geobatch.unredd.script.test;
 
-import com.thoughtworks.xstream.XStream;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import it.geosolutions.geobatch.unredd.script.ScriptAliasRegistrar;
@@ -31,6 +30,7 @@ import it.geosolutions.geobatch.unredd.script.test.utils.GeoStoreTestClientUtil;
 import it.geosolutions.geobatch.unredd.script.test.utils.UNREDDGeoStoreTestUtil;
 import it.geosolutions.geobatch.unredd.script.util.GeoStoreUtil;
 import it.geosolutions.geobatch.xstream.Alias;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,7 +50,8 @@ import org.junit.rules.TestName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import static org.junit.Assert.*;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  *

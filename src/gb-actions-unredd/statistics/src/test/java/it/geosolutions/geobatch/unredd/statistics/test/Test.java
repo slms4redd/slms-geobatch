@@ -22,21 +22,7 @@
 
 package it.geosolutions.geobatch.unredd.statistics.test;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.util.EventObject;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.unredd.statistics.StatisticsAction;
-import it.geosolutions.geobatch.unredd.statistics.StatisticsConfiguration;
 import junit.framework.TestCase;
-
-import org.junit.Before;
 
 public class Test extends TestCase {
 

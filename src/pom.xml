@@ -82,11 +82,6 @@
             <!-- GeoBatch -->
             <!-- =========================================================== -->
             <dependency>
-	        <groupId>it.geosolutions.geobatch</groupId>
-	        <artifactId>gb-action-ds2ds</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-core-impl</artifactId>
                 <version>${gb.version}</version>
@@ -96,13 +91,12 @@
                 <artifactId>gb-fs-catalog</artifactId>
                 <version>${gb.version}</version>
             </dependency>
-            <!-- tools -->
+            <!--  imported actions -->
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-tools</artifactId>
+                <artifactId>gb-action-ds2ds</artifactId>
                 <version>${gb.version}</version>
             </dependency>
-            <!--  imported actions -->
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-scripting</artifactId>

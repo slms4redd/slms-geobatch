@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.unredd.script.test;
 
+import static org.junit.Assume.assumeTrue;
 import it.geosolutions.geobatch.unredd.script.exception.FlowException;
 import it.geosolutions.geobatch.unredd.script.exception.GeoStoreException;
 import it.geosolutions.geobatch.unredd.script.test.utils.UNREDDGeoStoreTestUtil;
@@ -31,23 +32,18 @@ import it.geosolutions.geostore.core.model.Resource;
 import it.geosolutions.geostore.services.dto.search.CategoryFilter;
 import it.geosolutions.geostore.services.dto.search.SearchFilter;
 import it.geosolutions.geostore.services.dto.search.SearchOperator;
-import it.geosolutions.geostore.services.rest.model.RESTCategory;
 import it.geosolutions.geostore.services.rest.model.RESTResource;
 import it.geosolutions.geostore.services.rest.model.ShortResourceList;
 import it.geosolutions.unredd.geostore.model.UNREDDCategories;
-import it.geosolutions.unredd.geostore.model.UNREDDChartData;
 import it.geosolutions.unredd.geostore.model.UNREDDChartScript;
 import it.geosolutions.unredd.geostore.model.UNREDDChartScript.Attributes;
 import it.geosolutions.unredd.geostore.model.UNREDDChartScript.ReverseAttributes;
-import it.geosolutions.unredd.geostore.utils.NameUtils;
-
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

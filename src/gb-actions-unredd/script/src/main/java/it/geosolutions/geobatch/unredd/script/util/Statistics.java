@@ -22,12 +22,12 @@
 
 package it.geosolutions.geobatch.unredd.script.util;
 
-import it.geosolutions.geobatch.unredd.script.ingestion.IngestionAction;
 import it.geosolutions.unredd.stats.impl.StatsRunner;
 import it.geosolutions.unredd.stats.model.config.StatisticConfiguration;
 import it.geosolutions.unredd.stats.model.config.util.TokenResolver;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;

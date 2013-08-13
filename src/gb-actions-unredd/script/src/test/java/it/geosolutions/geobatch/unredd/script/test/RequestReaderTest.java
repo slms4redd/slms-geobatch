@@ -22,16 +22,19 @@
 
 package it.geosolutions.geobatch.unredd.script.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import it.geosolutions.geobatch.unredd.script.reprocess.model.ReprocessChartRequest;
 import it.geosolutions.geobatch.unredd.script.reprocess.model.ReprocessLayerRequest;
-import static org.junit.Assert.*;
-
-import java.io.File;
 import it.geosolutions.geobatch.unredd.script.reprocess.model.ReprocessRequest;
 import it.geosolutions.geobatch.unredd.script.reprocess.model.ReprocessStatsRequest;
 import it.geosolutions.geobatch.unredd.script.reprocess.model.RequestReader;
+
+import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+
 import javax.xml.bind.JAXB;
 
 import org.junit.Test;

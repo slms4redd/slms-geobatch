@@ -22,14 +22,12 @@
 
 package it.geosolutions.geobatch.unredd.script.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import it.geosolutions.geobatch.unredd.script.model.Request;
+import it.geosolutions.geobatch.unredd.script.util.RequestJDOMReader;
+import it.geosolutions.unredd.geostore.model.UNREDDFormat;
 
 import java.io.IOException;
-
-import it.geosolutions.geobatch.unredd.script.model.Request;
-import it.geosolutions.unredd.geostore.model.UNREDDFormat;
-import it.geosolutions.geobatch.unredd.script.util.RequestJDOMReader;
-
 
 import org.jdom.JDOMException;
 import org.junit.Test;

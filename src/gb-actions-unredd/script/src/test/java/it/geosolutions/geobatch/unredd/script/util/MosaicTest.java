@@ -22,7 +22,6 @@ package it.geosolutions.geobatch.unredd.script.util;
 import it.geosolutions.geobatch.unredd.script.exception.PostGisException;
 import it.geosolutions.geobatch.unredd.script.model.PostGisConfig;
 import it.geosolutions.geobatch.unredd.script.test.BaseTest;
-import it.geosolutions.unredd.geostore.utils.NameUtils;
 
 import java.io.File;
 import java.io.IOException;

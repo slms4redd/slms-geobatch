@@ -22,12 +22,8 @@
 
 package it.geosolutions.geobatch.unredd.script.util;
 
-import it.geosolutions.unredd.geostore.model.AttributeDef;
-import it.geosolutions.unredd.geostore.model.ReverseAttributeDef;
-import it.geosolutions.unredd.geostore.model.UNREDDCategories;
-import it.geosolutions.unredd.geostore.model.UNREDDChartScript;
-import it.geosolutions.unredd.geostore.model.UNREDDLayerUpdate;
-import it.geosolutions.unredd.geostore.model.UNREDDStatsDef;
+import it.geosolutions.geobatch.unredd.script.exception.GeoStoreException;
+import it.geosolutions.geobatch.unredd.script.model.GeoStoreConfig;
 import it.geosolutions.geostore.core.model.Resource;
 import it.geosolutions.geostore.services.dto.ShortResource;
 import it.geosolutions.geostore.services.dto.search.AndFilter;
@@ -38,14 +34,19 @@ import it.geosolutions.geostore.services.dto.search.FieldFilter;
 import it.geosolutions.geostore.services.dto.search.SearchFilter;
 import it.geosolutions.geostore.services.dto.search.SearchOperator;
 import it.geosolutions.geostore.services.rest.model.RESTResource;
-import it.geosolutions.geobatch.unredd.script.exception.GeoStoreException;
-import it.geosolutions.geobatch.unredd.script.model.GeoStoreConfig;
 import it.geosolutions.geostore.services.rest.model.RESTStoredData;
-import it.geosolutions.unredd.geostore.model.*;
+import it.geosolutions.unredd.geostore.model.AttributeDef;
+import it.geosolutions.unredd.geostore.model.ReverseAttributeDef;
+import it.geosolutions.unredd.geostore.model.UNREDDCategories;
+import it.geosolutions.unredd.geostore.model.UNREDDChartData;
+import it.geosolutions.unredd.geostore.model.UNREDDChartScript;
+import it.geosolutions.unredd.geostore.model.UNREDDLayerUpdate;
+import it.geosolutions.unredd.geostore.model.UNREDDStatsData;
+import it.geosolutions.unredd.geostore.model.UNREDDStatsDef;
 import it.geosolutions.unredd.geostore.utils.NameUtils;
 
 import java.io.File;
-import java.util.*;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

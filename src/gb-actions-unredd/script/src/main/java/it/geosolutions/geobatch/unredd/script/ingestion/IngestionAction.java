@@ -25,6 +25,7 @@ package it.geosolutions.geobatch.unredd.script.ingestion;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.unredd.script.exception.FlowException;
@@ -43,6 +44,8 @@ import it.geosolutions.unredd.geostore.model.UNREDDLayer;
 import it.geosolutions.unredd.geostore.model.UNREDDLayer.Attributes;
 import it.geosolutions.unredd.geostore.model.UNREDDLayerUpdate;
 import it.geosolutions.unredd.geostore.utils.NameUtils;
+import it.geosolutions.unredd.stats.impl.DataFile;
+import it.geosolutions.unredd.stats.impl.RasterClassifiedStatistics;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,15 +53,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
+import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.geotools.gce.geotiff.GeoTiffReader;
+import org.jaitools.media.jai.classifiedstats.Result;
+import org.jaitools.numeric.Statistic;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.geometry.Envelope;
 import org.slf4j.Logger;
@@ -695,7 +705,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
         } catch (ActionException e) {
             throw e;
         } catch (Exception e) {
-            throw new ActionException(this,"Error while checking raster dimensions", e);
+            throw new ActionException(this,"Error while checking raster dimensions, Check if the Layer definition on GeoStore defines the attributes [RASTERX0, RASTERX1, RASTERY0, RASTERY1] and [RASTERPIXELWIDTH, RASTERPIXELHEIGHT]", e);
         }
     }
 
@@ -712,8 +722,30 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
         return false;
     }
 
-    @Override
+    @CheckConfiguration
     public boolean checkConfiguration() {
+        
+        RasterClassifiedStatistics rcs = new RasterClassifiedStatistics();
+        try {
+            File dataFile = new File(getClass().getResource("landcover_2000.tiff").toURI());
+            File classificatorFile = new File(getClass().getResource("zambia_provinces_canvas.tiff").toURI());
+            Map<MultiKey, List<Result>> result = rcs.execute(true, new DataFile(dataFile), Arrays.asList(new DataFile[] { new DataFile(classificatorFile) }), Arrays
+                    .asList(new Statistic[] { Statistic.SUM }));
+            LOGGER.info("Stat System test: OK");
+        } catch (IOException e) {
+            if("true".equals(System.getenv("forceExecution"))){
+                LOGGER.warn("The preliminary tests for executing stats are failed but has been configured the forceExecution, so move on with ingestion action expecting a failure when computing stats (just if they are defined of course)");
+            }
+            else{
+                    LOGGER.error("the stats systems doesn't work... the preliminary tests fails... If you want to execute the action anyway start geobatch with the -DforceExecutions=true");
+                    // How to launch an exeption from here? or better... How comunicate to user the wrong
+                    //throw new ActionException(this, "the stats systems doesn't work... If you want to execute the action anyway start geobatch with the -DforceExecutions=true");
+                    return false;
+            }
+        } catch (URISyntaxException e) {
+            LOGGER.error("Errors occurred when loading files for check the stats... wrong Url specification for the sample resources... it's starnge this should never happen...");
+            return false;
+        }
         return true;
     }
 }

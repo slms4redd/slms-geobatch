@@ -141,6 +141,11 @@
     </dependency>
   </dependencies>
   <build>
+  	<resources>
+	  <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+  	</resources>
     <testResources>
       <testResource>
         <directory>${basedir}/src/test/resources</directory>

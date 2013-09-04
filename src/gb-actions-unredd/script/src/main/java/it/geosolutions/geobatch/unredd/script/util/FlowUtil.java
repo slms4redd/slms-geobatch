@@ -64,36 +64,6 @@ public class FlowUtil {
         this.configDir = configDir;
     }
 
-
-//    /**
-//     * This is a wrapper to a NameUtils method.
-//     *
-//     * @deprecated Use {@link NameUtils} directly.
-//     */
-//    public static String buildLayerUpdateName(String layerName, String year, String month) {
-//        return NameUtils.buildLayerUpdateName(layerName, year, month);
-//    }
-//
-//    /**
-//     * This is a wrapper to a NameUtils method.
-//     *
-//     * @deprecated Use {@link NameUtils} directly.
-//     */
-//    public static String buildStatsDataName(String statsDefName, String year, String month) {
-//        return NameUtils.buildStatsDataName(statsDefName, year, month);
-//    }
-//
-//    /**
-//     * Build the filename for the tif file.
-//     *
-//     * This is a wrapper to a NameUtils method.
-//     *
-//     * @deprecated Use {@link NameUtils} directly.
-//     */
-//    public static String buildTifFileName(String layerName, String year, String month) {
-//        return NameUtils.buildTifFileName(layerName, year, month);
-//    }
-
     /**
      * Copy a Resource into a RESTResource.
      * May be useful when copying a Resource between two GeoStoreUtil instances.
@@ -191,7 +161,6 @@ public class FlowUtil {
             LOGGER.info("Statistics processed: " + statsDef.getName());
             
             String statsContent = IOUtils.toString(new FileReader(outStats));
-//            LOGGER.info("Statistics result :" + statsContent);
 
             geostoreUtil.setStatsData(statsDef, statsContent, year, month, day);
             return statsContent;
@@ -199,13 +168,9 @@ public class FlowUtil {
         } catch (Exception ex) {
             LOGGER.debug("ex!", ex);
             throw new FlowException("Error while executing stats: " + ex.getMessage(), ex);
-//        } finally {
-//            FileUtils.deleteQuietly(outStats);
         } catch (Error ex) { // just log it
             LOGGER.error("ERROR", ex);
             throw ex;
-//        } finally {
-//            FileUtils.deleteQuietly(outStats);
         }
 
     }

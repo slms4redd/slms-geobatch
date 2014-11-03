@@ -47,7 +47,7 @@
     <properties>
         <unredd.version>1.4-SNAPSHOT</unredd.version>
         <gb.version>1.4-SNAPSHOT</gb.version>
-        <gt.version>8-SNAPSHOT</gt.version>
+        <gt.version>10.8</gt.version>
         <geostore.version>1.1.0</geostore.version>
         <unredd.utils.version>1.1-SNAPSHOT</unredd.utils.version>
         
@@ -458,20 +458,23 @@
             <url>http://repository.jboss.com/maven2</url>
         </repository>
         <repository>
+            <id>boundless</id>
+            <name>BoundlessGeo Maven Repository</name>
+            <url>http://repo.boundlessgeo.com/main</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-            <id>opengeo</id>
-            <name>OpenGeo Maven Repository</name>
-            <url>http://repo.opengeo.org</url>
         </repository>
-
+        <repository>
+            <id>osgeo</id>
+            <name>OsGEO Repository</name>
+            <url>http://download.osgeo.org/webdav/geotools/</url>
+        </repository>
         <repository>
             <id>nfms4redd</id>
             <name>nfms4redd maven repository</name>
             <url>http://maven.nfms4redd.org/</url>
         </repository>
-        
     </repositories>
 
     

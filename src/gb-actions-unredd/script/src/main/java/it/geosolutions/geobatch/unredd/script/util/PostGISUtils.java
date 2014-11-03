@@ -28,6 +28,7 @@ import it.geosolutions.geobatch.unredd.script.model.PostGisConfig;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,7 +51,6 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.jdbc.JDBCFeatureStore;
@@ -294,7 +294,13 @@ public class PostGISUtils {
             Set<String> loggedMissingAttrib = new HashSet<String>();
             while (!hasFinished) { // TODO: refacotr this nested loop!!!
 
-                SimpleFeatureCollection sfcData = FeatureCollections.newCollection();
+            	//DamianoGiampaoli 03/11/2014
+            	//TEST IT!!!
+            	// Due to the upgrade needed from the Geotools 8-SNAPSHOT to geotools 10.8 in order to support GeoBatch 1.4.x 
+            	// The add(SimpleFeature) method of SimpleFeatureCollection cannot be used anymore so a List<SimpleFeature> must be used.
+                //SimpleFeatureCollection sfcData = FeatureCollections.newCollection();
+                List<SimpleFeature> sfcData = new ArrayList<SimpleFeature>();
+                
                 boolean exitForIntermediateSaving = false;
 
                 while (featureIterator.hasNext() && !exitForIntermediateSaving) {
@@ -333,7 +339,8 @@ public class PostGISUtils {
                 if (!exitForIntermediateSaving) {
                     hasFinished = true;
                 }
-                featureStoreData.addFeatures(sfcData);
+                SimpleFeatureCollection featureCollection = new ListFeatureCollection(srcSchema, sfcData);
+                featureStoreData.addFeatures(featureCollection);
             }
             
             tx.commit();

@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfig;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicAction;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicCommand;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
+import it.geosolutions.geobatch.imagemosaic.config.DomainAttribute;
 import it.geosolutions.unredd.geostore.utils.NameUtils;
 
 import java.io.File;
@@ -114,19 +115,27 @@ public class Mosaic {
         imageMosaicConfiguration.setCrs(crs);
         imageMosaicConfiguration.setConfigDir(mosaicDir);
         imageMosaicConfiguration.setDefaultStyle(style);
-        imageMosaicConfiguration.setTimeDimEnabled("true");
         imageMosaicConfiguration.setAllowMultithreading(true);
         imageMosaicConfiguration.setLatLonMinBoundingBoxX(bbox[0]);
         imageMosaicConfiguration.setLatLonMinBoundingBoxY(bbox[1]);
         imageMosaicConfiguration.setLatLonMaxBoundingBoxX(bbox[2]);
         imageMosaicConfiguration.setLatLonMaxBoundingBoxY(bbox[3]);
         imageMosaicConfiguration.setDatastorePropertiesPath(datastorePath);
-        imageMosaicConfiguration.setTimeRegex(NameUtils.TIME_REGEX);
+        
+        // Setting up the new domain attributes
+        DomainAttribute timeAttribute = new DomainAttribute();
+        timeAttribute.setAttribName(DomainAttribute.DIM_TIME);
+        timeAttribute.setRegEx(NameUtils.TIME_REGEX);
+        timeAttribute.setPresentationMode("LIST");
+        timeAttribute.setDimensionName(DomainAttribute.DIM_TIME);
+        imageMosaicConfiguration.setDomainAttributes(Arrays.asList(timeAttribute));
+        
         if(LOGGER.isInfoEnabled()){LOGGER.info("Time_Regex used is: " + NameUtils.TIME_REGEX);}
         
         ImageMosaicAction imageMosaicAction = new ImageMosaicAction(imageMosaicConfiguration);
         imageMosaicAction.setTempDir(tempDir);
         imageMosaicAction.setConfigDir(configDir);
+        
         SingleFileActionExecutor.execute(imageMosaicAction, commandFile);
     }
 }

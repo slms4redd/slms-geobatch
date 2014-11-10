@@ -35,6 +35,7 @@ import it.geosolutions.geobatch.unredd.script.util.FlowUtil;
 import it.geosolutions.geobatch.unredd.script.util.GeoStoreUtil;
 import it.geosolutions.geobatch.unredd.script.util.GeoTiff;
 import it.geosolutions.geobatch.unredd.script.util.Mosaic;
+import it.geosolutions.geobatch.unredd.script.util.MosaicDirBuilder;
 import it.geosolutions.geobatch.unredd.script.util.PostGISUtils;
 import it.geosolutions.geobatch.unredd.script.util.RequestJDOMReader;
 import it.geosolutions.geobatch.unredd.script.util.rasterize.GDALRasterize;
@@ -306,14 +307,16 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
                     + ", expected:"+layer.getAttribute(Attributes.LAYERTYPE) );
 
         // this attribute is read for moving the raster file to the destination directory, not for rasterization
+        // Going to get the staging mosaic dir path and create the mosaic dir if it still doesn't exists.
         String mosaicDirPath = layer.getAttribute(UNREDDLayer.Attributes.MOSAICPATH);
         if( mosaicDirPath == null) {
             throw new ActionException(this, "Null mosaic directory for layer: '" + layername + "'... check the layer configuration on geostore");
         }
-
         File mosaicDir = new File(mosaicDirPath);
+		MosaicDirBuilder.buildMosaicDir(mosaicDir, cfg, NameUtils.TIME_REGEX);
+        
         if( ! mosaicDir.isDirectory() && ! mosaicDir.isAbsolute()) {
-            throw new ActionException(this, "Bad mosaic directory for layer '" + layername + "': " + mosaicDir + " doesn't exist... create it or check the layer configuration on geostore");
+            throw new ActionException(this, "Bad mosaic directory for layer '" + layername + "': '" + mosaicDir + "'... create it or check the layer configuration on geostore");
         }
 
         // ******************

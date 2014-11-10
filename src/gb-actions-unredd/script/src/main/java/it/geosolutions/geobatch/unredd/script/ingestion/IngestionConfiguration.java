@@ -49,6 +49,10 @@ public class IngestionConfiguration extends ActionConfiguration implements Confi
      * The absolute path of datastore.properties (STAGING) used in the ImageMosaic action.
      */
     private String datastorePath;
+    /**
+     * The absolute path of indexer.properties (STAGING) used in the ImageMosaic action.
+     */
+    private String indexerPath;
 	
     public IngestionConfiguration(String id, String name, String description) {
         super(id, name, description);
@@ -122,7 +126,15 @@ public class IngestionConfiguration extends ActionConfiguration implements Confi
         this.datastorePath = datastorePath;
     }
 
-    @Override
+    public String getIndexerPath() {
+		return indexerPath;
+	}
+
+	public void setIndexerPath(String indexerPath) {
+		this.indexerPath = indexerPath;
+	}
+
+	@Override
     public IngestionConfiguration clone(){
         final IngestionConfiguration ret = (IngestionConfiguration)super.clone();
 

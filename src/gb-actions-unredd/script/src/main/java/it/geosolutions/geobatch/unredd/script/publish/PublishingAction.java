@@ -35,6 +35,7 @@ import it.geosolutions.geobatch.unredd.script.model.Request;
 import it.geosolutions.geobatch.unredd.script.util.FlowUtil;
 import it.geosolutions.geobatch.unredd.script.util.GeoStoreUtil;
 import it.geosolutions.geobatch.unredd.script.util.Mosaic;
+import it.geosolutions.geobatch.unredd.script.util.MosaicDirBuilder;
 import it.geosolutions.geobatch.unredd.script.util.PostGISUtils;
 import it.geosolutions.geobatch.unredd.script.util.RequestJDOMReader;
 import it.geosolutions.geostore.core.model.Resource;
@@ -249,7 +250,7 @@ public class PublishingAction extends BaseAction<FileSystemEvent> {
 	        	
 	        	File srcRasterFile = new File(srcPath, filename);
 	        	File mosaicDir = new File(dstPath);
-	        	
+	        	MosaicDirBuilder.buildMosaicDir(mosaicDir, conf.getIndexerPath(), NameUtils.TIME_REGEX);
 	        	String style = layerResource.getAttribute(UNREDDLayer.Attributes.LAYERSTYLE);
 	                if(style==null || style.isEmpty()){
 	                    style = DEFAULT_MOSAIC_STYLE;

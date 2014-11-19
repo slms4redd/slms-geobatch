@@ -313,7 +313,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
             throw new ActionException(this, "Null mosaic directory for layer: '" + layername + "'... check the layer configuration on geostore");
         }
         File mosaicDir = new File(mosaicDirPath);
-		MosaicDirBuilder.buildMosaicDir(mosaicDir, cfg, NameUtils.TIME_REGEX);
+		MosaicDirBuilder.buildMosaicDir(mosaicDir, cfg.getIndexerPath(), NameUtils.TIME_REGEX);
         
         if( ! mosaicDir.isDirectory() && ! mosaicDir.isAbsolute()) {
             throw new ActionException(this, "Bad mosaic directory for layer '" + layername + "': '" + mosaicDir + "'... create it or check the layer configuration on geostore");

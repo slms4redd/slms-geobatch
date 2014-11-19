@@ -1,7 +1,5 @@
 package it.geosolutions.geobatch.unredd.script.util;
 
-import it.geosolutions.geobatch.unredd.script.ingestion.IngestionConfiguration;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -38,7 +36,7 @@ public class MosaicDirBuilder {
 	 * @throws NullPointerException
 	 * @throws IOException
 	 */
-	public static void buildMosaicDir(File mosaicDir, IngestionConfiguration cfg, String timeRegex) throws NullPointerException, IOException {
+	public static void buildMosaicDir(File mosaicDir, String tmpIndexerPath, String timeRegex) throws NullPointerException, IOException {
 		
 		try{
 			if(!mosaicDir.exists()){
@@ -46,7 +44,6 @@ public class MosaicDirBuilder {
 	        	if(!mosaicDir.mkdir()){
 	        		throw new IOException("The directory '" + mosaicDir + "' doesn't exist and CANNOT BE CREATED... create it or check the layer configuration on geostore");
 	        	}
-	        	String tmpIndexerPath = cfg.getIndexerPath();
 		        if(tmpIndexerPath != null){
 	        		File indexerProperties = new File(tmpIndexerPath);
 		    		if(!indexerProperties.exists() || !indexerProperties.canRead()){

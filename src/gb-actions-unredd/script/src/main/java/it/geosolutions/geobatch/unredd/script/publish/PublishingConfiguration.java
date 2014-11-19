@@ -46,6 +46,11 @@ public class PublishingConfiguration extends ActionConfiguration implements Conf
      * The absolute path of datastore.properties (DISSEMINATION) used in the ImageMosaic action.
      */
     private String datastorePath;
+    
+	/**
+	 * The absolute path of indexer.properties (DISSEMINATION) used in the ImageMosaic action.
+	 */
+    private String indexerPath;
 	
     public PublishingConfiguration(String id, String name, String description) {
         super(id, name, description);
@@ -107,7 +112,15 @@ public class PublishingConfiguration extends ActionConfiguration implements Conf
         this.datastorePath = datastorePath;
     }
 
-    @Override
+    public String getIndexerPath() {
+		return indexerPath;
+	}
+
+	public void setIndexerPath(String indexerPath) {
+		this.indexerPath = indexerPath;
+	}
+
+	@Override
     public PublishingConfiguration clone(){
         final PublishingConfiguration ret = (PublishingConfiguration)super.clone();
 

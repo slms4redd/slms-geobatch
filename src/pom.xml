@@ -3,7 +3,6 @@
         Maven Project Configuration File
 
         GeoSolutions GeoBatch Project
-            http://geobatch.codehaus.org
 
 ======================================================================= -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -11,31 +10,31 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-  
+
     <!-- =========================================================== -->
     <!--     Project Description                                     -->
     <!-- =========================================================== -->
     <groupId>it.geosolutions.geobatch.unredd</groupId>
     <artifactId>gb-unredd</artifactId>
     <version>1.4-SNAPSHOT</version>
-    
+
     <packaging>pom</packaging>
-  
+
     <name>GeoBatch UNREDD root</name>
     <description>The GeoBatch project for unredd</description>
     <url>https://github.com/nfms4redd/nfms-geobatch</url>
-  
+
     <scm>
         <connection>scm:git@github.com:nfms4redd/nfms-geobatch.git</connection>
         <url>https://github.com/nfms4redd/nfms-geobatch.git</url>
     </scm>
-  
+
     <organization>
         <name>GeoSolutions</name>
         <url>http://www.geo-solutions.it</url>
     </organization>
     <inceptionYear>2011</inceptionYear>
-  
+
     <licenses>
         <license>
             <name>Lesser General Public License (LGPL)</name>
@@ -50,7 +49,7 @@
         <gt.version>10.8</gt.version>
         <geostore.version>1.1.0</geostore.version>
         <unredd.utils.version>1.1-SNAPSHOT</unredd.utils.version>
-        
+
         <allow.test.skip>true</allow.test.skip>
         <allow.test.failure.ignore>false</allow.test.failure.ignore>
         <extensive.tests>false</extensive.tests>
@@ -116,6 +115,11 @@
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-freemarker</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-action-commons</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
@@ -372,18 +376,6 @@
                     <!-- The -encoding argument for the Java compiler. -->
                 </configuration>
             </plugin>
-     
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- eclipse ide integration -->
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
@@ -477,24 +469,26 @@
         </repository>
     </repositories>
 
-    
+
     <!-- =========================================================== -->
     <!--     Plugin repositories.                                    -->
     <!--     This is where Maven looks for plugin dependencies.      -->
     <!-- =========================================================== -->
     <pluginRepositories>
-        <pluginRepository>
-            <id>codehaus-snapshot-plugins</id>
-            <name>codehaus-shapshot-plugins</name>
-            <url>http://snapshots.repository.codehaus.org/</url>
+	    <pluginRepository>
+            <id>central</id>
+            <name>Maven Plugin Repository</name>
+            <url>http://repo1.maven.org/maven2</url>
+            <layout>default</layout>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
             <releases>
-                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
             </releases>
         </pluginRepository>
     </pluginRepositories>
+ 
 
 
     <!-- =========================================================== -->

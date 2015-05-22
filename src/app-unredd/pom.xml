@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- ======================================================================= 
-	Maven Project Configuration File GeoSolutions GeoBatch Project http://geobatch.geo-solutions.it 
+<!-- =======================================================================
+	Maven Project Configuration File GeoSolutions GeoBatch Project http://geobatch.geo-solutions.it
 	Version: 0.1 pom.xml 63 2011-05-02 18:55:57Z ccancellieri $ ======================================================================= -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -27,7 +27,7 @@
   <properties>
     <netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
     <flow.dir>geobatch/WEB-INF/</flow.dir>
-    
+
     <root.basedir>${basedir}/../../</root.basedir>
     <!-- JETTY jar classpath -->
     <geobatch_starter.classpath>${geobatch_starter.dir}/WEB-INF/lib/</geobatch_starter.classpath>
@@ -54,6 +54,10 @@
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-action-ds2ds</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-commons</artifactId>
     </dependency>
     <!-- ============================== -->
     <!-- UNREDD -->
@@ -119,7 +123,7 @@
         <artifactId>cxf-rt-transports-http</artifactId>
     </dependency>
     -->
-    
+
     <!-- ============================== -->
     <!-- Test: JETTY -->
     <!-- ============================== -->
@@ -176,7 +180,7 @@
             <manifest>
               <!-- Classpath is added to the manifest of the created jar file. -->
               <addClasspath>true</addClasspath>
-              <!-- Configures the classpath prefix. This configuration option is used 
+              <!-- Configures the classpath prefix. This configuration option is used
 						to specify that all needed libraries are found under lib/ directory. -->
               <classpathPrefix>${geobatch_starter.classpath}</classpathPrefix>
               <!-- Specifies the main class of the application -->

@@ -93,6 +93,27 @@
       <artifactId>gb-dao-xstream</artifactId>
     </dependency>
 
+    <!-- ============================== -->
+    <!-- Spring Security -->
+    <!-- ============================== -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-acl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-taglibs</artifactId>
+    </dependency>
+
+
     <!--
       FIXME: The following 4 dependencies must be used when the rest profile must be activate
     -->

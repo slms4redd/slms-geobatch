@@ -1,33 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- =======================================================================
-	Maven Project Configuration File GeoSolutions GeoBatch Project http://geobatch.geo-solutions.it
-	Version: 0.1 pom.xml 63 2011-05-02 18:55:57Z ccancellieri $ ======================================================================= -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <!-- START APPLICATION DESCRIPTION -->
-  <!-- Please do not remove the above placeholder -->
+  
   <parent>
     <groupId>it.geosolutions.geobatch.unredd</groupId>
     <artifactId>gb-unredd</artifactId>
     <version>1.4-SNAPSHOT</version>
   </parent>
+  
   <!-- =========================================================== -->
   <!-- Module Description -->
   <!-- =========================================================== -->
   <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb-application-unredd</artifactId>
   <packaging>war</packaging>
-  <!-- Please do not remove the following placeholder -->
-  <!-- STOP APPLICATION DESCRIPTION -->
-  <name>GeoBatch Application</name>
-  <description>GeoSolutions GeoBatch Application</description>
+  
+  <name>UNREDD-SLMS GeoBatch Application</name>
+  <description>Data Ingestion system for the SLMS</description>
   <organization>
     <name>GeoSolutions</name>
   </organization>
   <properties>
-    <netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
+    
     <flow.dir>geobatch/WEB-INF/</flow.dir>
-
     <root.basedir>${basedir}/../../</root.basedir>
     <!-- JETTY jar classpath -->
     <geobatch_starter.classpath>${geobatch_starter.dir}/WEB-INF/lib/</geobatch_starter.classpath>
@@ -36,13 +31,30 @@
   <!-- Dependencies -->
   <!-- =========================================================== -->
   <dependencies>
+  
+  
+	<!-- ============================== -->
+	<!-- GeoBatch modules -->
+	<!-- ============================== -->
+	<dependency>
+		<groupId>it.geosolutions.geobatch</groupId>
+		<artifactId>gb-web-core</artifactId>
+		<type>war</type>
+		<scope>runtime</scope>
+		<version>1.4-SNAPSHOT</version>
+	</dependency>
+
+	<dependency>
+		<groupId>it.geosolutions.geobatch</groupId>
+		<artifactId>gb-web-core</artifactId>
+		<classifier>classes</classifier>
+		<version>1.4-SNAPSHOT</version>
+	</dependency>
+  
+  
     <!-- ============================== -->
-    <!-- GeoBatch -->
+    <!-- GeoBatch actions -->
     <!-- ============================== -->
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-gui</artifactId>
-    </dependency>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-action-scripting</artifactId>
@@ -144,6 +156,13 @@
         <artifactId>cxf-rt-transports-http</artifactId>
     </dependency>
     -->
+	
+	<!-- use a more recent version of JSTL -->
+	<dependency>
+		<groupId>jstl</groupId>
+		<artifactId>jstl</artifactId>
+		<version>1.2</version>
+	</dependency>
 
     <!-- ============================== -->
     <!-- Test: JETTY -->

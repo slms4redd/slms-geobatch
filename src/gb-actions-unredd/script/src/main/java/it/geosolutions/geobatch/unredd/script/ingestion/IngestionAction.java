@@ -332,50 +332,12 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
             throw new ActionException(this, "Error while inserting a LayerUpdate", e);
         }
 
-        // ********************
-        // Run stats
-        // ********************
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Starting statistic processing");
-        }
-        this.listenerForwarder.progressing(80, "Starting statistic processing");
-
-        FlowUtil flowUtil= new FlowUtil(getTempDir(), getConfigDir());
-        try {
-            flowUtil.runStatsAndScripts(layername, year, month, day, rasterFile, geostore);
-        } catch (FlowException e) {
-            throw new ActionException(this, e.getMessage(), e);
-        }
-
-        /*************************
-         * Copy orig data
-         *************************/
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Moving original data");
-        }
-        this.listenerForwarder.progressing(90, "Moving original data");
-
-        LOGGER.warn("*** TODO: move original files"); // TODO
-
-//        File srcDir = new File(unzipPath, ORIG_DIR);
-//        if (!srcDir.exists()) {
-//            LOGGER.warn("Original data not found"); // no problem in this case
-//        } else {
-//            File destDirRelative = new File(cfg.repositoryDir, destRelativePath);
-//            File destDirComplete = new File(destDirRelative, layerUpdateName);
-//            LOGGER.info("Moving "+srcDir.getCanonicalPath()+" to "+destDirComplete.getAbsolutePath());
-//            FileUtils.copyDirectoryToDirectory(srcDir, destDirComplete);
-//        }
-
         // finish action
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Ingestion action succesfully completed");
         }
         this.listenerForwarder.completed();
         this.listenerForwarder.progressing(100, "Action successfully completed");
-
-        //*******************************************************************
-//        postgisUtils.getPgDatastore().dispose(); // shouldnt it be run in a finally{} block?
 
         // add the event to the return queue
         return rasterFile;

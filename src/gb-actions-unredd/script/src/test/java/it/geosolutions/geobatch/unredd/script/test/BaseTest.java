@@ -38,10 +38,9 @@ import java.net.ConnectException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;

@@ -84,7 +84,6 @@ public class IngestionActionTest extends BaseTest {
 
         File origTarget = new File(getTempDir(), "orig");
         origTarget.mkdir();
-        ingestionCfg.setOriginalDataTargetDir(origTarget);
 
         IngestionAction a  = new IngestionAction(ingestionCfg);
         a.setTempDir(getTempDir());

@@ -77,9 +77,10 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * This single Action contains the complete Ingestion flow.
+ * This single Action contains the complete Ingestion flow of a Timeseries dataset (both raster or vector) for the UNREDD SLMS - Satellite Landcover Monitoring System.
  *
  * @author Luca Paolino - luca.paolino@geo-solutions.it
+ * @author DamianoG - damiano.giampaoli@geo-solutions.it
  */
 @Action(configurationClass=IngestionConfiguration.class)
 public class IngestionAction extends BaseAction<FileSystemEvent> {
@@ -110,13 +111,6 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
 
         final Queue<FileSystemEvent> ret = new LinkedList<FileSystemEvent>();
         LOGGER.warn("Ingestion flow running");
-
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Performing basic checks");
-        }
-        // control if directories and PostGISUtils exist
-        basicChecks();
-
 
         while (!events.isEmpty()) {
             final FileSystemEvent ev = events.remove();
@@ -150,37 +144,7 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
 
         return ret;
     }
-
-    /**
-     * Performs some basic checks on configuration values.
-     *
-     * @throws ActionException
-     */
-    public void basicChecks() throws ActionException {
-
-        if ( cfg.getOriginalDataTargetDir() == null || ! cfg.getOriginalDataTargetDir().canWrite() || ! cfg.getOriginalDataTargetDir().isDirectory()){
-            LOGGER.warn("OriginalDataTargetDir is not setted or has been wrong specified or GeoBatch doesn't have write permissions");
-        }
-
-        if(cfg.getRetilerConfiguration() == null){
-            throw new ActionException(this, "RetilerConfiguration not set");
-        }
-
-        if(cfg.getGeoStoreConfig() == null){
-            throw new ActionException(this, "GeoStoreConfiguration not set");
-        }
-
-        if(cfg.getPostGisConfig() == null){
-            throw new ActionException(this, "PostGisConfiguration not set");
-        }
-
-        if(cfg.getGeoServerConfig() == null){
-            LOGGER.warn("GeoServer config is null. GeoServer data will not be refreshed");
-        }
-    }
-
-
-
+    
     protected File execute(File inputZipFile) throws ActionException, IOException {
 
         this.listenerForwarder.started();
@@ -368,50 +332,12 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
             throw new ActionException(this, "Error while inserting a LayerUpdate", e);
         }
 
-        // ********************
-        // Run stats
-        // ********************
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Starting statistic processing");
-        }
-        this.listenerForwarder.progressing(80, "Starting statistic processing");
-
-        FlowUtil flowUtil= new FlowUtil(getTempDir(), getConfigDir());
-        try {
-            flowUtil.runStatsAndScripts(layername, year, month, day, rasterFile, geostore);
-        } catch (FlowException e) {
-            throw new ActionException(this, e.getMessage(), e);
-        }
-
-        /*************************
-         * Copy orig data
-         *************************/
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Moving original data");
-        }
-        this.listenerForwarder.progressing(90, "Moving original data");
-
-        LOGGER.warn("*** TODO: move original files"); // TODO
-
-//        File srcDir = new File(unzipPath, ORIG_DIR);
-//        if (!srcDir.exists()) {
-//            LOGGER.warn("Original data not found"); // no problem in this case
-//        } else {
-//            File destDirRelative = new File(cfg.repositoryDir, destRelativePath);
-//            File destDirComplete = new File(destDirRelative, layerUpdateName);
-//            LOGGER.info("Moving "+srcDir.getCanonicalPath()+" to "+destDirComplete.getAbsolutePath());
-//            FileUtils.copyDirectoryToDirectory(srcDir, destDirComplete);
-//        }
-
         // finish action
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Ingestion action succesfully completed");
         }
         this.listenerForwarder.completed();
         this.listenerForwarder.progressing(100, "Action successfully completed");
-
-        //*******************************************************************
-//        postgisUtils.getPgDatastore().dispose(); // shouldnt it be run in a finally{} block?
 
         // add the event to the return queue
         return rasterFile;
@@ -624,39 +550,6 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
         }
     }
 
-//    /**
-//     * Ingesto
-//     * @param layer
-//     * @param layerUpdate
-//     * @param shapeFile
-//     * @return
-//     * @throws ActionException
-//     */
-//    protected File processVector(UNREDDLayer layer, UNREDDLayerUpdate layerUpdate, File shapeFile) throws ActionException {
-//
-//        try {
-//            PostGISUtils.shapeToPostGis(shapeFile, cfg.getPostGisConfig(),
-//                    layerUpdate.getAttribute(UNREDDLayerUpdate.Attributes.LAYER),
-//                    layerUpdate.getAttribute(UNREDDLayerUpdate.Attributes.YEAR),
-//                    layerUpdate.getAttribute(UNREDDLayerUpdate.Attributes.MONTH));
-//        } catch (PostGisException e) {
-//            LOGGER.error("Error ingesting shapefile: " + e.getMessage());
-//            throw new ActionException(this, "Error ingesting shapefile: " + e.getMessage(), e);
-//        }
-//
-//
-//        File rasterFile = null;
-//        try {
-//            GDALRasterize rasterize = new GDALRasterize( cfg.getRasterizeConfig(), cfg.getConfigDir(), getTempDir());
-//            rasterFile = rasterize.run(layer, layerUpdate, shapeFile);
-//        } catch (Exception e) {
-//            throw new ActionException(this, "Error while rasterizing "+shapeFile+": " + e.getMessage(), e);
-//        }
-//        // at this point the raster is also tiled,  we do must skip the tiling action and go to the embedOverviews
-//
-//        return rasterFile;
-//    }
-
     /**
      * Check that raster size and extent are the expected ones.
      *
@@ -676,9 +569,6 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
         }
 
         GridEnvelope ge = reader.getOriginalGridRange();
-//            GridCoverage2D gc2d = reader.read(null);
-//            GridGeometry2D gg2d = gc2d.getGridGeometry();
-//            GridEnvelope  ge = gg2d.getGridRange();
         try {
             int expectedW = Float.valueOf(layer.getAttribute(Attributes.RASTERPIXELWIDTH)).intValue();
             int expectedH = Float.valueOf(layer.getAttribute(Attributes.RASTERPIXELHEIGHT)).intValue();
@@ -725,29 +615,28 @@ public class IngestionAction extends BaseAction<FileSystemEvent> {
         return false;
     }
 
+    /**
+     * Performs some basic checks on configuration values.
+     *
+     */
     @CheckConfiguration
     public boolean checkConfiguration() {
-        
-        RasterClassifiedStatistics rcs = new RasterClassifiedStatistics();
-        try {
-            File dataFile = new File(getClass().getResource("landcover_2000.tiff").toURI());
-            File classificatorFile = new File(getClass().getResource("zambia_provinces_canvas.tiff").toURI());
-            Map<MultiKey, List<Result>> result = rcs.execute(true, new DataFile(dataFile), Arrays.asList(new DataFile[] { new DataFile(classificatorFile) }), Arrays
-                    .asList(new Statistic[] { Statistic.SUM }));
-            LOGGER.info("Stat System test: OK");
-        } catch (IOException e) {
-            if("true".equals(System.getenv("forceExecution"))){
-                LOGGER.warn("The preliminary tests for executing stats are failed but has been configured the forceExecution, so move on with ingestion action expecting a failure when computing stats (just if they are defined of course)");
-            }
-            else{
-                    LOGGER.error("the stats systems doesn't work... the preliminary tests fails... If you want to execute the action anyway start geobatch with the -DforceExecutions=true");
-                    // How to launch an exeption from here? or better... How comunicate to user the wrong
-                    //throw new ActionException(this, "the stats systems doesn't work... If you want to execute the action anyway start geobatch with the -DforceExecutions=true");
-                    return false;
-            }
-        } catch (URISyntaxException e) {
-            LOGGER.error("Errors occurred when loading files for check the stats... wrong Url specification for the sample resources... it's starnge this should never happen...");
+
+        if(cfg.getRetilerConfiguration() == null){
+            LOGGER.error("RetilerConfiguration is not set");
             return false;
+        }
+        if(cfg.getGeoStoreConfig() == null){
+            LOGGER.error("GeoStoreConfiguration is not set");
+            return false;            
+        }
+        if(cfg.getPostGisConfig() == null){
+            LOGGER.error("PostGisConfiguration is not set");
+            return false;            
+        }
+        if(cfg.getGeoServerConfig() == null){
+            LOGGER.error("geoServerConfiguration is not set");
+            return false;            
         }
         return true;
     }

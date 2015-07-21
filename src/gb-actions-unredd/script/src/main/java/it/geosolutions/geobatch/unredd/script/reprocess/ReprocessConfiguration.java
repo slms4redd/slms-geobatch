@@ -40,6 +40,18 @@ public class ReprocessConfiguration extends ActionConfiguration implements Confi
     private PostGisConfig  postGisConfig;
     private RasterizeConfig  rasterizeConfig;
     private GeotiffOverviewsEmbedderConfiguration overviewsEmbedderConfiguration;
+    
+    /**
+     * The absolute path of a lightweight raster dataFile used to check if the statistics system is properly configured.
+     * This is optional, if the flow found this variable null, empty or the file cannot be loaded the flow logs an error but move forward for the rest of its computation.   
+     */
+    private String testDataFileAbsolutePath;
+    
+    /**
+     * The absolute path of a lightweight raster classificatorFile used to check if the statistics system is properly configured.
+     * This is optional, if the flow found this variable null, empty or the file cannot be loaded the flow logs an error but move forward for the rest of its computation.   
+     */
+    private String testClassificatorFileAbsolutePath;
 
     protected ReprocessConfiguration() {
         super(null, "Default ReprocessConfiguration", "Unset configuration");
@@ -81,7 +93,23 @@ public class ReprocessConfiguration extends ActionConfiguration implements Confi
         this.overviewsEmbedderConfiguration = overviewsEmbedderConfiguration;
     }
     
-	@Override
+    public String getTestDataFileAbsolutePath() {
+        return testDataFileAbsolutePath;
+    }
+
+    public void setTestDataFileAbsolutePath(String testDataFileAbsolutePath) {
+        this.testDataFileAbsolutePath = testDataFileAbsolutePath;
+    }
+
+    public String getTestClassificatorFileAbsolutePath() {
+        return testClassificatorFileAbsolutePath;
+    }
+
+    public void setTestClassificatorFileAbsolutePath(String testClassificatorFileAbsolutePath) {
+        this.testClassificatorFileAbsolutePath = testClassificatorFileAbsolutePath;
+    }
+
+    @Override
     public ReprocessConfiguration clone(){
         final ReprocessConfiguration ret = (ReprocessConfiguration)super.clone();
         

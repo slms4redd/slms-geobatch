@@ -48,10 +48,14 @@ import it.geosolutions.unredd.geostore.model.UNREDDLayer.Attributes;
 import it.geosolutions.unredd.geostore.model.UNREDDLayerUpdate;
 import it.geosolutions.unredd.geostore.model.UNREDDStatsDef;
 import it.geosolutions.unredd.geostore.utils.NameUtils;
+import it.geosolutions.unredd.stats.impl.DataFile;
+import it.geosolutions.unredd.stats.impl.RasterClassifiedStatistics;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,7 +63,11 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jaitools.media.jai.classifiedstats.Result;
+import org.jaitools.numeric.Statistic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +75,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author ETj ( etj@geo-solutions.it )
  * @author Luca Paolino - luca.paolino@geo-solutions.it
+ * @author DamianoG - damiano.giampaoli@geo-solutions.it
  *
  */
 @Action(configurationClass=ReprocessConfiguration.class)
@@ -469,6 +478,36 @@ public class ReprocessAction extends BaseAction<FileSystemEvent> {
 
     @Override
     public boolean checkConfiguration() {
+        
+        String dataFileAbsPath = conf.getTestDataFileAbsolutePath();
+        String classificatorFileAbsPath = conf.getTestClassificatorFileAbsolutePath();
+        
+        if(StringUtils.isBlank(dataFileAbsPath) || StringUtils.isBlank(classificatorFileAbsPath)){
+            LOGGER.warn("[ENVIRONMENT CHECKS SKIPPED] One or both paths of sample raster files used to ensure that the environment is properly configured are missing in the flow config...");
+            return true;
+        }
+        
+        RasterClassifiedStatistics rcs = new RasterClassifiedStatistics();
+        try {
+            File dataFile = new File(getClass().getResource(dataFileAbsPath).toURI());
+            File classificatorFile = new File(getClass().getResource(classificatorFileAbsPath).toURI());
+            Map<MultiKey, List<Result>> result = rcs.execute(true, new DataFile(dataFile), Arrays.asList(new DataFile[] { new DataFile(classificatorFile) }), Arrays
+                    .asList(new Statistic[] { Statistic.SUM }));
+            LOGGER.info("Stat System test: OK");
+        } catch (IOException e) {
+            if("true".equals(System.getenv("forceExecution"))){
+                LOGGER.warn("The preliminary tests for executing stats are failed but has been configured the forceExecution, so move on with ingestion action expecting a failure when computing stats (just if they are defined of course)");
+            }
+            else{
+                    LOGGER.error("the stats systems doesn't work... the preliminary tests fails... If you want to execute the action anyway start geobatch with the -DforceExecutions=true");
+                    // How to launch an exeption from here? or better... How comunicate to user the wrong
+                    //throw new ActionException(this, "the stats systems doesn't work... If you want to execute the action anyway start geobatch with the -DforceExecutions=true");
+                    return false;
+            }
+        } catch (URISyntaxException e) {
+            LOGGER.warn("[ENVIRONMENT CHECKS SKIPPED] Errors occurred when loading files for check the stats... wrong Url specification for the sample resources...");
+            return true;
+        }
         return true;
     }
 

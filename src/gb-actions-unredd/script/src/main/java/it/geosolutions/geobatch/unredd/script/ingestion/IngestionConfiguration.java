@@ -38,13 +38,35 @@ import java.io.File;
 
 public class IngestionConfiguration extends ActionConfiguration implements Configuration {
 
+    /**
+     * URL and credentials for the Geostore instance
+     */
     private GeoStoreConfig geoStoreConfig;
+    /**
+     * The PostGIS JDBC connection parameters
+     */
     private PostGisConfig  postGisConfig;
+    
+    /**
+     * Parameters used to run the GDAl rasterize binary
+     */
     private RasterizeConfig  rasterizeConfig;
+    
+    /**
+     * Parameters used to compute the overview for the raster data
+     */
     private GeotiffOverviewsEmbedderConfiguration overviewsEmbedderConfiguration;
+    
+    /**
+     * Parameters used to perform the raster data retiling
+     */
     private GeotiffRetilerConfiguration retilerConfiguration;
+    
+    /**
+     * Credentials workspace URL and other Geoserver configurations
+     */
     private GeoServerBasicConfig geoServerConfig;
-    private File originalDataTargetDir;
+    
     /**
      * The absolute path of datastore.properties (STAGING) used in the ImageMosaic action.
      */
@@ -102,14 +124,6 @@ public class IngestionConfiguration extends ActionConfiguration implements Confi
         this.geoServerConfig = geoServerConfig;
     }
 
-    public File getOriginalDataTargetDir() {
-        return originalDataTargetDir;
-    }
-
-    public void setOriginalDataTargetDir(File originalDataTargetDir) {
-        this.originalDataTargetDir = originalDataTargetDir;
-    }
-
     public GeotiffRetilerConfiguration getRetilerConfiguration() {
         return retilerConfiguration;
     }
@@ -127,14 +141,14 @@ public class IngestionConfiguration extends ActionConfiguration implements Confi
     }
 
     public String getIndexerPath() {
-		return indexerPath;
-	}
+        return indexerPath;
+    }
 
-	public void setIndexerPath(String indexerPath) {
-		this.indexerPath = indexerPath;
-	}
+    public void setIndexerPath(String indexerPath) {
+        this.indexerPath = indexerPath;
+    }
 
-	@Override
+    @Override
     public IngestionConfiguration clone(){
         final IngestionConfiguration ret = (IngestionConfiguration)super.clone();
 

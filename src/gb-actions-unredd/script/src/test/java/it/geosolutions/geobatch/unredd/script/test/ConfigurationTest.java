@@ -31,8 +31,6 @@ import it.geosolutions.geobatch.unredd.script.model.RasterizeConfig;
 import it.geosolutions.geobatch.unredd.script.reprocess.ReprocessConfiguration;
 import it.geosolutions.geobatch.xstream.Alias;
 
-import java.io.File;
-
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,8 +178,6 @@ public class ConfigurationTest extends BaseTest {
         gsac.setGeoserverPWD("tmpfc");
         gsac.setWorkspace("unredd");
         cfg.setGeoServerConfig(gsac);
-
-        cfg.setOriginalDataTargetDir(new File("/tmp/OriginalDataTarget"));
 
         return cfg;
     }

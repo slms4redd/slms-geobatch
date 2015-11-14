@@ -31,6 +31,7 @@ import it.geosolutions.geobatch.unredd.script.model.RasterizeConfig;
 import it.geosolutions.geobatch.unredd.script.reprocess.ReprocessConfiguration;
 import it.geosolutions.geobatch.xstream.Alias;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,7 @@ public class ConfigurationTest extends BaseTest {
     public ConfigurationTest() {
     }
     
+    @Ignore
     @Test
     public void testReprocessConfigFile() throws Exception {
         ReprocessConfiguration cfg = (ReprocessConfiguration)loadActionConfig("configuration/file/reprocessConfigTest.xml");
@@ -69,6 +71,7 @@ public class ConfigurationTest extends BaseTest {
         assertEquals(42, cfg.getOverviewsEmbedderConfiguration().getNumSteps());
     }
 
+    @Ignore
     @Test
     public void testIngestionConfigFile() throws Exception {
         IngestionConfiguration cfg = (IngestionConfiguration)loadActionConfig("ingestion/ingestionCfg.xml");

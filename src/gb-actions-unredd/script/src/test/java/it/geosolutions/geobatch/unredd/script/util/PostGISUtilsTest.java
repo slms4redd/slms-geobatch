@@ -35,6 +35,7 @@ import org.geotools.data.Transaction;
 import org.geotools.jdbc.JDBCDataStore;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,7 @@ public class PostGISUtilsTest extends BaseTest {
     public static void tearDownClass() throws Exception {
     }
 
+    @Ignore
     @Test
     public void testShapeToPg() throws Exception {
 
@@ -80,6 +82,7 @@ public class PostGISUtilsTest extends BaseTest {
 
     }
 
+    @Ignore
     @Test
     public void testBadMismatchShapeToPg() throws Exception {
 

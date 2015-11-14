@@ -96,6 +96,7 @@ public class ReprocessActionTest extends BaseTest {
     }
     
 
+    @Ignore
     @Test
     public void testReprocessCharts() throws GeoStoreException, IOException, ActionException {
         assumeTrue(pingGeoStore());
@@ -145,7 +146,7 @@ public class ReprocessActionTest extends BaseTest {
         assertEquals(5, res1.getList().size());
     }
 
-
+    @Ignore
     @Test
     public void testReprocessStats() throws GeoStoreException, FlowException, ActionException {
 

@@ -32,6 +32,7 @@ import java.io.File;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,6 +104,7 @@ public class GDALRasterizeTest extends BaseTest {
 ////        FileUtils.forceDelete(workingDirFile);
 //    }
 
+    @Ignore
     @Test
     public void testFromShape() throws Exception {
 

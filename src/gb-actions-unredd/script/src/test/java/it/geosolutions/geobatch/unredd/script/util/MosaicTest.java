@@ -36,6 +36,7 @@ import org.geotools.data.Transaction;
 import org.geotools.jdbc.JDBCDataStore;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,7 @@ public class MosaicTest extends BaseTest {
     public static void tearDownClass() throws Exception {
     }
 
+    @Ignore
     @Test
     public void testMosaic() throws Exception {
     	

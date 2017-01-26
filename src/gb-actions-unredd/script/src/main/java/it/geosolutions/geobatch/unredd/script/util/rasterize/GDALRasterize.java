@@ -114,7 +114,8 @@ public class GDALRasterize {
 //                teConfig.setOutput(getOutput());
 //                teConfig.setOutputName(getOutputName());
 //                teConfig.setServiceID(getServiceID());
-        teConfig.setTimeOut(120000l);
+        LOGGER.info("Setting TIMEOUT to 2 hours... I Hope it will be enough!");
+        teConfig.setTimeOut(7200000l);
 //                teConfig.setVariables(getVariables());
         teConfig.setConfigDir(configDir);
         teConfig.setXsl(rasterizeConfig.getTaskExecutorXslFileName());

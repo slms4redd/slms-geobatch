@@ -493,6 +493,12 @@
             <name>nfms4redd maven repository</name>
             <url>http://maven.nfms4redd.org/</url>
         </repository>
+		<repository>
+			<id>codehaus-mule-repo</id>
+			<name>codehaus-mule-repo</name>
+			<url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
+			<layout>default</layout>
+		</repository>
     </repositories>
 
 
